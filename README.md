@@ -1,7 +1,5 @@
 # GraphPlot
 
-[![Build Status](https://travis-ci.org/afternone/GraphPlot.jl.svg?branch=master)](https://travis-ci.org/afternone/GraphPlot.jl)
-
 Graph layout and visualization algorithms. based on [Compose.jl](https://github.com/dcjones/Compose.jl) and steal some codes from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 
 ## Getting Started
