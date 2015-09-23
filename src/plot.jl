@@ -102,7 +102,7 @@ function gplot{V, T<:Real}(
         for e in edges(G)
         i = vertex_index(source(e, G), G)
         j = vertex_index(target(e, G), G)
-            push!(edgetexts, text((locs_x[i]+locs_x[j])/2.0, (locs_y[i]+locs_y[j])/2.0, edgelabels[i], hcenter, vcenter))
+            push!(edgetexts, text((locs_x[i]+locs_x[j])/2.0, (locs_y[i]+locs_y[j])/2.0, edgelabels[edge_index(e,G)], hcenter, vcenter))
         end
     end
 
