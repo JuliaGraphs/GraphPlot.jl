@@ -56,6 +56,7 @@ gplot(g, edgelabels=edgelabels)
 
 ## Karate club network
 ```
+# edges, first and second element is the first edge, and so on
 es = [1,2,1,3,1,4,1,5,1,6,1,7,1,8,1,9,1,11,1,12,1,13,1,14,1,18,1,
       20,1,22,1,32,2,3,2,4,2,8,2,14,2,18,2,20,2,22,2,31,3,4,3,8,3,
       9,3,10,3,14,3,28,3,29,3,33,4,8,4,13,4,14,5,7,5,11,6,7,6,11,
@@ -63,10 +64,19 @@ es = [1,2,1,3,1,4,1,5,1,6,1,7,1,8,1,9,1,11,1,12,1,13,1,14,1,18,1,
       19,33,19,34,20,34,21,33,21,34,23,33,23,34,24,26,24,28,24,30,24,
       33,24,34,25,26,25,28,25,32,26,32,27,30,27,34,28,34,29,32,29,34,
       30,33,30,34,31,33,31,34,32,33,32,34,33,34]
+
+# construct the network
+karate = simple_graph(maximum(es), is_directed=false)
+for i=1:2:length(es)
+    add_edge!(karate, es[i], es[i+1])
+end
+
+# nodes membership
 membership = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,2]
 nodecolor = [colorant"lightseagreen", colorant"orange"]
+# membership color
 nodefillc = nodecolor[membership]
-gplot(g, nodefillc=nodefillc)
+gplot(karate, nodefillc=nodefillc)
 ```
 
 
