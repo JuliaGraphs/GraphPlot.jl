@@ -4,16 +4,16 @@ using Graphs
 using Colors
 
 cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
-facts("random_layout") do
+facts("random_layout and undirected") do
     context("simple_house_graph") do
         g = simple_house_graph()
         filename = joinpath(cachedout, "simple_house_random.svg")
-        GraphPlot.plot(g, filename=filename)
+        GraphPlot.plot(g, filename=filename, arrowlengthfrac=0.0)
     end
     context("simple_wheel_graph") do
         g = simple_wheel_graph(10)
         filename = joinpath(cachedout, "simple_wheel_random.svg")
-        GraphPlot.plot(g, filename=filename)
+        GraphPlot.plot(g, filename=filename, arrowlengthfrac=0.0)
     end
 end
 
