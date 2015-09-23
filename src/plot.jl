@@ -1,5 +1,4 @@
 using Colors
-using ColorTypes
 
 @doc """
 **Description:**
@@ -45,22 +44,26 @@ Set to 0 for no arrows. Default: 0.1
 angular width in radians for the arrows. Default: π/9 (20 degrees).
 
 """ ->
-function plot{V, T<:Real}(
+function gplot{V, T<:Real}(
     G::AbstractGraph{V},
     locs_x::Vector{T}, locs_y::Vector{T};
     labels::Vector=[1:num_vertices(G)],
-    labelc::Vector=fill(colorant"#000000", num_vertices(G)),
-    nodefillc::Vector=fill(colorant"skyblue", num_vertices(G)),
-    nodestrokec::Vector=fill(colorant"#BBBBBB", num_vertices(G)),
-    edgestrokec::Vector=fill(colorant"#BBBBBB", num_vertices(G)),
+    edgelabels::Vector=Any[],
+    labelc::Vector=fill(colorant"black", num_vertices(G)),
+    nodefillc::Vector=fill(colorant"turquoise", num_vertices(G)),
+    nodestrokec::Vector=fill(colorant"gray", num_vertices(G)),
+    edgestrokec::Vector=fill(colorant"gray", num_edges(G)),
     labelsize::Vector{T}=fill(4.0, num_vertices(G)),
+    labeldist::Real=0.0,
+    labelangleoffset::Real=π/4.0,
     nodesize::Vector{T}=ones(Float64, num_vertices(G)),
-    lw::Vector{T}=ones(Float64, num_vertices(G)),
-    arrowlengthfrac::Real=0.1,
+    lw::Vector{T}=ones(Float64, num_edges(G)),
+    arrowlengthfrac::Real=is_directed(G) ? 0.1 : 0.0,
     angleoffset=20.0/180.0*π)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
-    const N = length(locs_x)
+    const N = num_vertices(G)
+    const NE = num_edges(G)
     if length(labels) != N && length(labels) != 0
         error("Must have one label per node (or none)")
     end
@@ -80,10 +83,10 @@ function plot{V, T<:Real}(
     #const ARROWLENGTH = LINEWIDTH * arrowlengthfrac
     #nodesize /= maximum(nodesize)
     #lw /= maximum(lw)
-    nodesize *= NODESIZE
-    lw *= LINEWIDTH
+    nodesize *= NODESIZE/maximum(nodesize)
+    lw *= LINEWIDTH/maximum(lw)
     arrowlength = lw * arrowlengthfrac
-    labelsize *= 4.0
+    labelsize *= 4.0/maximum(labelsize)
 
     # Create lines and arrow heads
     lines = Any[]
@@ -93,39 +96,74 @@ function plot{V, T<:Real}(
         push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlength[j], angleoffset))
     end
 
+    # Create edgelabels
+    edgetexts = Any[]
+    if length(edgelabels) == NE
+        for e in edges(G)
+        i = vertex_index(source(e, G), G)
+        j = vertex_index(target(e, G), G)
+            push!(edgetexts, text((locs_x[i]+locs_x[j])/2.0, (locs_y[i]+locs_y[j])/2.0, edgelabels[i], hcenter, vcenter))
+        end
+    end
+
     # Create nodes
     nodes = [circle(locs_x[i],locs_y[i],nodesize[i]) for i=1:N]
 
     # Create labels (if wanted)
     texts = length(labels) == N ?
-        [text(locs_x[i],locs_y[i],labels[i],hcenter,vcenter) for i=1:N] : Any[]
+        [text(locs_x[i]+labeldist*nodesize[i]*cos(labelangleoffset),locs_y[i]-labeldist*nodesize[i]*sin(labelangleoffset),labels[i],hcenter,vcenter) for i=1:N] : Any[]
 
-    compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-        [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
-        [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
-        [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:N],
-    )
+    if !isempty(texts) && !isempty(edgetexts)
+        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+                    [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
+                )
+    end
+    if !isempty(texts) && isempty(edgetexts)
+        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+                    [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
+                )
+    end
+    if isempty(texts) && !isempty(edgetexts)
+        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
+                )
+    end
+    if isempty(texts) && isempty(edgetexts)
+        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
+                )
+    end
 end
 
-function plot{V, T<:Real}(
+function gplot{V, T<:Real}(
     G::AbstractGraph{V};
-    layout::Function=random_layout,
-    filename::String="",
+    layout::Function=spring_layout,
     labels::Vector=[1:num_vertices(G)],
-    labelc::Vector=fill(colorant"#000000", num_vertices(G)),
-    nodefillc::Vector=fill(colorant"skyblue", num_vertices(G)),
-    nodestrokec::Vector=fill(colorant"#BBBBBB", num_vertices(G)),
-    edgestrokec::Vector=fill(colorant"#BBBBBB", num_vertices(G)),
+    edgelabels::Vector=Any[],
+    labelc::Vector=fill(colorant"black", num_vertices(G)),
+    nodefillc::Vector=fill(colorant"turquoise", num_vertices(G)),
+    nodestrokec::Vector=fill(colorant"gray", num_vertices(G)),
+    edgestrokec::Vector=fill(colorant"gray", num_edges(G)),
     labelsize::Vector{T}=fill(4.0, num_vertices(G)),
+    labeldist::Real=0.0,
+    labelangleoffset::Real=π/4.0,
     nodesize::Vector{T}=ones(Float64, num_vertices(G)),
-    lw::Vector{T}=ones(Float64, num_vertices(G)),
-    arrowlengthfrac::Real=0.1,
+    lw::Vector{T}=ones(Float64, num_edges(G)),
+    arrowlengthfrac::Real=is_directed(G) ? 0.1 : 0.0,
     angleoffset=20.0/180.0*π)
-    draw(filename == "" ? SVG(8inch, 8inch) : SVG(filename, 8inch, 8inch),
-         plot(G, layout(G)..., labels=labels, labelc=labelc, nodefillc=nodefillc,
-         nodestrokec=nodestrokec, edgestrokec=edgestrokec, labelsize=labelsize,
-         nodesize=nodesize, lw=lw, arrowlengthfrac=arrowlengthfrac, angleoffset=angleoffset)
-         )
+
+    gplot(G, layout(G)..., labels=labels, edgelabels=edgelabels, labelc=labelc, nodefillc=nodefillc,
+         nodestrokec=nodestrokec, edgestrokec=edgestrokec, labelsize=labelsize, labeldist=labeldist,
+         labelangleoffset=labelangleoffset, nodesize=nodesize, lw=lw, arrowlengthfrac=arrowlengthfrac,
+         angleoffset=angleoffset)
 end
 
 function arrowcoords(θ, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
@@ -145,14 +183,14 @@ function lineij(locs_x, locs_y, i, j, NODESIZE, ARROWLENGTH, angleoffset)
     endy  = locs_y[i] + (d-NODESIZE)*1.00*sin(θ)
     if ARROWLENGTH > 0.0
         arr1, arr2 = arrowcoords(θ, endx, endy, ARROWLENGTH, angleoffset)
-        composenode = compose(
+        composenode = Compose.compose(
                 context(),
                 line([(locs_x[i], locs_y[i]), (endx, endy)]),
                 line([arr1, (endx, endy)]),
                 line([arr2, (endx, endy)])
             )
     else
-        composenode = compose(
+        composenode = Compose.compose(
                 context(),
                 line([(locs_x[i], locs_y[i]), (endx, endy)])
             )
