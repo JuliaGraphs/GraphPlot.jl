@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="203.2mm" height="203.2mm" viewBox="0 0 203.2 203.2"
+     stroke="none"
+     fill="#000000"
+     stroke-width="0.3"
+     font-size="3.88"
+>
+<g stroke-width="1.34" stroke="#BBBBBB" id="fig-9a41f59a106744fa87565946fbb52a7c-element-1">
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-9a41f59a106744fa87565946fbb52a7c-element-2">
+    <path fill="none" d="M106.7,42.82 L 110.09 31.98"/>
+    <path fill="none" d="M100.53,38.1 L 110.09 31.98"/>
+    <path fill="none" d="M16.93,153.93 L 110.09 31.98"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-9a41f59a106744fa87565946fbb52a7c-element-3">
+    <path fill="none" d="M20.82,88.35 L 16.93 77.67"/>
+    <path fill="none" d="M13.05,88.35 L 16.93 77.67"/>
+    <path fill="none" d="M16.93,153.93 L 16.93 77.67"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-9a41f59a106744fa87565946fbb52a7c-element-4">
+    <path fill="none" d="M43.74,77.96 L 34.17 71.84"/>
+    <path fill="none" d="M37.57,82.68 L 34.17 71.84"/>
+    <path fill="none" d="M121.59,186.27 L 34.17 71.84"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-9a41f59a106744fa87565946fbb52a7c-element-5">
+    <path fill="none" d="M53.12,138.68 L 44.07 145.54"/>
+    <path fill="none" d="M55.41,146.1 L 44.07 145.54"/>
+    <path fill="none" d="M186.27,101.6 L 44.07 145.54"/>
+  </g>
+  <path fill="none" d="M136.47,160.38 L 133.08 171.22"/>
+  <path fill="none" d="M142.65,165.1 L 133.08 171.22"/>
+  <path fill="none" d="M186.27,101.6 L 133.08 171.22"/>
+</g>
+<g stroke="#BBBBBB" fill="#FF0000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-6">
+  <circle cx="186.27" cy="101.6" r="18.93"/>
+  <g stroke="#BBBBBB" fill="#32005A" id="fig-9a41f59a106744fa87565946fbb52a7c-element-7">
+    <circle cx="121.59" cy="16.93" r="18.93"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#088B00" id="fig-9a41f59a106744fa87565946fbb52a7c-element-8">
+    <circle cx="16.93" cy="49.27" r="28.4"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#00FFFF" id="fig-9a41f59a106744fa87565946fbb52a7c-element-9">
+    <circle cx="16.93" cy="153.93" r="28.4"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#002874" id="fig-9a41f59a106744fa87565946fbb52a7c-element-10">
+    <circle cx="121.59" cy="186.27" r="18.93"/>
+  </g>
+</g>
+<g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-11">
+  <text x="186.27" y="101.6" text-anchor="middle" dy="0.35em">1</text>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-12">
+    <text x="121.59" y="16.93" text-anchor="middle" dy="0.35em">5</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-13">
+    <text x="16.93" y="49.27" text-anchor="middle" dy="0.35em">4</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-14">
+    <text x="16.93" y="153.93" text-anchor="middle" dy="0.35em">3</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-9a41f59a106744fa87565946fbb52a7c-element-15">
+    <text x="121.59" y="186.27" text-anchor="middle" dy="0.35em">2</text>
+  </g>
+</g>
+</svg>
