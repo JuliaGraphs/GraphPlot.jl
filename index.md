@@ -25,7 +25,7 @@ gplot(g)
 ```
 
 ## Control the node color
-Feed the keyword argument `nodefillc` an color array, ensure each node has a color. `length(nodefillc)` must be equal `|V|`.
+Feed the keyword argument `nodefillc` a color array, ensure each node has a color. `length(nodefillc)` must be equal `|V|`.
 ```
 using Colors
 
@@ -75,7 +75,7 @@ gplot(g, nodefillc=nodefillc)
 + `layout` Optional. layout algorithm. Currently can be chose from
 [random_layout, circular_layout, spring_layout, stressmajorize_layout].
 Default: `spring_layout`
-+ `labels` Optional. Labels for the vertices. Default: `Any[]``
++ `labels` Optional. Labels for the vertices. Default: `Any[]`
 + `nodefillc` Optional. Color to fill the nodes with.
 Default: `fill(colorant"turquoise", N)`
 + `nodestrokec` Color for the nodes stroke.
