@@ -1,6 +1,5 @@
 using Colors
 using ColorTypes
-typealias ComposeColorVector Union(Vector{Colors.RGB}, Vector{ASCIIString}, Vector{Colors.Color}, Vector{Colors.AlphaColor}, Vector{Colors.String})
 
 @doc """
 **Description:**

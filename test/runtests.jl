@@ -3,7 +3,7 @@ using GraphPlot
 using Graphs
 using Colors
 
-cachedout = joinpath(Pkg.dir("GraphLayout"), "test", "examples")
+cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
 facts("random_layout") do
     context("simple_house_graph") do
         g = simple_house_graph()
