@@ -2,12 +2,11 @@
 
 [![Build Status](https://travis-ci.org/afternone/GraphPlot.jl.svg?branch=master)](https://travis-ci.org/afternone/GraphPlot.jl)
 
-
-GraphPlot is package for plotting and visualization of graphs (networks)
+Graph layout and visualization algorithms. based on [Compose.jl](https://github.com/dcjones/Compose.jl) and steal some codes from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 
 ## Getting Started
 
-From the Julia REPL a up to date version can be installed with
+From the Julia REPL an up to date version can be installed with
 ```
 Pkg.clone("git://github.com/afternone/GraphPlot.jl.git")
 ```
@@ -61,7 +60,7 @@ gplot(g, edgelabels=edgelabels)
 + `layout` Optional. layout algorithm. Currently can be chose from
 [random_layout, circular_layout, spring_layout, stressmajorize_layout].
 Default: `spring_layout`
-+ `labels` Optional. Labels for the vertices. Default: `Any[]``
++ `labels` Optional. Labels for the vertices. Default: `Any[]`
 + `nodefillc` Optional. Color to fill the nodes with.
 Default: `fill(colorant"turquoise", N)`
 + `nodestrokec` Color for the nodes stroke.
