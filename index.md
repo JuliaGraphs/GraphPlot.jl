@@ -1,13 +1,12 @@
-GraphPlot
-
-========
+# **GraphPlot**
 
 GraphPlot is package for plotting and visualization of graphs (networks)
 
-## Getting Started
+
+# Getting Started
 
 From the Julia REPL a up to date version can be installed with
-```
+```{execute="false"}
 Pkg.clone("git://github.com/afternone/GraphPlot.jl.git")
 ```
 GraphPlot is then loaded with
@@ -49,7 +48,7 @@ nodesize = Float64[out_degree(v, g) for v in vertices(g)]
 gplot(g, labels=labels, labelsize=labelsize, nodesize=nodesize)
 ```
 
-## You also can draw the edge label
+## You can also draw the edge label
 ```
 edgelabels = [1:num_edges(g)]
 gplot(g, edgelabels=edgelabels)
