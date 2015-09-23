@@ -4,14 +4,14 @@ module GraphPlot
     end
     using Graphs
     using Compose  # for plotting features
-    import Graphs.plot
 
     # layout algorithms
-    export random_layout, circular_layout
+    export random_layout, circular_layout, spring_layout, stressmajorize_layout
     include("layout.jl")
+    include("stress.jl")
 
     # ploting utilities
-    export plot
+    export gplot
     include("plot.jl")
 
 end # module
