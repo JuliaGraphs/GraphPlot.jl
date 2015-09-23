@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="author" content="">
+  <meta charset="utf-8">
+  <title></title>
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Source+Code+Pro:400,700'
+        rel='stylesheet' type='text/css'>
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+  <link href="css/custom.css" rel="stylesheet" type="text/css" media="all">
+  <link href="css/hk-pyg.css" rel="stylesheet" type="text/css" media="all">
+  <script src="js/jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script src="js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="js/list.min.js" type="text/javascript"></script>
+</head>
+<body>
+  <div id="topbar" style="z-index: 3">
+    <div class="container">
+      <div class="row">
+        <ul>
+          <li><div id="pkgname"> </div></li>
+          <li><a href="">Code</a></li>
+          <li><a href="/issues">Issues</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="z-index: auto">
+    <div class="row">
+      <div class="col-sm-7">
+      <div id="body-content">
+<h1 id="usage">Usage</h1>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using GraphPlot
+using Graphs
+g = simple_house_graph()
+GraphPlot.plot(g)</code></pre></div>
+<div class="judo-result">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="203.2mm" height="203.2mm" viewBox="0 0 203.2 203.2"
+     stroke="none"
+     fill="#000000"
+     stroke-width="0.3"
+     font-size="3.88"
+>
+<g stroke-width="1.34" stroke="#BBBBBB" id="fig-b255c313947740b4a46851ae761c6c9c-element-1">
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-b255c313947740b4a46851ae761c6c9c-element-2">
+    <path fill="none" d="M36.92,55.69 L 26.39 59.95"/>
+    <path fill="none" d="M37.2,63.46 L 26.39 59.95"/>
+    <path fill="none" d="M151.32,55.53 L 26.39 59.95"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-b255c313947740b4a46851ae761c6c9c-element-3">
+    <path fill="none" d="M167.52,55.77 L 177.04 49.58"/>
+    <path fill="none" d="M165.77,48.2 L 177.04 49.58"/>
+    <path fill="none" d="M151.32,55.53 L 177.04 49.58"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-b255c313947740b4a46851ae761c6c9c-element-4">
+    <path fill="none" d="M168.72,36.83 L 179.24 41.1"/>
+    <path fill="none" d="M173.93,31.06 L 179.24 41.1"/>
+    <path fill="none" d="M152.5,16.93 L 179.24 41.1"/>
+  </g>
+  <g stroke-width="1.34" stroke="#BBBBBB" id="fig-b255c313947740b4a46851ae761c6c9c-element-5">
+    <path fill="none" d="M145.67,75.25 L 147.04 63.97"/>
+    <path fill="none" d="M138.74,71.73 L 147.04 63.97"/>
+    <path fill="none" d="M84.94,186.27 L 147.04 63.97"/>
+  </g>
+  <path fill="none" d="M148.65,37.08 L 149 25.73"/>
+  <path fill="none" d="M141.43,34.2 L 149 25.73"/>
+  <path fill="none" d="M84.94,186.27 L 149 25.73"/>
+</g>
+<g stroke="#BBBBBB" fill="#87CEEB" id="fig-b255c313947740b4a46851ae761c6c9c-element-6">
+  <circle cx="84.94" cy="186.27" r="9.47"/>
+  <g stroke="#BBBBBB" fill="#87CEEB" id="fig-b255c313947740b4a46851ae761c6c9c-element-7">
+    <circle cx="16.93" cy="60.29" r="9.47"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#87CEEB" id="fig-b255c313947740b4a46851ae761c6c9c-element-8">
+    <circle cx="186.27" cy="47.45" r="9.47"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#87CEEB" id="fig-b255c313947740b4a46851ae761c6c9c-element-9">
+    <circle cx="151.32" cy="55.53" r="9.47"/>
+  </g>
+  <g stroke="#BBBBBB" fill="#87CEEB" id="fig-b255c313947740b4a46851ae761c6c9c-element-10">
+    <circle cx="152.5" cy="16.93" r="9.47"/>
+  </g>
+</g>
+<g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-b255c313947740b4a46851ae761c6c9c-element-11">
+  <text x="84.94" y="186.27" text-anchor="middle" dy="0.35em">1</text>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-b255c313947740b4a46851ae761c6c9c-element-12">
+    <text x="16.93" y="60.29" text-anchor="middle" dy="0.35em">5</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-b255c313947740b4a46851ae761c6c9c-element-13">
+    <text x="186.27" y="47.45" text-anchor="middle" dy="0.35em">4</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-b255c313947740b4a46851ae761c6c9c-element-14">
+    <text x="151.32" y="55.53" text-anchor="middle" dy="0.35em">3</text>
+  </g>
+  <g font-size="16" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="fig-b255c313947740b4a46851ae761c6c9c-element-15">
+    <text x="152.5" y="16.93" text-anchor="middle" dy="0.35em">2</text>
+  </g>
+</g>
+</svg>
+
+</div>
+<h1 id="examples">Examples</h1>
+        <hr>
+      </div>
+      </div>
+
+      <div class="col-sm-offset-8" style="z-index: 2">
+        <div id="table-of-contents">
+          <div id="table-of-contents-content">
+            <input class="search" placeholder="SEARCH" />
+            <ul class="toc list nav"><li>
+                <a class="toc-item toc-current-doc" href="GraphPlot.html">GraphPlot</a>
+            </li>
+            <li>
+                <a style="margin-left: 0.5em" class="toc-item" href="#usage">Usage</a>
+            </li>
+            <li>
+                <a style="margin-left: 0.5em" class="toc-item" href="#examples">Examples</a>
+            </li>
+            </ul>
+
+            <script>
+                var toclist = new List("table-of-contents",
+                                       {valueNames: ["toc-item"]})
+
+                $("body").scrollspy({target: "#table-of-contents"});
+
+                $("#table-of-contents li").on("activate.bs.scrollspy",
+                    function(event) {
+                        $("#table-of-contents ul").find("a").css({"font-weight": "normal"});
+                        $(this).children("a").css({"font-weight": "bolder"});
+                    });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <footer class="col-sm-8">
+    <p class="muted">Last modified by  on Wed Sep 23 13:02:39 CST 2015. Generated with
+    <a href="https://github.com/dcjones/Judo.jl">Judo</a>.</p>
+  </footer>
+
+  </div>
+</body>
+</html>
+
