@@ -1,6 +1,6 @@
 function graphfamous(graphname::String)
     file = joinpath(Pkg.dir("GraphPlot"), "data", graphname*".dat")
-    readgraph(file)
+    readedgelist(file)
 end
 
 """read graph from in edgelist format"""

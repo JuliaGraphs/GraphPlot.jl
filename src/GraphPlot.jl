@@ -12,7 +12,7 @@ module GraphPlot
         spring_layout,
         stressmajorize_layout,
         graphfamous,
-        readgraph
+        readedgelist
 
     include("layout.jl")
     include("stress.jl")
