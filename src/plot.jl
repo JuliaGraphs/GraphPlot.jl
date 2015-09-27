@@ -116,7 +116,7 @@ function gplot{V, T<:Real}(
     if !isempty(texts) && !isempty(edgetexts)
         return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
                     [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
                     [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
                     [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
                 )
@@ -124,20 +124,20 @@ function gplot{V, T<:Real}(
     if !isempty(texts) && isempty(edgetexts)
         return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
                     [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
                     [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
                 )
     end
     if isempty(texts) && !isempty(edgetexts)
         return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
                     [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
                     [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
                 )
     end
     if isempty(texts) && isempty(edgetexts)
         return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nodestrokec[i])) for i=1:N],
+                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
                     [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
                 )
     end
