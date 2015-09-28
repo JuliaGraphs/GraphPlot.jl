@@ -1,71 +1,109 @@
 using Colors
 
-@doc """
-**Description:**
+typealias ComposeColor Union(Nothing, Vector, Colors.Color, Colors.String, Colors.AlphaColor)
 
+"""
 Given an adjacency matrix and two vectors of X and Y coordinates, returns
 a Compose tree of the graph layout
 
-**Arguments:**
+**Arguments**
 
-*G:*
-Adjacency matrix of some type. Non-zero of the eltype
-of the matrix is used to determine if a link exists,
-but currently no sense of magnitude
+*G*
+a graph
 
-*layout:*
-Optional. layout algorithm. Currently can be [random_layout, circular_layout].
-Default: random_layout
+*layout*
+Optional. layout algorithm. Currently can be one of [random_layout,
+circular_layout, spring_layout, shell_layout, stressmajorize_layout,
+spectral_layout].
+Default: spring_layout
 
-*locs_x, locs_y:*
+*locs_x, locs_y*
 Locations of the nodes. Can be any units you want,
 but will be normalized and centered anyway
 
-*filename:*
-Output figure name
+*nodesize*
+Optional. size for the vertices. Default: 1
 
-*labels:*
-Optional. Labels for the vertices. Default: Any[]
+*nodelabel*
+Optional. Labels for the vertices. Default: nothing
 
-*nodefillc:*
-Color to fill the nodes with. Default: fill("#AAAAFF", N)
+*nodelabelc*
+Optional. Color for the node labels. Default: colorant"black"
 
-*nodestrokec:*
-Color for the nodes stroke. Default: fill("#BBBBBB", N)
+*nodelabeldist*
+Optional. Distances for the node labels from center of nodes. Default: 0
 
-*edgestrokec:*
-Color for the edge strokes. Default: fill("#BBBBBB", N)
+*nodelabelangleoffset*
+Optional. Angle offset for the node labels. Default: π/4.0
 
-*arrowlengthfrac:*
+*nodelabelsize*
+Optional. fontsize for the vertice labels. Default: 4
+
+*nodefillc*
+Color to fill the nodes with. Default: colorant"turquoise"
+
+*nodestrokec*
+Color for the nodes stroke. Default: nothing
+
+*nodestrokelw*
+line width for the nodes stroke. Default: 0
+
+*edgelabel*
+Optional. Labels for the edges. Default: nothing
+
+*edgelabelc*
+Optional. Color for the edge labels. Default: colorant"black"
+
+*edgelabeldistx, edgelabeldisty*
+Optional. Distances for the edge labels from center of edges. Default: 0
+
+*edgelabelsize*
+Optional. fontsize for the edge labels. Default: 4
+
+*edgelinewidth*
+Optional. line width for the edges. Default: 1
+
+*edgestrokec*
+Color for the edge strokes. Default: colorant"lightgray"
+
+*arrowlengthfrac*
 Fraction of line length to use for arrows.
 Set to 0 for no arrows. Default: 0.1
 
-*angleoffset*
+*arrowangleoffset*
 angular width in radians for the arrows. Default: π/9 (20 degrees).
 
-""" ->
+"""
 function gplot{V, T<:Real}(
     G::AbstractGraph{V},
     locs_x::Vector{T}, locs_y::Vector{T};
-    labels::Vector=[1:num_vertices(G)],
-    edgelabels::Vector=Any[],
-    labelc::Vector=fill(colorant"black", num_vertices(G)),
-    nodefillc::Vector=fill(colorant"turquoise", num_vertices(G)),
-    nodestrokec::Vector=fill(colorant"gray", num_vertices(G)),
-    edgestrokec::Vector=fill(colorant"gray", num_edges(G)),
-    labelsize::Vector{T}=fill(4.0, num_vertices(G)),
-    labeldist::Real=0.0,
-    labelangleoffset::Real=π/4.0,
-    nodesize::Vector{T}=ones(Float64, num_vertices(G)),
-    lw::Vector{T}=ones(Float64, num_edges(G)),
-    arrowlengthfrac::Real=is_directed(G) ? 0.1 : 0.0,
-    angleoffset=20.0/180.0*π)
+    nodelabel::Union(Nothing, Vector) = nothing,
+    nodelabelc::ComposeColor = colorant"black",
+    nodelabelsize::Union(Real, Vector) = 4,
+    nodelabeldist::Real = 0,
+    nodelabelangleoffset::Real = π/4.0,
+    edgelabel::Union(Nothing, Vector) = nothing,
+    edgelabelc::ComposeColor = colorant"black",
+    edgelabelsize::Union(Real, Vector) = 4,
+    edgestrokec::ComposeColor = colorant"lightgray",
+    edgelinewidth::Union(Real, Vector) = 1,
+    edgelabeldistx::Real = 0,
+    edgelabeldisty::Real = 0,
+    nodesize::Union(Real, Vector) = 1,
+    nodefillc::ComposeColor = colorant"turquoise",
+    nodestrokec::ComposeColor = nothing,
+    nodestrokelw::Union(Real, Vector) = 0,
+    arrowlengthfrac::Real = Graphs.is_directed(G) ? 0.1 : 0.0,
+    arrowangleoffset = 20.0/180.0*π)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
     const N = num_vertices(G)
     const NE = num_edges(G)
-    if length(labels) != N && length(labels) != 0
+    if nodelabel != nothing && length(nodelabel) != N
         error("Must have one label per node (or none)")
+    end
+    if edgelabel != nothing && length(edgelabel) != NE
+        error("Must have one label per edge (or none)")
     end
 
     # Scale to unit square
@@ -80,90 +118,75 @@ function gplot{V, T<:Real}(
     # Determine sizes
     const NODESIZE    = 0.25/sqrt(N)
     const LINEWIDTH   = 3.0/sqrt(N)
-    #const ARROWLENGTH = LINEWIDTH * arrowlengthfrac
-    #nodesize /= maximum(nodesize)
-    #lw /= maximum(lw)
     nodesize *= NODESIZE/maximum(nodesize)
-    lw *= LINEWIDTH/maximum(lw)
-    arrowlength = lw * arrowlengthfrac
-    labelsize *= 4.0/maximum(labelsize)
-
-    # Create lines and arrow heads
-    lines = Any[]
-    for e in edges(G)
-        i = vertex_index(source(e, G), G)
-        j = vertex_index(target(e, G), G)
-        push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlength[j], angleoffset))
-    end
-
-    # Create edgelabels
-    edgetexts = Any[]
-    if length(edgelabels) == NE
-        for e in edges(G)
-        i = vertex_index(source(e, G), G)
-        j = vertex_index(target(e, G), G)
-            push!(edgetexts, text((locs_x[i]+locs_x[j])/2.0, (locs_y[i]+locs_y[j])/2.0, edgelabels[edge_index(e, G)], hcenter, vcenter))
-        end
+    edgelinewidth *= LINEWIDTH/maximum(edgelinewidth)
+    edgelabelsize *= 4.0/maximum(edgelabelsize)
+    nodelabelsize *= 4.0/maximum(nodelabelsize)
+    if nodestrokelw > 0
+        nodestrokelw *= LINEWIDTH/maximum(nodestrokelw)
     end
 
     # Create nodes
-    nodes = [circle(locs_x[i],locs_y[i],nodesize[i]) for i=1:N]
+    nodes = circle(locs_x, locs_y, [nodesize])
 
-    # Create labels (if wanted)
-    texts = length(labels) == N ?
-        [text(locs_x[i]+labeldist*nodesize[i]*cos(labelangleoffset),locs_y[i]-labeldist*nodesize[i]*sin(labelangleoffset),labels[i],hcenter,vcenter) for i=1:N] : Any[]
+    # Create node labels if provided
+    texts = nodelabel == nothing ? nothing : text(locs_x .+ nodelabeldist .* [nodesize] .* cos(nodelabelangleoffset),
+                                                  locs_y .- nodelabeldist .* [nodesize] .* sin(nodelabelangleoffset),
+                                                  map(string, nodelabel), [hcenter], [vcenter])
+    # Create edge labels if provided
+    edgetexts = nothing
+    if edgelabel != nothing
+        edge_locs_x = zeros(T, NE)
+        edge_locs_y = zeros(T, NE)
+        for e in Graphs.edges(G)
+            i = vertex_index(source(e, G), G)
+            j = vertex_index(target(e, G), G)
+            edge_locs_x[edge_index(e, G)] = (locs_x[i]+locs_x[j])/2.0 + edgelabeldistx*NODESIZE
+            edge_locs_y[edge_index(e, G)] = (locs_y[i]+locs_y[j])/2.0 + edgelabeldisty*NODESIZE
+        end
+        edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
+    end
 
-    if !isempty(texts) && !isempty(edgetexts)
-        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
-                    [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
-                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
-                )
+    # Create lines and arrow heads
+    lines = Any[]
+    if isa(nodesize, Real)
+        for e in Graphs.edges(G)
+            i = vertex_index(source(e, G), G)
+            j = vertex_index(target(e, G), G)
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, arrowlengthfrac, arrowangleoffset))
+        end
+    else
+        for e in Graphs.edges(G)
+            i = vertex_index(source(e, G), G)
+            j = vertex_index(target(e, G), G)
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlengthfrac, arrowangleoffset))
+        end
     end
-    if !isempty(texts) && isempty(edgetexts)
-        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), texts[i], fill(labelc[i]), stroke(nothing), fontsize(labelsize[i])) for i=1:N],
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
-                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
-                )
-    end
-    if isempty(texts) && !isempty(edgetexts)
-        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
-                    [compose(context(), edgetexts[i], fill(colorant"black"), stroke(nothing), fontsize(4.0)) for i=1:NE],
-                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
-                )
-    end
-    if isempty(texts) && isempty(edgetexts)
-        return compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-                    [compose(context(), nodes[i], fill(nodefillc[i]), stroke(nothing)) for i=1:N],
-                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(lw[i])) for i=1:NE],
-                )
-    end
+
+
+    compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+            compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+            begin
+                if isa(edgestrokec, Vector) && isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(edgelinewidth[i])) for i=1:NE]
+                elseif isa(edgestrokec, Vector) && !isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(edgelinewidth)) for i=1:NE]
+                elseif !isa(edgestrokec, Vector) && !isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec), linewidth(edgelinewidth)) for i=1:NE]
+                else
+                    [compose(context(), lines[i], stroke(edgestrokec), linewidth(edgelinewidth[i])) for i=1:NE]
+                end
+            end)
 end
 
-function gplot{V, T<:Real}(
+function gplot{V}(
     G::AbstractGraph{V};
     layout::Function=spring_layout,
-    labels::Vector=[1:num_vertices(G)],
-    edgelabels::Vector=Any[],
-    labelc::Vector=fill(colorant"black", num_vertices(G)),
-    nodefillc::Vector=fill(colorant"turquoise", num_vertices(G)),
-    nodestrokec::Vector=fill(colorant"gray", num_vertices(G)),
-    edgestrokec::Vector=fill(colorant"gray", num_edges(G)),
-    labelsize::Vector{T}=fill(4.0, num_vertices(G)),
-    labeldist::Real=0.0,
-    labelangleoffset::Real=π/4.0,
-    nodesize::Vector{T}=ones(Float64, num_vertices(G)),
-    lw::Vector{T}=ones(Float64, num_edges(G)),
-    arrowlengthfrac::Real=is_directed(G) ? 0.1 : 0.0,
-    angleoffset=20.0/180.0*π)
+    keyargs...)
 
-    gplot(G, layout(G)..., labels=labels, edgelabels=edgelabels, labelc=labelc, nodefillc=nodefillc,
-         nodestrokec=nodestrokec, edgestrokec=edgestrokec, labelsize=labelsize, labeldist=labeldist,
-         labelangleoffset=labelangleoffset, nodesize=nodesize, lw=lw, arrowlengthfrac=arrowlengthfrac,
-         angleoffset=angleoffset)
+    gplot(G, layout(G)...; keyargs...)
 end
 
 function arrowcoords(θ, endx, endy, arrowlength, angleoffset=20.0/180.0*π)

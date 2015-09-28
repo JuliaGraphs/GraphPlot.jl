@@ -52,13 +52,13 @@ Reference:
         pages={239--250},
     }
 """ ->
-function stressmajorize_layout{V}(G::AbstractGraph{V}, p::Int=2, w=nothing, X0=randn(size(δ, 1), p);
+function stressmajorize_layout{V}(G::AbstractGraph{V}, p::Int=2, w=nothing, X0=randn(num_vertices(G), p);
         maxiter = 400size(X0, 1)^2, abstols=√(eps(eltype(X0))),
         reltols=√(eps(eltype(X0))), abstolx=√(eps(eltype(X0))),
         verbose = false, returnall = false)
 
     @assert size(X0, 2)==p
-    δ = adjacency_matrix(G)
+    δ = fill(1.0, num_vertices(G), num_vertices(G))
 
     if w==nothing
         w = δ.^-2
@@ -89,7 +89,8 @@ function stressmajorize_layout{V}(G::AbstractGraph{V}, p::Int=2, w=nothing, X0=r
         X0 = X
     end
     iter == maxiter && warn("Maximum number of iterations reached without convergence")
-    returnall ? (Xs, stresses) : Xs[end]
+    #returnall ? (Xs, stresses) : Xs[end]
+    Xs[end][:,1], Xs[end][:,2]
 end
 
 @doc """

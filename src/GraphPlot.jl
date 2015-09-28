@@ -3,25 +3,31 @@ module GraphPlot
         using Docile
     end
     using Graphs
+    using LightGraphs
     using Compose  # for plotting features
 
-    # layout algorithms
     export
+        gplot,
         random_layout,
         circular_layout,
         spring_layout,
+        spectral_layout,
+        shell_layout,
         stressmajorize_layout,
         graphfamous,
         readedgelist
 
+    # layout algorithms
     include("layout.jl")
     include("stress.jl")
 
     # ploting utilities
-    export gplot
     include("plot.jl")
 
     # read graph
     include("graphio.jl")
+
+    # plot LightGraphs
+    include("lightgraphplot.jl")
 
 end # module

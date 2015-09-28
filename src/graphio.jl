@@ -1,3 +1,18 @@
+"""
+read some famous graphs
+
+**Paramenters**
+
+*graphname*
+Currently, `graphname` can be one of ["karate", "football", "dolphins",
+"netscience", "polbooks", "power", "cond-mat"]
+
+**Return**
+a graph
+
+**Example**
+    julia> g = graphfamous("karate")
+"""
 function graphfamous(graphname::String)
     file = joinpath(Pkg.dir("GraphPlot"), "data", graphname*".dat")
     readedgelist(file)
@@ -12,9 +27,9 @@ function readedgelist(filename; is_directed::Bool=false, start_index::Int=0)
     end
     N = maximum(es)
     if is_directed
-        g = simple_graph(N, is_directed=true)
+        g = Graphs.simple_graph(N, is_directed=true)
         for i=1:size(es,1)
-            add_edge!(g, es[i,1], es[i,2])
+            Graphs.add_edge!(g, es[i,1], es[i,2])
         end
         return g
     else
@@ -24,9 +39,9 @@ function readedgelist(filename; is_directed::Bool=false, start_index::Int=0)
             end
         end
         es = unique(es, 1)
-        g = simple_graph(N, is_directed=false)
+        g = Graphs.simple_graph(N, is_directed=false)
         for i=1:size(es,1)
-            add_edge!(g, es[i,1], es[i,2])
+            Graphs.add_edge!(g, es[i,1], es[i,2])
         end
         return g
     end
