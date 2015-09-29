@@ -155,13 +155,13 @@ function gplot{V, T<:Real}(
         for e in Graphs.edges(G)
             i = vertex_index(source(e, G), G)
             j = vertex_index(target(e, G), G)
-            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, arrowlengthfrac, arrowangleoffset))
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, nodesize, arrowlengthfrac, arrowangleoffset))
         end
     else
         for e in Graphs.edges(G)
             i = vertex_index(source(e, G), G)
             j = vertex_index(target(e, G), G)
-            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlengthfrac, arrowangleoffset))
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[i], nodesize[j], arrowlengthfrac, arrowangleoffset))
         end
     end
 
@@ -264,13 +264,13 @@ function gplot{T<:Real}(
         for e in LightGraphs.edges(G)
             i = LightGraphs.src(e)
             j = LightGraphs.dst(e)
-            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, arrowlengthfrac, arrowangleoffset))
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, nodesize, arrowlengthfrac, arrowangleoffset))
         end
     else
         for e in LightGraphs.edges(G)
             i = LightGraphs.src(e)
             j = LightGraphs.dst(e)
-            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlengthfrac, arrowangleoffset))
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[i], nodesize[j], arrowlengthfrac, arrowangleoffset))
         end
     end
 
@@ -335,6 +335,32 @@ function lineij(locs_x, locs_y, i, j, NODESIZE, ARROWLENGTH, angleoffset)
         composenode = Compose.compose(
                 context(),
                 line([(locs_x[i], locs_y[i]), (endx, endy)])
+            )
+    end
+    return composenode
+end
+
+function lineij(locs_x, locs_y, i, j, NODESIZEi, NODESIZEj, ARROWLENGTH, angleoffset)
+    Δx = locs_x[j] - locs_x[i]
+    Δy = locs_y[j] - locs_y[i]
+    d  = sqrt(Δx^2 + Δy^2)
+    θ  = atan2(Δy,Δx)
+    startx = locs_x[i] + NODESIZEi*cos(θ)
+    starty = locs_y[i] + NODESIZEi*sin(θ)
+    endx  = locs_x[i] + (d-NODESIZEj)*1.00*cos(θ)
+    endy  = locs_y[i] + (d-NODESIZEj)*1.00*sin(θ)
+    if ARROWLENGTH > 0.0
+        arr1, arr2 = arrowcoords(θ, endx, endy, ARROWLENGTH, angleoffset)
+        composenode = Compose.compose(
+                context(),
+                line([(startx, starty), (endx, endy)]),
+                line([arr1, (endx, endy)]),
+                line([arr2, (endx, endy)])
+            )
+    else
+        composenode = Compose.compose(
+                context(),
+                line([(startx, starty), (endx, endy)])
             )
     end
     return composenode
