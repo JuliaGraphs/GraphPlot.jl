@@ -1,6 +1,6 @@
 using Colors
 
-typealias ComposeColor Union(Nothing, Vector,
+typealias ComposeColor @compat Union(Nothing, Vector,
                              Colors.Color, Colors.String,
                              Colors.AlphaColor, Colors.TransparentColor)
 

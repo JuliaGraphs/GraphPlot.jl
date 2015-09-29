@@ -17,9 +17,11 @@ but will be normalized and centered anyway
 
 **Examples**
 
-    julia> g = simple_house_graph()
+```
+julia> g = simple_house_graph()
 
-    julia> loc_x, loc_y = random_layout(g)
+julia> loc_x, loc_y = random_layout(g)
+```
 
 """
 function random_layout{V}(G::AbstractGraph{V})
@@ -46,8 +48,10 @@ but will be normalized and centered anyway
 
 **Examples**
 
-    julia> g = simple_house_graph()
-    julia> locs_x, locs_y = circular_layout(g)
+```
+julia> g = simple_house_graph()
+julia> locs_x, locs_y = circular_layout(g)
+```
 """
 function circular_layout{V}(G::AbstractGraph{V})
     if num_vertices(G) == 1
@@ -94,8 +98,10 @@ Number of iterations we apply the forces
 Initial "temperature", controls movement per iteration
 
 **Examples**
-    julia> g = graphfamous("karate")
-    julia> locs_x, locs_y = spring_layout(g)
+```
+julia> g = graphfamous("karate")
+julia> locs_x, locs_y = spring_layout(g)
+```
 """
 function spring_layout{V}(G::AbstractGraph{V}; C=2.0, MAXITER=100, INITTEMP=2.0)
 
@@ -397,11 +403,13 @@ a graph
 Vector of Vector, Vector of node Vector for each shell.
 
 **Examples**
-    julia> g = graphfamous("karate")
-    julia> nlist = Array(Vector{Int}, 2)
-    julia> nlist[1] = [1:5]
-    julia> nlist[2] = [6:num_vertiecs(g)]
-    julia> locs_x, locs_y = shell_layout(g, nlist)
+```
+julia> g = graphfamous("karate")
+julia> nlist = Array(Vector{Int}, 2)
+julia> nlist[1] = [1:5]
+julia> nlist[2] = [6:num_vertiecs(g)]
+julia> locs_x, locs_y = shell_layout(g, nlist)
+```
 """
 function shell_layout{V}(G::AbstractGraph{V},
                          nlist::Union(Nothing, Vector{Vector{Int}}) = nothing)
@@ -466,9 +474,11 @@ The edge attribute that holds the numerical value used for
 the edge weight.  If None, then all edge weights are 1.
 
 **Examples**
-    julia> g = graphfamous("karate")
-    julia> weight = rand(num_edges(g))
-    julia> locs_x, locs_y = spectral_layout(g, weight)
+```
+julia> g = graphfamous("karate")
+julia> weight = rand(num_edges(g))
+julia> locs_x, locs_y = spectral_layout(g, weight)
+```
 """
 function spectral_layout{V}(G::AbstractGraph{V},
                             weight::Union(Nothing, Vector) = nothing)

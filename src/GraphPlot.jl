@@ -2,11 +2,12 @@ module GraphPlot
     if VERSION < v"0.4.0"
         using Docile
     end
+    using Compat
     using Graphs
     using LightGraphs # for plot LightGraph directly
     using Compose  # for plotting features
 
-    typealias LightGraph Union(LightGraphs.Graph, LightGraphs.DiGraph)
+    typealias LightGraph @compat Union(LightGraphs.Graph, LightGraphs.DiGraph)
 
     export
         gplot,
