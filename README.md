@@ -2,17 +2,6 @@
 
 Graph layout and visualization algorithms. based on [Compose.jl](https://github.com/dcjones/Compose.jl) and steal some codes from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 
-## Getting Started
-
-From the Julia REPL an up to date version can be installed with
-```
-Pkg.clone("git://github.com/afternone/GraphPlot.jl.git")
-```
-GraphPlot is then loaded with
-```
-using GraphPlot
-```
-
 # Getting Started
 
 From the Julia REPL the latest version can be installed with
