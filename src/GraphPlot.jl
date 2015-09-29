@@ -3,8 +3,10 @@ module GraphPlot
         using Docile
     end
     using Graphs
-    using LightGraphs
+    using LightGraphs # for plot LightGraph directly
     using Compose  # for plotting features
+
+    typealias LightGraph Union(LightGraphs.Graph, LightGraphs.DiGraph)
 
     export
         gplot,
@@ -26,8 +28,5 @@ module GraphPlot
 
     # read graph
     include("graphio.jl")
-
-    # plot LightGraphs
-    include("lightgraphplot.jl")
 
 end # module

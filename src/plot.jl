@@ -1,6 +1,8 @@
 using Colors
 
-typealias ComposeColor Union(Nothing, Vector, Colors.Color, Colors.String, Colors.AlphaColor)
+typealias ComposeColor Union(Nothing, Vector,
+                             Colors.Color, Colors.String,
+                             Colors.AlphaColor, Colors.TransparentColor)
 
 """
 Given an adjacency matrix and two vectors of X and Y coordinates, returns
@@ -181,8 +183,125 @@ function gplot{V, T<:Real}(
             end)
 end
 
+using LightGraphs
+function gplot{T<:Real}(
+    G::LightGraph,
+    locs_x::Vector{T}, locs_y::Vector{T};
+    nodelabel::Union(Nothing, Vector) = nothing,
+    nodelabelc::ComposeColor = colorant"black",
+    nodelabelsize::Union(Real, Vector) = 4,
+    nodelabeldist::Real = 0,
+    nodelabelangleoffset::Real = π/4.0,
+    edgelabel::Union(Nothing, Vector) = nothing,
+    edgelabelc::ComposeColor = colorant"black",
+    edgelabelsize::Union(Real, Vector) = 4,
+    edgestrokec::ComposeColor = colorant"lightgray",
+    edgelinewidth::Union(Real, Vector) = 1,
+    edgelabeldistx::Real = 0,
+    edgelabeldisty::Real = 0,
+    nodesize::Union(Real, Vector) = 1,
+    nodefillc::ComposeColor = colorant"turquoise",
+    nodestrokec::ComposeColor = nothing,
+    nodestrokelw::Union(Real, Vector) = 0,
+    arrowlengthfrac::Real = LightGraphs.is_directed(G) ? 0.1 : 0.0,
+    arrowangleoffset = 20.0/180.0*π)
+
+    length(locs_x) != length(locs_y) && error("Vectors must be same length")
+    const N = LightGraphs.nv(G)
+    const NE = LightGraphs.ne(G)
+    if nodelabel != nothing && length(nodelabel) != N
+        error("Must have one label per node (or none)")
+    end
+    if edgelabel != nothing && length(edgelabel) != NE
+        error("Must have one label per edge (or none)")
+    end
+
+    # Scale to unit square
+    min_x, max_x = minimum(locs_x), maximum(locs_x)
+    min_y, max_y = minimum(locs_y), maximum(locs_y)
+    function scaler(z, a, b)
+        2.0*((z - a)/(b - a)) - 1.0
+    end
+    map!(z -> scaler(z, min_x, max_x), locs_x)
+    map!(z -> scaler(z, min_y, max_y), locs_y)
+
+    # Determine sizes
+    const NODESIZE    = 0.25/sqrt(N)
+    const LINEWIDTH   = 3.0/sqrt(N)
+    nodesize *= NODESIZE/maximum(nodesize)
+    edgelinewidth *= LINEWIDTH/maximum(edgelinewidth)
+    edgelabelsize *= 4.0/maximum(edgelabelsize)
+    nodelabelsize *= 4.0/maximum(nodelabelsize)
+    if nodestrokelw > 0
+        nodestrokelw *= LINEWIDTH/maximum(nodestrokelw)
+    end
+
+    # Create nodes
+    nodes = circle(locs_x, locs_y, [nodesize])
+
+    # Create node labels if provided
+    texts = nodelabel == nothing ? nothing : text(locs_x .+ nodelabeldist .* [nodesize] .* cos(nodelabelangleoffset),
+                                                  locs_y .- nodelabeldist .* [nodesize] .* sin(nodelabelangleoffset),
+                                                  map(string, nodelabel), [hcenter], [vcenter])
+    # Create edge labels if provided
+    src
+    edgetexts = nothing
+    if edgelabel != nothing
+        edge_locs_x = zeros(T, NE)
+        edge_locs_y = zeros(T, NE)
+        for (e_idx, e) in enumerate(LightGraphs.edges(G))
+            i = LightGraphs.src(e)
+            j = LightGraphs.dst(e)
+            edge_locs_x[e_idx] = (locs_x[i]+locs_x[j])/2.0 + edgelabeldistx*NODESIZE
+            edge_locs_y[e_idx] = (locs_y[i]+locs_y[j])/2.0 + edgelabeldisty*NODESIZE
+        end
+        edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
+    end
+
+    # Create lines and arrow heads
+    lines = Any[]
+    if isa(nodesize, Real)
+        for e in LightGraphs.edges(G)
+            i = LightGraphs.src(e)
+            j = LightGraphs.dst(e)
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize, arrowlengthfrac, arrowangleoffset))
+        end
+    else
+        for e in LightGraphs.edges(G)
+            i = LightGraphs.src(e)
+            j = LightGraphs.dst(e)
+            push!(lines, lineij(locs_x, locs_y, i, j, nodesize[j], arrowlengthfrac, arrowangleoffset))
+        end
+    end
+
+
+    compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+            compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+            begin
+                if isa(edgestrokec, Vector) && isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(edgelinewidth[i])) for i=1:NE]
+                elseif isa(edgestrokec, Vector) && !isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec[i]), linewidth(edgelinewidth)) for i=1:NE]
+                elseif !isa(edgestrokec, Vector) && !isa(edgelinewidth, Vector)
+                    [compose(context(), lines[i], stroke(edgestrokec), linewidth(edgelinewidth)) for i=1:NE]
+                else
+                    [compose(context(), lines[i], stroke(edgestrokec), linewidth(edgelinewidth[i])) for i=1:NE]
+                end
+            end)
+end
+
 function gplot{V}(
     G::AbstractGraph{V};
+    layout::Function=spring_layout,
+    keyargs...)
+
+    gplot(G, layout(G)...; keyargs...)
+end
+
+function gplot(
+    G::LightGraph;
     layout::Function=spring_layout,
     keyargs...)
 
