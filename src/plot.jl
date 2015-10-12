@@ -166,8 +166,8 @@ function gplot{V, T<:Real}(
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)))
+            compose(context(), line(lines), stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), line(arrows), stroke(edgestrokec), linewidth(edgelinewidth)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
