@@ -157,10 +157,9 @@ function gplot{V, T<:Real}(
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
     if Graphs.is_directed(G)
-        lines = line(graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset))
+        lines = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     else
-    	lines_cord, arrows_cord = graphline(G, locs_x, locs_y, nodesize)
-        lines, arrows = line(lines_cord), line(arrows_cord)
+    	lines, arrows = graphline(G, locs_x, locs_y, nodesize)
     end
 
     compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
