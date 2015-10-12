@@ -163,11 +163,11 @@ function gplot{V, T<:Real}(
     end
 
     compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+    		compose(context(), line(lines), stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), line(arrows), stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), line(lines), stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), line(arrows), stroke(edgestrokec), linewidth(edgelinewidth)))
+            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
