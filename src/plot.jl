@@ -158,18 +158,16 @@ function gplot{V, T<:Real}(
     lines, arrows = nothing, nothing
     if Graphs.is_directed(G)
         lines = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-        lines = line(lines)
     else
         lines, arrows = graphline(G, locs_x, locs_y, nodesize)
-        lines, arrows = line(lines), line(arrows)
     end
 
     compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)))
+            compose(context(), line(lines), stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), line(arrows), stroke(edgestrokec), linewidth(edgelinewidth)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
