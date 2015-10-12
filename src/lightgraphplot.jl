@@ -1,4 +1,5 @@
-typealias LightGraph Union(LightGraphs.Graph, LightGraphs.DiGraph)
+using LightGraphs
+typealias LightGraph Union{LightGraphs.Graph, LightGraphs.DiGraph}
 
 """Plot LightGraphs directly"""
 function gplot(g::LightGraph; keyargs...)
