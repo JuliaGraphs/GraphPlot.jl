@@ -2,9 +2,12 @@ module GraphPlot
     if VERSION < v"0.4.0"
         using Docile
     end
+    using Compat
     using Graphs
-    using LightGraphs
+    using LightGraphs # for plot LightGraph directly
     using Compose  # for plotting features
+
+    typealias LightGraph @compat Union(LightGraphs.Graph, LightGraphs.DiGraph)
 
     export
         gplot,
@@ -26,8 +29,5 @@ module GraphPlot
 
     # read graph
     include("graphio.jl")
-
-    # plot LightGraphs
-    include("lightgraphplot.jl")
 
 end # module

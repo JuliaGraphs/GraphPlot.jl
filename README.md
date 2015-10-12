@@ -2,10 +2,10 @@
 
 Graph layout and visualization algorithms. based on [Compose.jl](https://github.com/dcjones/Compose.jl) and steal some codes from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 
-## Getting Started
+# Getting Started
 
-From the Julia REPL an up to date version can be installed with
-```
+From the Julia REPL the latest version can be installed with
+```{execute="false"}
 Pkg.clone("git://github.com/afternone/GraphPlot.jl.git")
 ```
 GraphPlot is then loaded with
@@ -13,59 +13,131 @@ GraphPlot is then loaded with
 using GraphPlot
 ```
 
-# Examples
-## A simple example
+# Usage
+## karate network
 ```
-using Graphs
-
-g = simple_house_graph()
+g = graphfamous("karate")
 gplot(g)
 
 ```
 
+## Add node label
+```
+using Graphs
+nodelabel = [1:num_vertices(g)]
+gplot(g, nodelabel=nodelabel)
+
+```
+
+## Adjust node labels
+```
+gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
+```
+
+## Control the node size
+```
+# nodes size proportional to their degree
+nodesize = [Graphs.out_degree(v, g) for v in Graphs.vertices(g)]
+gplot(g, nodesize=nodesize)
+```
+
 ## Control the node color
-Feed the keyword argument `nodefillc` an color array, ensure each node has a color. `length(nodefillc)` must be equal `|V|`.
+Feed the keyword argument `nodefillc` a color array, ensure each node has a color. `length(nodefillc)` must be equal `|V|`.
 ```
 using Colors
 
 # Generate n maximally distinguishable colors in LCHab space.
 nodefillc = distinguishable_colors(num_vertices(g), colorant"blue")
+gplot(g, nodefillc=nodefillc, nodelabel=nodelabel, nodelabeldist=1.8, nodelabelangleoffset=π/4)
+```
+
+## Transparent
+```
+# stick out large degree nodes
+alphas = nodesize/maximum(nodesize)
+nodefillc = [RGBA(0.0,0.8,0.8,i) for i in alphas]
+gplot(g, nodefillc=nodefillc)
+```
+## Control the node label size
+```
+nodelabelsize = nodesize
+gplot(g, nodelabelsize=nodelabelsize, nodesize=nodesize, nodelabel=nodelabel)
+```
+
+## Draw edge labels
+```
+edgelabel = [1:Graphs.num_edges(g)]
+gplot(g, edgelabel=edgelabel, nodelabel=nodelabel)
+```
+
+## Adjust edge labels
+```
+edgelabel = [1:Graphs.num_edges(g)]
+gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
+```
+
+## Color the graph
+```
+# nodes membership
+membership = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,2]
+nodecolor = [colorant"lightseagreen", colorant"orange"]
+# membership color
+nodefillc = nodecolor[membership]
 gplot(g, nodefillc=nodefillc)
 ```
 
-## Control the node size
+## Different layout
+### random layout
 ```
-nodesize = Float64[out_degree(v, g) for v in vertices(g)]
-gplot(g, nodesize=nodesize)
+gplot(g, layout=random_layout, nodelabel=nodelabel)
 ```
-
-## Control the label size
+### circular layout
 ```
-labels = [1:num_vertices(g)]
-labelsize = Float64[out_degree(v, g) for v in vertices(g)]
-nodesize = Float64[out_degree(v, g) for v in vertices(g)]
-gplot(g, labels=labels, labelsize=labelsize, nodesize=nodesize)
+gplot(g, layout=circular_layout, nodelabel=nodelabel)
 ```
-
-## You also can draw the edge label
+### spectral layout
 ```
-edgelabels = [1:num_edges(g)]
-gplot(g, edgelabels=edgelabels)
+gplot(g, layout=spectral_layout)
+```
+### shell layout
+```
+nlist = Array(Vector{Int}, 2) # two shells
+nlist[1] = [1:5] # first shell
+nlist[2] = [6:num_vertices(g)] # second shell
+locs_x, locs_y = shell_layout(g, nlist)
+gplot(g, locs_x, locs_y, nodelabel=nodelabel)
+```
+## Save to figure
+```{execute="false"}
+using Compose
+# save to pdf
+draw(PDF("karate.pdf", 16cm, 16cm), gplot(g))
+# save to png
+draw(PNG("karate.png", 16cm, 16cm), gplot(g))
+# save to svg
+draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
+```
+# LightGraphs integration
+```
+using LightGraphs
+h = watts_strogatz(50, 6, 0.3)
+gplot(h)
 ```
 
 # Arguments
 + `G` graph to plot
 + `layout` Optional. layout algorithm. Currently can be chose from
-[random_layout, circular_layout, spring_layout, stressmajorize_layout].
+[random_layout, circular_layout, spring_layout, stressmajorize_layout, 
+shell_layout, spectral_layout].
 Default: `spring_layout`
-+ `labels` Optional. Labels for the vertices. Default: `Any[]`
++ `nodelabel` Optional. Labels for the vertices. Default: `nothing`
 + `nodefillc` Optional. Color to fill the nodes with.
-Default: `fill(colorant"turquoise", N)`
+Default: `colorant"turquoise"`
 + `nodestrokec` Color for the nodes stroke.
-Default: `fill(colorant"gray", N)`
+Default: `nothing`
 + `arrowlengthfrac` Fraction of line length to use for arrows.
 Set to 0 for no arrows. Default: 0 for undirected graph and 0.1 for directed graph
-+ `angleoffset` angular width in radians for the arrows. Default: `π/9` (20 degrees)
++ `arrowangleoffset` angular width in radians for the arrows. Default: `π/9` (20 degrees)
 
 # Reporting Bugs
 
