@@ -67,10 +67,10 @@ Optional. Largest fontsize for the edge labels. Default: `4.0`
 `edgelabelsize`
 Optional. Relative fontsize for the edge labels, can be a Vector. Default: `1.0`
 
-`LINEWIDTH`
-Optional. Max line width for the edges. Default: `sqrt(N)/4`
+`EDGELINEWIDTH`
+Optional. Max line width for the edges. Default: `0.25/sqrt(N)`
 
-`linewidth`
+`edgelinewidth`
 Optional. Relative line width for the edges, can be a Vector. Default: `1.0`
 
 `edgestrokec`
@@ -98,8 +98,8 @@ function gplot{V, T<:Real}(
     edgelabelsize = 1.0,
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
-    linewidth = 1.0,
-    LINEWIDTH = 3.0/sqrt(num_vertices(G)),
+    edgelinewidth = 1.0,
+    EDGELINEWIDTH = 3.0/sqrt(num_vertices(G)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
@@ -132,22 +132,23 @@ function gplot{V, T<:Real}(
     # Determine sizes
     #const NODESIZE    = 0.25/sqrt(N)
     #const LINEWIDTH   = 3.0/sqrt(N)
+
     max_nodesize = NODESIZE/maximum(nodesize)
     nodesize *= max_nodesize
-    max_linewidth = LINEWIDTH/maximum(linewidth)
-    linewidth *= max_linewidth
+    max_edgelinewidth = EDGELINEWIDTH/maximum(edgelinewidth)
+    edgelinewidth *= max_edgelinewidth
     max_edgelabelsize = EDGELABELSIZE/maximum(edgelabelsize)
     edgelabelsize *= max_edgelabelsize
     max_nodelabelsize = NODELABELSIZE/maximum(nodelabelsize)
     nodelabelsize *= max_nodelabelsize
     max_nodestrokelw = maximum(nodestrokelw)
     if max_nodestrokelw > 0.0
-        max_nodestrokelw = LINEWIDTH/max_nodestrokelw
+        max_nodestrokelw = EDGELINEWIDTH/max_nodestrokelw
         nodestrokelw *= max_nodestrokelw
     end
 
     # Create nodes
-    nodes = circle(locs_x, locs_y, [nodesize])
+    nodes = circle(locs_x, locs_y, collect(nodesize))
 
     # Create node labels if provided
     texts = nothing
@@ -180,13 +181,13 @@ function gplot{V, T<:Real}(
     	lines_cord = graphline(G, locs_x, locs_y, nodesize)
     	lines = line(lines_cord)
     end
-    
+
     compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(linewidth)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(linewidth)))
+            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
