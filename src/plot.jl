@@ -147,7 +147,7 @@ function gplot{V, T<:Real}(
     end
 
     # Create nodes
-    nodes = circle(locs_x, locs_y, collect(nodesize))
+    nodes = circle(locs_x, locs_y, [nodesize])
 
     # Create node labels if provided
     texts = nothing
