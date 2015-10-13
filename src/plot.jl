@@ -19,14 +19,17 @@ Default: `spring_layout`
 Locations of the nodes. Can be any units you want,
 but will be normalized and centered anyway
 
+`NODESIZE`
+Optional. Max size for the nodes. Default: `3.0/sqrt(N)`
+
 `nodesize`
-Optional. Size for the vertices. Default: `1.0`
+Optional. Relative size for the nodes, can be a Vector. Default: `1.0`
 
 `nodelabel`
-Optional. Labels for the vertices. Default: `nothing`
+Optional. Labels for the vertices, a Vector or nothing. Default: `nothing`
 
 `nodelabelc`
-Optional. Color for the node labels. Default: `colorant"black"`
+Optional. Color for the node labels, can be a Vector. Default: `colorant"black"`
 
 `nodelabeldist`
 Optional. Distances for the node labels from center of nodes. Default: `0.0`
@@ -34,8 +37,11 @@ Optional. Distances for the node labels from center of nodes. Default: `0.0`
 `nodelabelangleoffset`
 Optional. Angle offset for the node labels. Default: `π/4.0`
 
+`NODELABELSIZE`
+Optional. Largest fontsize for the vertice labels. Default: `4.0`
+
 `nodelabelsize`
-Optional. Fontsize for the vertice labels, can be a Vector. Default: `4.0`
+Optional. Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
 
 `nodefillc`
 Optional. Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
@@ -55,11 +61,17 @@ Optional. Color for the edge labels, can be a Vector. Default: `colorant"black"`
 `edgelabeldistx, edgelabeldisty`
 Optional. Distance for the edge label from center of edge. Default: `0.0`
 
-`edgelabelsize`
-Optional. Fontsize for the edge labels, can be a Vector. Default: `4.0`
+`EDGELABELSIZE`
+Optional. Largest fontsize for the edge labels. Default: `4.0`
 
-`edgelinewidth`
-Optional. Line width for the edges, can be a Vector. Default: `1.0`
+`edgelabelsize`
+Optional. Relative fontsize for the edge labels, can be a Vector. Default: `1.0`
+
+`LINEWIDTH`
+Optional. Max line width for the edges. Default: `sqrt(N)/4`
+
+`linewidth`
+Optional. Relative line width for the edges, can be a Vector. Default: `1.0`
 
 `edgestrokec`
 Optional. Color for the edge strokes, can be a Vector. Default: `colorant"lightgray"`
@@ -77,21 +89,25 @@ function gplot{V, T<:Real}(
     locs_x::Vector{T}, locs_y::Vector{T};
     nodelabel = nothing,
     nodelabelc = colorant"black",
-    nodelabelsize = 4.0,
+    nodelabelsize = 1.0,
+    NODELABELSIZE = 4.0,
     nodelabeldist = 0.0,
     nodelabelangleoffset = π/4.0,
     edgelabel = nothing,
     edgelabelc = colorant"black",
-    edgelabelsize = 4.0,
+    edgelabelsize = 1.0,
+    EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
-    edgelinewidth = 1.0,
+    linewidth = 1.0,
+    LINEWIDTH = 3.0/sqrt(num_vertices(G)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
+    NODESIZE = 0.25/sqrt(num_vertices(G)),
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
-    arrowlengthfrac = 0.1,
+    arrowlengthfrac = Graphs.is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
@@ -114,15 +130,15 @@ function gplot{V, T<:Real}(
     map!(z -> scaler(z, min_y, max_y), locs_y)
 
     # Determine sizes
-    const NODESIZE    = 0.25/sqrt(N)
-    const LINEWIDTH   = 3.0/sqrt(N)
+    #const NODESIZE    = 0.25/sqrt(N)
+    #const LINEWIDTH   = 3.0/sqrt(N)
     max_nodesize = NODESIZE/maximum(nodesize)
     nodesize *= max_nodesize
-    max_edgelinewidth = LINEWIDTH/maximum(edgelinewidth)
-    edgelinewidth *= max_edgelinewidth
-    max_edgelabelsize = 4.0/maximum(edgelabelsize)
+    max_linewidth = LINEWIDTH/maximum(linewidth)
+    linewidth *= max_linewidth
+    max_edgelabelsize = EDGELABELSIZE/maximum(edgelabelsize)
     edgelabelsize *= max_edgelabelsize
-    max_nodelabelsize = 4.0/maximum(nodelabelsize)
+    max_nodelabelsize = NODELABELSIZE/maximum(nodelabelsize)
     nodelabelsize *= max_nodelabelsize
     max_nodestrokelw = maximum(nodestrokelw)
     if max_nodestrokelw > 0.0
@@ -131,7 +147,7 @@ function gplot{V, T<:Real}(
     end
 
     # Create nodes
-    nodes = circle(locs_x, locs_y, [nodesize])
+    nodes = circle(locs_x, locs_y, collect(nodesize))
 
     # Create node labels if provided
     texts = nothing
@@ -156,7 +172,7 @@ function gplot{V, T<:Real}(
 
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
-    if Graphs.is_directed(G)
+    if arrowlengthfrac > 0.0
         lines_cord, arrows_cord = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
         lines = line(lines_cord)
         arrows = line(arrows_cord)
@@ -169,8 +185,8 @@ function gplot{V, T<:Real}(
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)))
+            compose(context(), arrows, stroke(edgestrokec), linewidth(linewidth)),
+            compose(context(), lines, stroke(edgestrokec), linewidth(linewidth)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
