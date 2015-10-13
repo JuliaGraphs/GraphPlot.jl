@@ -1,7 +1,7 @@
 using Colors
 
 """
-Given an adjacency matrix and two vectors of X and Y coordinates, returns
+Given a graph and two vectors of X and Y coordinates, returns
 a Compose tree of the graph layout
 
 **Arguments**
