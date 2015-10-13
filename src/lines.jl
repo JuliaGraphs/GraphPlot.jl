@@ -76,8 +76,8 @@ function graphline{V, T<:Real}(g::AbstractGraph{V}, locs_x, locs_y, nodesize::T)
         θ  = atan2(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
-        endx  = locs_x[i] + (d-nodesize)*1.00*cos(θ)
-        endy  = locs_y[i] + (d-nodesize)*1.00*sin(θ)
+        endx  = locs_x[i] + (d-nodesize)*1.0*cos(θ)
+        endy  = locs_y[i] + (d-nodesize)*1.0*sin(θ)
         lines[e_idx] = [(startx, starty), (endx, endy)]
     end
     lines
