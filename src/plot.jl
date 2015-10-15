@@ -108,7 +108,9 @@ function gplot{V, T<:Real}(
     nodestrokec = nothing,
     nodestrokelw = 0.0,
     arrowlengthfrac = Graphs.is_directed(G) ? 0.1 : 0.0,
-    arrowangleoffset = π/9.0)
+    arrowangleoffset = π/9.0,
+    linetype="curve",
+    outangle=pi/5)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
     const N = num_vertices(G)
@@ -173,13 +175,24 @@ function gplot{V, T<:Real}(
 
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
-    if arrowlengthfrac > 0.0
-        lines_cord, arrows_cord = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-        lines = line(lines_cord)
-        arrows = line(arrows_cord)
+    if linetype=="curve"
+        if arrowlengthfrac > 0.0
+            lines_cord, arrows_cord = graphcurve(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+            lines = path(lines_cord)
+            arrows = line(arrows_cord)
+        else
+            lines_cord = graphcurve(G, locs_x, locs_y, nodesize, outangle)
+            lines = path(lines_cord)
+        end
     else
-    	lines_cord = graphline(G, locs_x, locs_y, nodesize)
-    	lines = line(lines_cord)
+        if arrowlengthfrac > 0.0
+            lines_cord, arrows_cord = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+            lines = line(lines_cord)
+            arrows = line(arrows_cord)
+        else
+            lines_cord = graphline(G, locs_x, locs_y, nodesize)
+            lines = line(lines_cord)
+        end
     end
 
     compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
@@ -187,7 +200,7 @@ function gplot{V, T<:Real}(
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
