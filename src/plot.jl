@@ -109,7 +109,7 @@ function gplot{V, T<:Real}(
     nodestrokelw = 0.0,
     arrowlengthfrac = Graphs.is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
-    linetype="curve",
+    linetype="line",
     outangle=pi/5)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
