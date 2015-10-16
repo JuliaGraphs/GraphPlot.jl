@@ -2,50 +2,36 @@ using FactCheck
 using GraphPlot
 using Graphs
 using Colors
+using Compose
+
+g = graphfamous("karate")
+
+nodelabel = collect(1:Graphs.num_vertices(g))
+nodesize = Float64[Graphs.out_degree(u, g) for u in Graphs.vertices(g)]
 
 cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
-facts("random_layout and undirected") do
-    context("simple_house_graph") do
-        g = simple_house_graph()
-        filename = joinpath(cachedout, "simple_house_random.svg")
-        GraphPlot.plot(g, filename=filename, arrowlengthfrac=0.0)
+facts("karate network (undirected), nodesize is proportion to its degree") do
+    filename = joinpath(cachedout, "karate_different_nodesize.svg")
+    draw(SVG(filename, 8inch, 8inch), gplot(g, nodesize=nodesize.^0.3, nodelabel=nodelabel, nodelabelsize=nodesize.^0.3))
+end
+
+facts("karate network as directed") do
+    FactCheck.context("straight line edge") do
+        filename = joinpath(cachedout, "karate_straight_directed.svg")
+        draw(SVG(filename, 10inch, 10inch), gplot(g, arrowlengthfrac=0.02, nodelabel=nodelabel))
     end
-    context("simple_wheel_graph") do
-        g = simple_wheel_graph(10)
-        filename = joinpath(cachedout, "simple_wheel_random.svg")
-        GraphPlot.plot(g, filename=filename, arrowlengthfrac=0.0)
+    FactCheck.context("curve edge") do
+        filename = joinpath(cachedout, "karate_curve_directed.svg")
+        draw(SVG(filename, 10inch, 10inch), gplot(g, arrowlengthfrac=0.02, linetype="curve", outangle=pi/11, nodelabel=nodelabel))
     end
 end
 
-facts("circular_layout") do
-    context("simple_house_graph") do
-        g = simple_house_graph()
-        filename = joinpath(cachedout, "simple_house_circular.svg")
-        GraphPlot.plot(g, filename=filename, layout=circular_layout)
-    end
-    context("simple_wheel_graph") do
-        g = simple_wheel_graph(10)
-        filename = joinpath(cachedout, "simple_wheel_circular.svg")
-        GraphPlot.plot(g, filename=filename, layout=circular_layout)
-    end
-end
-
-facts("Nodes have different colors and their size are proportional to their degree") do
-    context("simple_house_graph") do
-        g = simple_house_graph()
-        nodesize = Float64[out_degree(v, g) for v in vertices(g)]
-        # Generate n maximally distinguishable colors in LCHab space.
-        nodefillc = distinguishable_colors(num_vertices(g), colorant"red")
-        filename = joinpath(cachedout, "simple_house_graph.svg")
-        GraphPlot.plot(g, filename=filename, layout=circular_layout,
-             nodefillc=nodefillc, nodesize=nodesize)
-    end
-    context("simple_wheel_graph") do
-        g = simple_wheel_graph(10)
-        nodesize = Float64[out_degree(v, g) for v in vertices(g)]
-        nodefillc = distinguishable_colors(num_vertices(g), colorant"red")
-        filename = joinpath(cachedout, "simple_wheel_graph.svg")
-        GraphPlot.plot(g, filename=filename, layout=circular_layout,
-             nodefillc=nodefillc, nodesize=nodesize)
-    end
+facts("Nodes in different memberships have different colors (karate network)") do
+    # nodes membership
+	membership = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,2]
+	nodecolor = [colorant"lightseagreen", colorant"orange"]
+	# membership color
+	nodefillc = nodecolor[membership]
+    filename = joinpath(cachedout, "karate_groups.svg")
+    draw(SVG(filename, 8inch, 8inch), gplot(g, nodelabel=nodelabel, nodefillc=nodefillc))
 end

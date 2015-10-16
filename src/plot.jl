@@ -84,7 +84,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function glayout{V, T<:Real}(
+function gplot{V, T<:Real}(
     G::AbstractGraph{V},
     locs_x::Vector{T}, locs_y::Vector{T};
     nodelabel = nothing,
@@ -203,8 +203,8 @@ function glayout{V, T<:Real}(
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
-function glayout{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
-    glayout(G, layout(G)...; keyargs...)
+function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
+    gplot(G, layout(G)...; keyargs...)
 end
 
 function open_file(filename)
@@ -219,13 +219,13 @@ function open_file(filename)
     end
 end
 
-function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
+function gplothtml{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
 	filename = string(tempname(), ".html")
     output = open(filename, "w")
 
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
-               Compose.default_graphic_height, false), glayout(G, layout(G)...; keyargs...))
+               Compose.default_graphic_height, false), gplot(G, layout(G)...; keyargs...))
     plotsvg = takebuf_string(plot_output)
 
     write(output,

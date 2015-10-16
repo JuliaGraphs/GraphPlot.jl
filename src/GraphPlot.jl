@@ -11,8 +11,8 @@ using Compose  # for plotting features
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
 export
-    glayout,
     gplot,
+    gplothtml,
     random_layout,
     circular_layout,
     spring_layout,
@@ -40,6 +40,10 @@ include("graphio.jl")
 if VERSION >= v"0.4.0-dev+5512"
     include("precompile.jl")
     _precompile_()
+end
+
+function test()
+	include(joinpath(Pkg.dir("GraphPlot"), "test", "runtests.jl"))
 end
 
 end # module
