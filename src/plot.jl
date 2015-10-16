@@ -84,7 +84,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function gplot{V, T<:Real}(
+function gdraw{V, T<:Real}(
     G::AbstractGraph{V},
     locs_x::Vector{T}, locs_y::Vector{T};
     nodelabel = nothing,
@@ -109,8 +109,8 @@ function gplot{V, T<:Real}(
     nodestrokelw = 0.0,
     arrowlengthfrac = Graphs.is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
-    linetype="line",
-    outangle=pi/5)
+    linetype = "straight",
+    outangle = pi/5)
 
     length(locs_x) != length(locs_y) && error("Vectors must be same length")
     const N = num_vertices(G)
@@ -203,6 +203,10 @@ function gplot{V, T<:Real}(
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
+function gdraw{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
+    gdraw(G, layout(G)...; keyargs...)
+end
+
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
-    gplot(G, layout(G)...; keyargs...)
+    draw(SVG(8inch, 8inch), gdraw(G, layout(G)...; keyargs...))
 end
