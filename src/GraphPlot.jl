@@ -6,6 +6,8 @@ using Compat
 using Graphs
 using Compose  # for plotting features
 
+const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
+
 export
     glayout,
     gplot,
