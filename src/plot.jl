@@ -84,7 +84,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function gdraw{V, T<:Real}(
+function glayout{V, T<:Real}(
     G::AbstractGraph{V},
     locs_x::Vector{T}, locs_y::Vector{T};
     nodelabel = nothing,
@@ -203,10 +203,38 @@ function gdraw{V, T<:Real}(
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
-function gdraw{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
+function glayout{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
     gdraw(G, layout(G)...; keyargs...)
 end
 
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
-    draw(SVG(8inch, 8inch), gdraw(G, layout(G)...; keyargs...))
+	filename = string(tempname(), ".html")
+    output = open(filename, "w")
+
+    plot_output = IOBuffer()
+    draw(SVGJS(plot_output, Compose.default_graphic_width,
+               Compose.default_graphic_height, false), glayout(G, layout(G)...; keyargs...))
+    plotsvg = takebuf_string(plot_output)
+
+    write(output,
+        """
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Gadfly Plot</title>
+            <meta charset="utf-8">
+          </head>
+            <body>
+            <script charset="utf-8">
+                $(readall(Compose.snapsvgjs))
+            </script>
+            <script charset="utf-8">
+                $(readall(gadflyjs))
+            </script>
+            $(plotsvg)
+          </body>
+        </html>
+        """)
+    close(output)
+    open_file(filename)
 end
