@@ -254,7 +254,7 @@ julia> locs_x, locs_y = shell_layout(g, nlist)
 ```
 """
 function shell_layout{V}(G::AbstractGraph{V},
-                         nlist::Union(Nothing, Vector{Vector{Int}}) = nothing)
+                         nlist::Union{Void, Vector{Vector{Int}}} = nothing)
     if num_vertices(G) == 1
         return [0.0], [0.0]
     end
@@ -299,7 +299,7 @@ julia> locs_x, locs_y = spectral_layout(g, weight)
 ```
 """
 function spectral_layout{V}(G::AbstractGraph{V},
-                            weight::Union(Nothing, Vector) = nothing)
+                            weight::Union{Void, Vector} = nothing)
     if num_vertices(G) == 1
         return [0.0], [0.0]
     end

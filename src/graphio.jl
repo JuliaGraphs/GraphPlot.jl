@@ -13,7 +13,7 @@ a graph
 **Example**
     julia> g = graphfamous("karate")
 """
-function graphfamous(graphname::String)
+function graphfamous(graphname::AbstractString)
     file = joinpath(Pkg.dir("GraphPlot"), "data", graphname*".dat")
     readedgelist(file)
 end

@@ -204,7 +204,7 @@ function glayout{V, T<:Real}(
 end
 
 function glayout{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
-    gdraw(G, layout(G)...; keyargs...)
+    glayout(G, layout(G)...; keyargs...)
 end
 
 function open_file(filename)
