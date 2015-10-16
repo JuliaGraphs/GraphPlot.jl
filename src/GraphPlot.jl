@@ -7,6 +7,7 @@ using Graphs
 using Compose  # for plotting features
 
 export
+    gdraw,
     gplot,
     random_layout,
     circular_layout,
