@@ -207,6 +207,18 @@ function glayout{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs
     gdraw(G, layout(G)...; keyargs...)
 end
 
+function open_file(filename)
+    if OS_NAME == :Darwin
+        run(`open $(filename)`)
+    elseif OS_NAME == :Linux || OS_NAME == :FreeBSD
+        run(`xdg-open $(filename)`)
+    elseif OS_NAME == :Windows
+        run(`$(ENV["COMSPEC"]) /c start $(filename)`)
+    else
+        warn("Showing plots is not supported on OS $(string(OS_NAME))")
+    end
+end
+
 function gplot{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyargs...)
 	filename = string(tempname(), ".html")
     output = open(filename, "w")
