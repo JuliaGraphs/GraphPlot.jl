@@ -1,3 +1,5 @@
+VERSION >= v"0.4.0-dev+6641" && __precompile__()
+
 module GraphPlot
 if VERSION < v"0.4.0"
     using Docile
@@ -34,5 +36,10 @@ include("lightgraphplot.jl")
 
 # read graph
 include("graphio.jl")
+
+if VERSION >= v"0.4.0-dev+5512"
+    include("precompile.jl")
+    _precompile_()
+end
 
 end # module
