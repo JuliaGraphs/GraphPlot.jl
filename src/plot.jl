@@ -225,7 +225,7 @@ function gplothtml{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyar
 
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
-               Compose.default_graphic_height, false), gplot(G, layout(G)...; keyargs...))
+               Compose.default_graphic_width, false), gplot(G, layout(G)...; keyargs...))
     plotsvg = takebuf_string(plot_output)
 
     write(output,
