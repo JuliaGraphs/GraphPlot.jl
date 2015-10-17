@@ -107,6 +107,12 @@ nlist[2] = [6:num_vertices(g)] # second shell
 locs_x, locs_y = shell_layout(g, nlist)
 gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 ```
+
+## Curve edge
+```
+gplot(g, linetype="curve")
+```
+
 ## Save to figure
 ```{execute="false"}
 using Compose
