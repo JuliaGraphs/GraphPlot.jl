@@ -233,7 +233,7 @@ function gplothtml{V}(G::AbstractGraph{V}; layout::Function=spring_layout, keyar
         <!DOCTYPE html>
         <html>
           <head>
-            <title>Gadfly Plot</title>
+            <title>GraphPlot Plot</title>
             <meta charset="utf-8">
           </head>
             <body>
