@@ -89,7 +89,7 @@ julia> g = graphfamous("karate")
 julia> locs_x, locs_y = spring_layout(g)
 ```
 """
-function spring_layout(G, locs_x=2*rand(N).-1.0, locs_y=2*rand(N).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0)
+function spring_layout(G, locs_x=2*rand(_nv(G)).-1.0, locs_y=2*rand(_nv(G)).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0)
 
     #size(adj_matrix, 1) != size(adj_matrix, 2) && error("Adj. matrix must be square.")
     const N = _nv(G)
