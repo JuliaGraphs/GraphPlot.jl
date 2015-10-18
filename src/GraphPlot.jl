@@ -53,7 +53,7 @@ _dst_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.dst(e)
 _adjacency_matrix{V}(g::AbstractGraph{V}) = Graphs.adjacency_matrix(g)
 _adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
 _is_directed{V}(g::AbstractGraph{V}) = Graphs.is_directed(g)
-_is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
+_is_directed(g::Union{LightGraphs.DiGraph, LightGraphs.Graph}) = LightGraphs.is_directed(g)
 _laplacian_matrix{V}(g::AbstractGraph{V}) = Graphs.laplacian_matrix(g)
 _laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
 end # module
