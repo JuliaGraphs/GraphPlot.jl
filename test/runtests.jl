@@ -1,10 +1,12 @@
 using FactCheck
 using GraphPlot
 using Graphs
+using LightGraphs
 using Colors
 using Compose
 
 g = graphfamous("karate")
+h = LightGraphs.WheelGraph(10)
 
 nodelabel = collect(1:Graphs.num_vertices(g))
 nodesize = Float64[Graphs.out_degree(u, g) for u in Graphs.vertices(g)]
@@ -34,4 +36,9 @@ facts("Nodes in different memberships have different colors (karate network)") d
 	nodefillc = nodecolor[membership]
     filename = joinpath(cachedout, "karate_groups.svg")
     draw(SVG(filename, 8inch, 8inch), gplot(g, nodelabel=nodelabel, nodefillc=nodefillc))
+end
+
+facts("LightGraphs test") do
+    filename = joinpath(cachedout, "LightGraphs_wheel10.svg")
+    draw(SVG(filename, 8inch, 8inch), gplot(h))
 end

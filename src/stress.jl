@@ -93,6 +93,47 @@ function stressmajorize_layout{V}(G::AbstractGraph{V}, p::Int=2, w=nothing, X0=r
     Xs[end][:,1], Xs[end][:,2]
 end
 
+function stressmajorize_layout(G::LightGraphs.SimpleGraph, p::Int=2, w=nothing, X0=randn(nv(G), p);
+        maxiter = 400size(X0, 1)^2, abstols=√(eps(eltype(X0))),
+        reltols=√(eps(eltype(X0))), abstolx=√(eps(eltype(X0))),
+        verbose = false, returnall = false)
+
+    @assert size(X0, 2)==p
+    δ = fill(1.0, nv(G), nv(G))
+
+    if w==nothing
+        w = δ.^-2
+        w[!isfinite(w)] = 0
+    end
+
+    @assert size(X0, 1)==size(δ, 1)==size(δ, 2)==size(w, 1)==size(w, 2)
+    Lw = weightedlaplacian(w)
+    pinvLw = pinv(Lw)
+    newstress = stress(X0, δ, w)
+    Xs = Matrix[X0]
+    stresses = [newstress]
+    iter = 0
+    for iter = 1:maxiter
+        #TODO the faster way is to drop the first row and col from the iteration
+        X = pinvLw * (LZ(X0, δ, w)*X0)
+        @assert all(isfinite(X))
+        newstress, oldstress = stress(X, δ, w), newstress
+        verbose && info("""Iteration $iter
+        Change in coordinates: $(vecnorm(X - X0))
+        Stress: $newstress (change: $(newstress-oldstress))
+        """)
+        push!(Xs, X)
+        push!(stresses, newstress)
+        abs(newstress - oldstress) < reltols * newstress && break
+        abs(newstress - oldstress) < abstols && break
+        vecnorm(X - X0) < abstolx && break
+        X0 = X
+    end
+    iter == maxiter && warn("Maximum number of iterations reached without convergence")
+    #returnall ? (Xs, stresses) : Xs[end]
+    Xs[end][:,1], Xs[end][:,2]
+end
+
 @doc """
 Stress function to majorize
 

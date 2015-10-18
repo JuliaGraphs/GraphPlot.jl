@@ -1,4 +1,4 @@
-VERSION >= v"0.4.0-dev+6641" && __precompile__()
+VERSION > v"0.4-" && __precompile__()
 
 module GraphPlot
 if VERSION < v"0.4.0"
@@ -6,6 +6,7 @@ if VERSION < v"0.4.0"
 end
 using Compat
 using Graphs
+using LightGraphs
 using Compose  # for plotting features
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
@@ -32,7 +33,7 @@ include("plot.jl")
 
 
 # for ploting LightGraphs
-include("lightgraphplot.jl")
+#include("lightgraphplot.jl")
 
 # read graph
 include("graphio.jl")
