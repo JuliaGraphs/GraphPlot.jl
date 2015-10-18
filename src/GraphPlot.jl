@@ -31,10 +31,6 @@ include("stress.jl")
 include("lines.jl")
 include("plot.jl")
 
-
-# for ploting LightGraphs
-#include("lightgraphplot.jl")
-
 # read graph
 include("graphio.jl")
 
