@@ -106,7 +106,7 @@ function gplot{T<:Real}(G,
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
-    arrowlengthfrac = Graphs.is_directed(G) ? 0.1 : 0.0,
+    arrowlengthfrac = _is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
     linetype = "straight",
     outangle = pi/5)
