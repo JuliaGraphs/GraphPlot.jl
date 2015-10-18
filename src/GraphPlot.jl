@@ -1,5 +1,3 @@
-VERSION > v"0.4-" && __precompile__()
-
 module GraphPlot
 
 if VERSION < v"0.4.0"
