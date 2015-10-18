@@ -344,7 +344,7 @@ function gplothtml(G; layout::Function=spring_layout, keyargs...)
 
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
-               Compose.default_graphic_height, false), gplot(G, layout(G)...; keyargs...))
+               Compose.default_graphic_width, false), gplot(G, layout(G)...; keyargs...))
     plotsvg = takebuf_string(plot_output)
 
     write(output,
@@ -352,7 +352,7 @@ function gplothtml(G; layout::Function=spring_layout, keyargs...)
         <!DOCTYPE html>
         <html>
           <head>
-            <title>Gadfly Plot</title>
+            <title>GraphPlot Plot</title>
             <meta charset="utf-8">
           </head>
             <body>
