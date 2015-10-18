@@ -7,8 +7,8 @@ if VERSION < v"0.4.0"
 end
 
 using Compat
-import Graphs
-import LightGraphs
+using Graphs
+using LightGraphs
 using Compose  # for plotting features
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
