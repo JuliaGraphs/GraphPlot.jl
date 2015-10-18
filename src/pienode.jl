@@ -1,3 +1,4 @@
+# to do
 type PIENODE
     x::Float64
     y::Float64
@@ -5,6 +6,16 @@ type PIENODE
     prop::Vector{Float64}
     colors
     strokes
+end
+
+function pie(pn::PIENODE)
+    p = [0.0;2pi*pn.prop/sum(pn.prop)]
+    θ = cumsum(p)
+    s = Vector[]
+    for i=1:length(θ)-1
+        push!(s, sector(pn.x, pn.y, pn.r, θ[i], θ[i+1]))
+    end
+    compose(context(),path(s), fill(pn.colors), stroke(pn.strokes))
 end
 
 function sector(x, y, r, θ1, θ2)
@@ -21,12 +32,10 @@ function sector(x, y, r, θ1, θ2)
     end
 end
 
-function pie(pn::PIENODE)
-    p = [0.0;2pi*pn.prop/sum(pn.prop)]
-    θ = cumsum(p)
+function sector{T<:Real}(x::Vector{T}, y::Vector{T}, r::Vector{T}, θ1::Vector{T}, θ2::Vector{T})
     s = Vector[]
-    for i=1:length(θ)-1
-        push!(s, sector(pn.x, pn.y, pn.r, θ[i], θ[i+1]))
+    for i=1:length(x)
+        push!(s, sector(x[i],y[i],r[i],θ1[i],θ2[i]))
     end
-    compose(context(),path(s), fill(pn.colors), stroke(pn.strokes))
+    s
 end
