@@ -5,8 +5,8 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength,
     lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -26,8 +26,8 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleof
     lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -46,8 +46,8 @@ end
 function graphline{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T})
     lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -64,8 +64,8 @@ end
 function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T)
     lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -83,8 +83,8 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength
     lines = Array(Vector, _ne(g))
     arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -109,8 +109,8 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleo
     lines = Array(Vector, _ne(g))
     arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -134,8 +134,8 @@ end
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, outangle)
     lines = Array(Vector, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
@@ -152,8 +152,8 @@ end
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, outangle)
     lines = Array(Vector, _ne(g))
     for (e_idx, e) in enumerate(_edges(g))
-        i = _src_index(e)
-        j = _dst_index(e)
+        i = _src_index(e, g)
+        j = _dst_index(e, g)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)

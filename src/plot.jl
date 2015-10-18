@@ -164,8 +164,8 @@ function gplot{T<:Real}(G,
         edge_locs_x = zeros(T, NE)
         edge_locs_y = zeros(T, NE)
         for (e_idx, e) in enumerate(_edges(G))
-            i = _src_index(e)
-            j = _dst_index(e)
+            i = _src_index(e, G)
+            j = _dst_index(e, G)
             edge_locs_x[e_idx] = (locs_x[i]+locs_x[j])/2.0 + edgelabeldistx*NODESIZE
             edge_locs_y[e_idx] = (locs_y[i]+locs_y[j])/2.0 + edgelabeldisty*NODESIZE
         end
