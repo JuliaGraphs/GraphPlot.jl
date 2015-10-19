@@ -2,7 +2,7 @@
 
 Graph layout and visualization algorithms based on [Compose.jl](https://github.com/dcjones/Compose.jl) and inspired by [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
 
-The spring_layout and stressmajorize_layout function are copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
+The `spring_layout` and `stressmajorize_layout` function are copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
 
 Other layout algorithms are wrap from [NetworkX](https://github.com/networkx/networkx).
 
