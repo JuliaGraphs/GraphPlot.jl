@@ -167,6 +167,7 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, outangle)
     lines
 end
 
+# this function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 function arrowcoords(θ, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
     arr1x = endx - arrowlength*cos(θ+angleoffset)
     arr1y = endy - arrowlength*sin(θ+angleoffset)
