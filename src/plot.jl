@@ -1,5 +1,6 @@
 using Colors
 
+# this function is copy from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl) and make some modifications.
 """
 Given a graph and two vectors of X and Y coordinates, returns
 a Compose tree of the graph layout
@@ -206,6 +207,7 @@ function gplot(G; layout::Function=spring_layout, keyargs...)
     gplot(G, layout(G)...; keyargs...)
 end
 
+# take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 function open_file(filename)
     if OS_NAME == :Darwin
         run(`open $(filename)`)
@@ -218,6 +220,7 @@ function open_file(filename)
     end
 end
 
+# take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 function gplothtml(G; layout::Function=spring_layout, keyargs...)
 	filename = string(tempname(), ".html")
     output = open(filename, "w")
