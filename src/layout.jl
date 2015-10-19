@@ -29,6 +29,8 @@ function random_layout(G)
 end
 
 """
+This function wrap from [NetworkX](https://github.com/networkx/networkx)
+
 Position nodes on a circle.
 
 **Parameters**
@@ -60,6 +62,8 @@ function circular_layout(G)
 end
 
 """
+This function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
+
 Use the spring/repulsion model of Fruchterman and Reingold (1991):
 
 + Attractive force:  f_a(d) =  d^2 / k
@@ -158,6 +162,8 @@ function spring_layout(G, locs_x=2*rand(_nv(G)).-1.0, locs_y=2*rand(_nv(G)).-1.0
 end
 
 """
+This function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
+
 Position nodes in concentric circles.
 
 **Parameters**
@@ -202,6 +208,8 @@ function shell_layout(G, nlist::Union{Void, Vector{Vector{Int}}} = nothing)
 end
 
 """
+This function wrap from [NetworkX](https://github.com/networkx/networkx)
+
 Position nodes using the eigenvectors of the graph Laplacian.
 
 **Parameters**
