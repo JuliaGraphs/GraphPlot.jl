@@ -1,3 +1,4 @@
+# This layout algorithm is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 @doc """
 Compute graph layout using stress majorization
 
