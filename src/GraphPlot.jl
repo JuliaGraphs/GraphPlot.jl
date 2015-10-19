@@ -34,11 +34,6 @@ include("plot.jl")
 # read graph
 include("graphio.jl")
 
-if VERSION > v"0.4-"
-    include("precompile.jl")
-    _precompile_()
-end
-
 function test()
 	include(joinpath(Pkg.dir("GraphPlot"), "test", "runtests.jl"))
 end
