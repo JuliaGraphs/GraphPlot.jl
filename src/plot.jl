@@ -150,7 +150,17 @@ function gplot{T<:Real}(G,
     end
 
     # Create nodes
-    nodes = circle(locs_x, locs_y, collect(nodesize).*w)
+    nodecircle = fill(Compose.w, length(locs_x))
+    if isa(nodesize, Real)
+	    for i=1:length(locs_x)
+	    	nodecircle[i] *= nodesize
+	    end
+	else
+		for i=1:length(locs_x)
+	    	nodecircle[i] *= nodesize[i]
+	    end
+	end
+    nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
     texts = nothing
