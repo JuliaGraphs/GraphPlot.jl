@@ -150,7 +150,7 @@ function gplot{T<:Real}(G,
     end
 
     # Create nodes
-    nodecircle = fill(Compose.w, length(locs_x))
+    nodecircle = fill(0.5Compose.w, length(locs_x))
     if isa(nodesize, Real)
 	    for i=1:length(locs_x)
 	    	nodecircle[i] *= nodesize
