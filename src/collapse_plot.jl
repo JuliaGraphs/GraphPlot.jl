@@ -9,7 +9,7 @@ function collapse_graph{V}(g::AbstractGraph{V}, membership::Vector{Int})
         collapsed_edge_weights[i] = Dict{Int,Float64}()
     end
 
-    for e in edges(g)
+    for e in Graphs.edges(g)
         u = source(e,g)
         v = target(e,g)
         u_idx = vertex_index(u,g)
@@ -18,7 +18,7 @@ function collapse_graph{V}(g::AbstractGraph{V}, membership::Vector{Int})
         v_comm = membership[v_idx]
 
         # for special case of undirected network
-        if !is_directed(g)
+        if !Graphs.is_directed(g)
             u_comm, v_comm = minmax(u_comm, v_comm)
         end
 
@@ -34,7 +34,7 @@ function collapse_graph{V}(g::AbstractGraph{V}, membership::Vector{Int})
 
     for u=1:nb_comm
         for (v,w) in collapsed_edge_weights[u]
-            add_edge!(collapsed_graph, u, v)
+            Graphs.add_edge!(collapsed_graph, u, v)
             push!(collapsed_weights, w)
         end
     end
@@ -61,6 +61,38 @@ function community_layout{V}(g::AbstractGraph{V}, membership::Vector{Int})
         for (idx, node) in enumerate(nodes)
             lx[node] = 1.8*length(nodes)/N*cos(θ[idx]) + clx[lbl]
             ly[node] = 1.8*length(nodes)/N*sin(θ[idx]) + cly[lbl]
+        end
+    end
+    lx, ly
+end
+
+function collapse_layout{V}(g::AbstractGraph{V}, membership::Vector{Int})
+    lightg = LightGraphs.Graph(num_vertices(g))
+    for e in Graphs.edges(g)
+        u = vertex_index(source(e,g), g)
+        v = vertex_index(target(e,g), g)
+        LightGraphs.add_edge!(lightg, u, v)
+    end
+    N = length(membership)
+    lx = zeros(N)
+    ly = zeros(N)
+    comms = Dict{Int,Vector{Int}}()
+    for (idx,lbl) in enumerate(membership)
+        if haskey(comms, lbl)
+            push!(comms[lbl], idx)
+        else
+            comms[lbl] = collect(idx)
+        end
+    end
+    h, w = collapse_graph(g, membership)
+    clx, cly = spring_layout(h)
+    for (lbl, nodes) in comms
+        subg = lightg[nodes]
+        sublx, subly = spring_layout(subg)
+        θ = linspace(0, 2pi, length(nodes) + 1)[1:end-1]
+        for (idx, node) in enumerate(nodes)
+            lx[node] = sign(sublx[idx])*1.8*length(nodes)/N*abs(sublx[idx])^0.6 + clx[lbl]
+            ly[node] = sign(subly[idx])*1.8*length(nodes)/N*abs(subly[idx])^0.6 + cly[lbl]
         end
     end
     lx, ly

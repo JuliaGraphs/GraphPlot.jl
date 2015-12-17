@@ -337,3 +337,35 @@ function gplothtml1(G; layout::Function=spring_layout, keyargs...)
     close(output)
     open_file(filename)
 end
+
+function gplothtml1{T<:Real}(G, lx::Vector{T}, ly::Vector{T}; keyargs...)
+	filename = string(tempname(), ".html")
+    output = open(filename, "w")
+
+    plot_output = IOBuffer()
+    draw(SVGJS(plot_output, Compose.default_graphic_width,
+               Compose.default_graphic_width, false), gplot1(G, lx, ly; keyargs...))
+    plotsvg = takebuf_string(plot_output)
+
+    write(output,
+        """
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>GraphPlot Plot</title>
+            <meta charset="utf-8">
+          </head>
+            <body>
+            <script charset="utf-8">
+                $(readall(Compose.snapsvgjs))
+            </script>
+            <script charset="utf-8">
+                $(readall(gadflyjs))
+            </script>
+            $(plotsvg)
+          </body>
+        </html>
+        """)
+    close(output)
+    open_file(filename)
+end
