@@ -13,7 +13,9 @@ const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
 export
     gplot,
+    gplot1,
     gplothtml,
+    gplothtml1,
     random_layout,
     circular_layout,
     spring_layout,
@@ -28,8 +30,10 @@ include("layout.jl")
 include("stress.jl")
 
 # ploting utilities
+include("shape.jl")
 include("lines.jl")
 include("plot.jl")
+include("plot_test.jl")
 
 # read graph
 include("graphio.jl")
