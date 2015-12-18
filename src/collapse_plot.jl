@@ -91,8 +91,8 @@ function collapse_layout{V}(g::AbstractGraph{V}, membership::Vector{Int})
         sublx, subly = spring_layout(subg)
         θ = linspace(0, 2pi, length(nodes) + 1)[1:end-1]
         for (idx, node) in enumerate(nodes)
-            lx[node] = sign(sublx[idx])*1.8*length(nodes)/N*abs(sublx[idx])^0.6 + clx[lbl]
-            ly[node] = sign(subly[idx])*1.8*length(nodes)/N*abs(subly[idx])^0.6 + cly[lbl]
+            lx[node] = 1.8*length(nodes)/N*sublx[idx] + clx[lbl]
+            ly[node] = 1.8*length(nodes)/N*subly[idx] + cly[lbl]
         end
     end
     lx, ly
