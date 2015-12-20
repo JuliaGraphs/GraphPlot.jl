@@ -19,8 +19,8 @@ function graphfamous(graphname::AbstractString)
 end
 
 """read graph from in edgelist format"""
-function readedgelist(filename; is_directed::Bool=false, start_index::Int=0)
-    es = readdlm(filename, Int)
+function readedgelist(filename; is_directed::Bool=false, start_index::Int=0, delim::Char=' ')
+    es = readdlm(filename, delim, Int)
     es = unique(es, 1)
     if start_index == 0
         es = es + 1
