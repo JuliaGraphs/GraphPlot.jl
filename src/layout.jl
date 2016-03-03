@@ -189,7 +189,7 @@ function shell_layout(G, nlist::Union{Void, Vector{Vector{Int}}} = nothing)
     end
     if nlist == nothing
         nlist = Array(Vector{Int}, 1)
-        nlist[1] = [1:_nv(G)]
+        nlist[1] = collect(1:_nv(G))
     end
     radius = 0.0
     if length(nlist[1]) > 1
