@@ -177,8 +177,10 @@ function gplot{T<:Real}(G,
         for (e_idx, e) in enumerate(_edges(G))
             i = _src_index(e, G)
             j = _dst_index(e, G)
-            edge_locs_x[e_idx] = (locs_x[i]+locs_x[j])/2.0 + edgelabeldistx*NODESIZE
-            edge_locs_y[e_idx] = (locs_y[i]+locs_y[j])/2.0 + edgelabeldisty*NODESIZE
+            mid_x = (locs_x[i]+locs_x[j])/2.0
+            mid_y = (locs_y[i]+locs_y[j])/2.0
+            edge_locs_x[e_idx] = _is_directed(G) ? (mid_x+locs_x[j])/2.0 : mid_x + edgelabeldistx*NODESIZE
+            edge_locs_y[e_idx] = _is_directed(G) ? (mid_y+locs_y[j])/2.0 : mid_y + edgelabeldisty*NODESIZE
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
