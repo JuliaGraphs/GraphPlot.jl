@@ -241,10 +241,10 @@ function spectral_layout(G)
         if _is_directed(G)
             A = A + A'
         end
-        return _sparse_spectral(A)
+        return _spectral(A)
     else
         L = _laplacian_matrix(G)
-        return _spectral(L)
+        return _spectral(full(L))
     end
 end
 
@@ -254,7 +254,7 @@ function _spectral(L::Matrix)
     eigenvectors[:, index[1]], eigenvectors[:, index[2]]
 end
 
-function _sparse_spectral(A::SparseMatrixCSC)
+function _spectral(A::SparseMatrixCSC)
     data = collect(sum(A, 1))
     D = sparse([1:length(data)], [1:length(data)], data)
     L = D - A
