@@ -248,7 +248,7 @@ function spectral_layout(G)
     end
 end
 
-function _spectral(L::Matrix)
+function _spectral(L::Union{Matrix,SparseMatrixCSC})
     eigenvalues, eigenvectors = eig(L)
     index = sortperm(eigenvalues)[2:3]
     eigenvectors[:, index[1]], eigenvectors[:, index[2]]
