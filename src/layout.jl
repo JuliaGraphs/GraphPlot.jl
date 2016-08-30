@@ -189,7 +189,7 @@ function shell_layout(G, nlist::Union{Void, Vector{Vector{Int}}} = nothing)
     end
     if nlist == nothing
         nlist = Array(Vector{Int}, 1)
-        nlist[1] = [1:_nv(G)]
+        nlist[1] = collect(1:_nv(G))
     end
     radius = 0.0
     if length(nlist[1]) > 1
@@ -241,10 +241,10 @@ function spectral_layout(G)
         if _is_directed(G)
             A = A + A'
         end
-        return _sparse_spectral(A)
+        return _spectral(A)
     else
         L = _laplacian_matrix(G)
-        return _spectral(L)
+        return _spectral(full(L))
     end
 end
 
@@ -254,7 +254,7 @@ function _spectral(L::Matrix)
     eigenvectors[:, index[1]], eigenvectors[:, index[2]]
 end
 
-function _sparse_spectral(A::SparseMatrixCSC)
+function _spectral(A::SparseMatrixCSC)
     data = collect(sum(A, 1))
     D = sparse([1:length(data)], [1:length(data)], data)
     L = D - A
