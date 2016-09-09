@@ -235,8 +235,8 @@ function spectral_layout(G)
     end
 
     if _nv(G) > 500
-        A = sparse(Int[_src(e) for e in _edges(G)],
-                   Int[_dst(e) for e in _edges(G)],
+        A = sparse(Int[_src_index(e) for e in _edges(G)],
+                   Int[_dst_index(e) for e in _edges(G)],
                    weight, _nv(G), _nv(G))
         if _is_directed(G)
             A = A + A'

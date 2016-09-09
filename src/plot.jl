@@ -86,7 +86,7 @@ Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
 function gplot{T<:Real}(G,
-    locs_x::Vector{T}, locs_y::Vector{T};
+    locs_x_in::Vector{T}, locs_y_in::Vector{T};
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -112,7 +112,7 @@ function gplot{T<:Real}(G,
     linetype = "straight",
     outangle = pi/5)
 
-    length(locs_x) != length(locs_y) && error("Vectors must be same length")
+    length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     const N = _nv(G)
     const NE = _ne(G)
     if nodelabel != nothing && length(nodelabel) != N
@@ -121,6 +121,9 @@ function gplot{T<:Real}(G,
     if edgelabel != nothing && length(edgelabel) != NE
         error("Must have one label per edge (or none)")
     end
+
+    locs_x = deepcopy(locs_x_in)
+    locs_y = deepcopy(locs_y_in)
 
     # Scale to unit square
     min_x, max_x = minimum(locs_x), maximum(locs_x)
@@ -165,8 +168,10 @@ function gplot{T<:Real}(G,
     # Create node labels if provided
     texts = nothing
     if nodelabel != nothing
-        texts = text(locs_x .+ nodesize .* (nodelabeldist*cos(nodelabelangleoffset)),
-                     locs_y .- nodesize .* (nodelabeldist*sin(nodelabelangleoffset)),
+        text_locs_x = deepcopy(locs_x)
+        text_locs_y = deepcopy(locs_y)
+        texts = text(text_locs_x .+ nodesize .* (nodelabeldist*cos(nodelabelangleoffset)),
+                     text_locs_y .- nodesize .* (nodelabeldist*sin(nodelabelangleoffset)),
                      map(string, nodelabel), [hcenter], [vcenter])
     end
     # Create edge labels if provided
