@@ -22,10 +22,6 @@ facts("karate network as directed") do
         filename = joinpath(cachedout, "karate_straight_directed.svg")
         draw(SVG(filename, 10inch, 10inch), gplot(g, arrowlengthfrac=0.02, nodelabel=nodelabel))
     end
-    FactCheck.context("curve edge") do
-        filename = joinpath(cachedout, "karate_curve_directed.svg")
-        draw(SVG(filename, 10inch, 10inch), gplot(g, arrowlengthfrac=0.02, linetype="curve", outangle=pi/11, nodelabel=nodelabel))
-    end
 end
 
 facts("Nodes in different memberships have different colors (karate network)") do
