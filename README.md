@@ -12,7 +12,7 @@ Other layout algorithms are wrap from [NetworkX](https://github.com/networkx/net
 
 From the Julia REPL the latest version can be installed with
 ```{execute="false"}
-Pkg.clone("git://github.com/afternone/GraphPlot.jl.git")
+Pkg.clone("git://github.com/JuliaGraphs/GraphPlot.jl.git")
 ```
 GraphPlot is then loaded with
 ```
