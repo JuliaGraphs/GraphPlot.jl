@@ -4,9 +4,9 @@ Graph layout and visualization algorithms based on [Compose.jl](https://github.c
 
 The `spring_layout` and `stressmajorize_layout` function are copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
 
-Other layout algorithms are wrap from [NetworkX](https://github.com/networkx/networkx).
+Other layout algorithms are wrapped from [NetworkX](https://github.com/networkx/networkx).
 
-`gadfly.js` is copy from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
+`gadfly.js` is copied from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 
 # Getting Started
 
@@ -138,14 +138,14 @@ gplot(h)
 
 # Arguments
 + `G` graph to plot
-+ `layout` Optional. layout algorithm. Currently can be chose from
++ `layout` Optional. layout algorithm. Currently can choose from
 [random_layout, circular_layout, spring_layout, stressmajorize_layout, 
 shell_layout, spectral_layout].
 Default: `spring_layout`
 + `nodelabel` Optional. Labels for the vertices. Default: `nothing`
 + `nodefillc` Optional. Color to fill the nodes with.
 Default: `colorant"turquoise"`
-+ `nodestrokec` Color for the nodes stroke.
++ `nodestrokec` Color for the node stroke.
 Default: `nothing`
 + `arrowlengthfrac` Fraction of line length to use for arrows.
 Set to 0 for no arrows. Default: 0 for undirected graph and 0.1 for directed graph
