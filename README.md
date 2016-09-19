@@ -1,5 +1,7 @@
 # GraphPlot
 
+[![Build Status](https://travis-ci.org/JuliaGraphs/GraphPlot.jl.svg?branch=master)](https://travis-ci.org/JuliaGraphs/GraphPlot.jl)
+
 Graph layout and visualization algorithms based on [Compose.jl](https://github.com/dcjones/Compose.jl) and inspired by [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
 
 The `spring_layout` and `stressmajorize_layout` function are copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
