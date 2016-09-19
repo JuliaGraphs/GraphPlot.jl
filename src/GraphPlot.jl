@@ -2,7 +2,6 @@ __precompile__(true)
 
 module GraphPlot
 
-using Compat
 using Compose  # for plotting features
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
