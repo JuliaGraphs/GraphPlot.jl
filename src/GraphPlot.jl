@@ -3,6 +3,7 @@ __precompile__(true)
 module GraphPlot
 
 using Compose  # for plotting features
+using LightGraphs # default; supports Graphs.jl also
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
@@ -37,23 +38,19 @@ function test()
 	include(joinpath(Pkg.dir("GraphPlot"), "test", "runtests.jl"))
 end
 
-try
-    using LightGraphs
-    nothing
-catch
-end
-if isdefined(:LightGraphs)
-	_nv(g::LightGraphs.SimpleGraph) = LightGraphs.nv(g)
-	_ne(g::LightGraphs.SimpleGraph) = LightGraphs.ne(g)
-	_vertices(g::LightGraphs.SimpleGraph) = LightGraphs.vertices(g)
-	_edges(g::LightGraphs.SimpleGraph) = LightGraphs.edges(g)
-	_src_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.src(e)
-	_dst_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.dst(e)
-	_adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
-	_is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
-	_laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
-end
+    
 
+_nv(g::LightGraphs.SimpleGraph) = LightGraphs.nv(g)
+_ne(g::LightGraphs.SimpleGraph) = LightGraphs.ne(g)
+_vertices(g::LightGraphs.SimpleGraph) = LightGraphs.vertices(g)
+_edges(g::LightGraphs.SimpleGraph) = LightGraphs.edges(g)
+_src_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.src(e)
+_dst_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.dst(e)
+_adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
+_is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
+_laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
+
+# if we've got Graphs.jl available to us
 try
     using Graphs
     nothing
