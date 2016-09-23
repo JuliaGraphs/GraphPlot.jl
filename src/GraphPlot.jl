@@ -3,7 +3,8 @@ __precompile__(true)
 module GraphPlot
 
 using Compose  # for plotting features
-using LightGraphs # default; supports Graphs.jl also
+using LightGraphs
+using Graphs # NOTE: Graphs integration will likely be removed in a future version.
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
@@ -50,13 +51,8 @@ _adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
 _is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
 _laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
 
-# if we've got Graphs.jl available to us
-try
-    using Graphs
-    nothing
-catch
-end
-if isdefined(:Graphs)
+
+# NOTE: Graphs functionality will likely be removed in a future version
 	_nv{V}(g::AbstractGraph{V}) = Graphs.num_vertices(g)
 	_ne{V}(g::AbstractGraph{V}) = Graphs.num_edges(g)
 	_vertices{V}(g::AbstractGraph{V}) = Graphs.vertices(g)
@@ -66,5 +62,4 @@ if isdefined(:Graphs)
 	_adjacency_matrix{V}(g::AbstractGraph{V}) = Graphs.adjacency_matrix(g)
 	_is_directed{V}(g::AbstractGraph{V}) = Graphs.is_directed(g)
 	_laplacian_matrix{V}(g::AbstractGraph{V}) = Graphs.laplacian_matrix(g)
-end
 end # module
