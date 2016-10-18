@@ -4,7 +4,6 @@ module GraphPlot
 
 using Compose  # for plotting features
 using LightGraphs
-using Graphs # NOTE: Graphs integration will likely be removed in a future version.
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
@@ -40,7 +39,8 @@ function test()
 end
 
     
-
+# These functions are mappings to various graph packages.
+# Currently only LightGraphs is supported.
 _nv(g::LightGraphs.SimpleGraph) = LightGraphs.nv(g)
 _ne(g::LightGraphs.SimpleGraph) = LightGraphs.ne(g)
 _vertices(g::LightGraphs.SimpleGraph) = LightGraphs.vertices(g)
@@ -50,16 +50,4 @@ _dst_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.dst(e)
 _adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
 _is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
 _laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
-
-
-# NOTE: Graphs functionality will likely be removed in a future version
-	_nv{V}(g::AbstractGraph{V}) = Graphs.num_vertices(g)
-	_ne{V}(g::AbstractGraph{V}) = Graphs.num_edges(g)
-	_vertices{V}(g::AbstractGraph{V}) = Graphs.vertices(g)
-	_edges{V}(g::AbstractGraph{V}) = Graphs.edges(g)
-	_src_index{V}(e::Graphs.Edge{V}, g::AbstractGraph{V}) = Graphs.vertex_index(Graphs.source(e), g)
-	_dst_index{V}(e::Graphs.Edge{V}, g::AbstractGraph{V}) = Graphs.vertex_index(Graphs.target(e), g)
-	_adjacency_matrix{V}(g::AbstractGraph{V}) = Graphs.adjacency_matrix(g)
-	_is_directed{V}(g::AbstractGraph{V}) = Graphs.is_directed(g)
-	_laplacian_matrix{V}(g::AbstractGraph{V}) = Graphs.laplacian_matrix(g)
 end # module
