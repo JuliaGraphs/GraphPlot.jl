@@ -27,9 +27,9 @@ function readedgelist(filename; is_directed::Bool=false, start_index::Int=0, del
     end
     N = maximum(es)
     if is_directed
-        g = Graphs.simple_graph(N, is_directed=true)
+        g = DiGraph(N)
         for i=1:size(es,1)
-            Graphs.add_edge!(g, es[i,1], es[i,2])
+            add_edge!(g, es[i,1], es[i,2])
         end
         return g
     else
@@ -39,9 +39,9 @@ function readedgelist(filename; is_directed::Bool=false, start_index::Int=0, del
             end
         end
         es = unique(es, 1)
-        g = Graphs.simple_graph(N, is_directed=false)
+        g = Graph(N)
         for i=1:size(es,1)
-            Graphs.add_edge!(g, es[i,1], es[i,2])
+            add_edge!(g, es[i,1], es[i,2])
         end
         return g
     end

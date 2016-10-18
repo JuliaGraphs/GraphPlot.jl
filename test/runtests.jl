@@ -1,6 +1,5 @@
 using FactCheck
 using GraphPlot
-using Graphs
 using LightGraphs
 using Colors
 using Compose
@@ -8,8 +7,8 @@ using Compose
 g = graphfamous("karate")
 h = LightGraphs.WheelGraph(10)
 
-nodelabel = collect(1:Graphs.num_vertices(g))
-nodesize = Float64[Graphs.out_degree(u, g) for u in Graphs.vertices(g)]
+nodelabel = collect(1:nv(g))
+nodesize = outdegree(g) .* 1.0
 
 cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
 facts("karate network (undirected), nodesize is proportion to its degree") do
