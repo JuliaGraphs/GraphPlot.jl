@@ -54,7 +54,7 @@ Optional. Color for the nodes stroke, can be a Vector. Default: `nothing`
 Optional. Line width for the nodes stroke, can be a Vector. Default: `0.0`
 
 `edgelabel`
-Optional. Labels for the edges, a Vector or nothing. Default: `nothing`
+Optional. Labels for the edges, a Vector or nothing. Default: `[]`
 
 `edgelabelc`
 Optional. Color for the edge labels, can be a Vector. Default: `colorant"black"`
@@ -93,7 +93,7 @@ function gplot{T<:Real}(G,
     NODELABELSIZE = 4.0,
     nodelabeldist = 0.0,
     nodelabelangleoffset = π/4.0,
-    edgelabel = nothing,
+    edgelabel = [],
     edgelabelc = colorant"black",
     edgelabelsize = 1.0,
     EDGELABELSIZE = 4.0,
@@ -118,7 +118,7 @@ function gplot{T<:Real}(G,
     if nodelabel != nothing && length(nodelabel) != N
         error("Must have one label per node (or none)")
     end
-    if edgelabel != nothing && length(edgelabel) != NE
+    if !isempty(edgelabel) && length(edgelabel) != NE
         error("Must have one label per edge (or none)")
     end
 
@@ -176,7 +176,7 @@ function gplot{T<:Real}(G,
     end
     # Create edge labels if provided
     edgetexts = nothing
-    if edgelabel != nothing
+    if !isempty(edgelabel)
         edge_locs_x = zeros(T, NE)
         edge_locs_y = zeros(T, NE)
         for (e_idx, e) in enumerate(_edges(G))
