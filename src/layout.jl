@@ -89,8 +89,9 @@ Initial "temperature", controls movement per iteration
 
 **Examples**
 ```
-julia> g = graphfamous("karate")
-julia> locs_x, locs_y = spring_layout(g)
+using LightGraphs
+g = Graph(20, 30)
+locs_x, locs_y = spring_layout(g)
 ```
 """
 function spring_layout(G, locs_x=2*rand(_nv(G)).-1.0, locs_y=2*rand(_nv(G)).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0)
@@ -224,9 +225,10 @@ the edge weight.  If None, then all edge weights are 1.
 
 **Examples**
 ```
-julia> g = graphfamous("karate")
-julia> weight = rand(num_edges(g))
-julia> locs_x, locs_y = spectral_layout(g, weight)
+using LightGraphs
+g = Graph(20, 30)
+weight = rand(ne(g))
+locs_x, locs_y = spectral_layout(g, weight)
 ```
 """
 function spectral_layout(G)

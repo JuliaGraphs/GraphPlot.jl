@@ -13,21 +13,15 @@ Other layout algorithms are wrapped from [NetworkX](https://github.com/networkx/
 # Getting Started
 
 From the Julia REPL the latest version can be installed with
-```{execute="false"}
+```julia
 Pkg.add("GraphPlot")
 ```
 GraphPlot is then loaded with
-```
+```julia
 using GraphPlot
 ```
 
 # Usage
-## karate network
-```
-g = graphfamous("karate")
-gplot(g)
-
-```
 
 ## Add node label
 ```
@@ -122,7 +116,7 @@ gplot(g, linetype="curve")
 ```
 
 ## Save to figure
-```{execute="false"}
+```julia
 using Compose
 # save to pdf
 draw(PDF("karate.pdf", 16cm, 16cm), gplot(g))
@@ -132,7 +126,7 @@ draw(PNG("karate.png", 16cm, 16cm), gplot(g))
 draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
 ```
 # LightGraphs integration
-```
+```julia
 using LightGraphs
 h = watts_strogatz(50, 6, 0.3)
 gplot(h)
@@ -141,8 +135,8 @@ gplot(h)
 # Arguments
 + `G` graph to plot
 + `layout` Optional. layout algorithm. Currently can choose from
-[random_layout, circular_layout, spring_layout, stressmajorize_layout, 
-shell_layout, spectral_layout].
+`[random_layout, circular_layout, spring_layout, stressmajorize_layout,
+shell_layout, spectral_layout]`.
 Default: `spring_layout`
 + `nodelabel` Optional. Labels for the vertices. Default: `nothing`
 + `nodefillc` Optional. Color to fill the nodes with.
@@ -156,4 +150,3 @@ Set to 0 for no arrows. Default: 0 for undirected graph and 0.1 for directed gra
 # Reporting Bugs
 
 Filing an issue to report a bug, counterintuitive behavior, or even to request a feature is extremely valuable in helping me prioritize what to work on, so don't hestitate.
-

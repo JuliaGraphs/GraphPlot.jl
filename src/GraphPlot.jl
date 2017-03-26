@@ -15,9 +15,7 @@ export
     spring_layout,
     spectral_layout,
     shell_layout,
-    stressmajorize_layout,
-    graphfamous,
-    readedgelist
+    stressmajorize_layout
 
 # layout algorithms
 include("layout.jl")
@@ -27,9 +25,6 @@ include("stress.jl")
 include("shape.jl")
 include("lines.jl")
 include("plot.jl")
-
-# read graph
-include("graphio.jl")
 
 
 # These functions are mappings to various graph packages.
