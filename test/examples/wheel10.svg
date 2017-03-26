@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="203.2mm" height="203.2mm" viewBox="0 0 203.2 203.2"
+     stroke="none"
+     fill="#000000"
+     stroke-width="0.3"
+     font-size="3.88"
+>
+<g stroke-width="0.95" fill="#000000" fill-opacity="0.000" stroke="#D3D3D3" id="img-9fa58e1f-1">
+  <path fill="none" d="M107.29,99.93 L 179.6 106.99"/>
+  <path fill="none" d="M106.16,95.5 L 165.23 55.11"/>
+  <path fill="none" d="M102.42,92.83 L 121.69 23.38"/>
+  <path fill="none" d="M97.76,93.23 L 66.75 27.85"/>
+  <path fill="none" d="M94.55,96.48 L 28.36 66.06"/>
+  <path fill="none" d="M94.19,101.09 L 23.38 120.97"/>
+  <path fill="none" d="M96.75,104.73 L 53.88 165.08"/>
+  <path fill="none" d="M101.22,105.94 L 107.72 179.6"/>
+  <path fill="none" d="M105.25,104.12 L 156.02 157.45"/>
+  <path fill="none" d="M184.49,101.19 L 172.53 57.79"/>
+  <path fill="none" d="M183.42,113.71 L 163.48 156.24"/>
+  <path fill="none" d="M165.34,47.4 L 128.89 20.87"/>
+  <path fill="none" d="M116.81,17.48 L 70.55 21.25"/>
+  <path fill="none" d="M59.14,26.52 L 27.02 58.54"/>
+  <path fill="none" d="M21.68,69.93 L 17.53 116.12"/>
+  <path fill="none" d="M20.74,128.28 L 46.19 165.03"/>
+  <path fill="none" d="M56.47,172.28 L 101.85 184.52"/>
+  <path fill="none" d="M114.4,183.48 L 154.55 165.09"/>
+</g>
+<g stroke-width="0.95" stroke="#D3D3D3" id="img-9fa58e1f-2">
+</g>
+<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-9fa58e1f-3">
+</g>
+<g stroke-width="0" stroke="#000000" stroke-opacity="0.000" fill="#40E0D0" id="img-9fa58e1f-4">
+  <use xlink:href="#img-9fa58e1f-5" x="100.63" y="99.28"/>
+  <use xlink:href="#img-9fa58e1f-5" x="186.27" y="107.65"/>
+  <use xlink:href="#img-9fa58e1f-5" x="170.76" y="51.33"/>
+  <use xlink:href="#img-9fa58e1f-5" x="123.48" y="16.93"/>
+  <use xlink:href="#img-9fa58e1f-5" x="63.88" y="21.8"/>
+  <use xlink:href="#img-9fa58e1f-5" x="22.28" y="63.27"/>
+  <use xlink:href="#img-9fa58e1f-5" x="16.93" y="122.78"/>
+  <use xlink:href="#img-9fa58e1f-5" x="50" y="170.54"/>
+  <use xlink:href="#img-9fa58e1f-5" x="108.31" y="186.27"/>
+  <use xlink:href="#img-9fa58e1f-5" x="160.64" y="162.3"/>
+</g>
+<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-9fa58e1f-6">
+</g>
+<defs>
+  <g id="img-9fa58e1f-5">
+    <circle cx="0" cy="0" r="6.43"/>
+  </g>
+</defs>
+</svg>

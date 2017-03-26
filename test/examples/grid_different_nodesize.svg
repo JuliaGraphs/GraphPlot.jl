@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="203.2mm" height="203.2mm" viewBox="0 0 203.2 203.2"
+     stroke="none"
+     fill="#000000"
+     stroke-width="0.3"
+     font-size="3.88"
+>
+<g stroke-width="1.22" fill="#000000" fill-opacity="0.000" stroke="#D3D3D3" id="img-7c560231-1">
+  <path fill="none" d="M104.14,89.52 L 125.2 23.19"/>
+  <path fill="none" d="M98.49,89.67 L 74.12 24.77"/>
+  <path fill="none" d="M93.27,100.31 L 22.03 122.3"/>
+  <path fill="none" d="M109.92,99.81 L 181.09 117.18"/>
+  <path fill="none" d="M101.75,106.39 L 103.69 180.94"/>
+  <path fill="none" d="M120.63,17.13 L 78.37 18.42"/>
+</g>
+<g stroke-width="1.22" stroke="#D3D3D3" id="img-7c560231-2">
+</g>
+<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-7c560231-3">
+</g>
+<g stroke-width="0" stroke="#000000" stroke-opacity="0.000" fill="#40E0D0" id="img-7c560231-4">
+  <circle cx="101.53" cy="97.76" r="8.3"/>
+  <circle cx="127.19" cy="16.93" r="6.3"/>
+  <circle cx="71.81" cy="18.62" r="6.3"/>
+  <circle cx="16.93" cy="123.88" r="5.12"/>
+  <circle cx="186.27" cy="118.45" r="5.12"/>
+  <circle cx="103.83" cy="186.27" r="5.12"/>
+</g>
+<g stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-7c560231-5">
+  <text x="101.53" y="97.76" text-anchor="middle" dy="0.35em" font-size="4">1</text>
+  <text x="127.19" y="16.93" text-anchor="middle" dy="0.35em" font-size="3.04">2</text>
+  <text x="71.81" y="18.62" text-anchor="middle" dy="0.35em" font-size="3.04">3</text>
+  <text x="16.93" y="123.88" text-anchor="middle" dy="0.35em" font-size="2.47">4</text>
+  <text x="186.27" y="118.45" text-anchor="middle" dy="0.35em" font-size="2.47">5</text>
+  <text x="103.83" y="186.27" text-anchor="middle" dy="0.35em" font-size="2.47">6</text>
+</g>
+</svg>

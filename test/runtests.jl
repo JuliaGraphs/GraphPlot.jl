@@ -6,7 +6,6 @@ using Compose
 
 
 example_dir = joinpath(dirname(@__FILE__), "examples")
-
 facts("LightGraphs test") do
     facts("wheel graph printed ok") do
         h = LightGraphs.WheelGraph(10)
