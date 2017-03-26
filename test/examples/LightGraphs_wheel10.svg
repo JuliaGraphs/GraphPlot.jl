@@ -8,46 +8,46 @@
      stroke-width="0.3"
      font-size="3.88"
 >
-<g stroke-width="0.95" fill="#000000" fill-opacity="0.000" stroke="#D3D3D3" id="img-5bcd41f6-1">
-  <path fill="none" d="M94.55,97.76 L 28.02 68.76"/>
-  <path fill="none" d="M97.72,94.43 L 65.52 29.32"/>
-  <path fill="none" d="M102.3,93.94 L 119.83 23.43"/>
-  <path fill="none" d="M106.1,96.49 L 164.69 53.77"/>
-  <path fill="none" d="M107.36,100.9 L 179.59 105.97"/>
-  <path fill="none" d="M105.46,105.12 L 157.24 155.97"/>
-  <path fill="none" d="M101.33,107.09 L 108.33 179.6"/>
-  <path fill="none" d="M96.88,105.94 L 54.58 167.05"/>
-  <path fill="none" d="M94.28,102.38 L 23.34 123.91"/>
-  <path fill="none" d="M26.5,61.23 L 57.94 28.17"/>
-  <path fill="none" d="M21.33,72.75 L 17.49 119.18"/>
-  <path fill="none" d="M69.21,22.6 L 114.79 17.65"/>
-  <path fill="none" d="M126.99,20.68 L 164.55 46.08"/>
-  <path fill="none" d="M171.94,56.26 L 184.43 100"/>
-  <path fill="none" d="M183.53,112.55 L 164.75 154.55"/>
-  <path fill="none" d="M155.99,163.57 L 115 183.36"/>
-  <path fill="none" d="M102.45,184.73 L 57.29 174.09"/>
-  <path fill="none" d="M46.84,167.13 L 20.86 131.27"/>
+<g stroke-width="0.95" fill="#000000" fill-opacity="0.000" stroke="#D3D3D3" id="img-9fb9b37b-1">
+  <path fill="none" d="M106.41,96.96 L 148.79 37.83"/>
+  <path fill="none" d="M108.99,100.7 L 179.79 82.15"/>
+  <path fill="none" d="M108.56,105.26 L 175.08 136.71"/>
+  <path fill="none" d="M105.3,108.49 L 135.99 175.56"/>
+  <path fill="none" d="M100.83,108.88 L 82.47 179.79"/>
+  <path fill="none" d="M97,106.2 L 36.91 147.59"/>
+  <path fill="none" d="M95.84,101.89 L 23.61 96.4"/>
+  <path fill="none" d="M97.81,97.64 L 47.38 46.56"/>
+  <path fill="none" d="M101.97,95.73 L 96.06 23.6"/>
+  <path fill="none" d="M156.52,37.88 L 182.43 74.97"/>
+  <path fill="none" d="M146.22,30.64 L 101.97 18.68"/>
+  <path fill="none" d="M185.69,87.12 L 181.71 132.91"/>
+  <path fill="none" d="M176.39,144.29 L 143.53 176.93"/>
+  <path fill="none" d="M132.11,182.18 L 87.46 185.74"/>
+  <path fill="none" d="M75.32,182.41 L 36.86 155.25"/>
+  <path fill="none" d="M29.71,144.91 L 18.62 102.37"/>
+  <path fill="none" d="M19.81,89.85 L 39.8 47.84"/>
+  <path fill="none" d="M48.74,38.94 L 89.46 19.78"/>
 </g>
-<g stroke-width="0.95" stroke="#D3D3D3" id="img-5bcd41f6-2">
+<g stroke-width="0.95" stroke="#D3D3D3" id="img-9fb9b37b-2">
 </g>
-<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-5bcd41f6-3">
+<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-9fb9b37b-3">
 </g>
-<g stroke-width="0" stroke="#000000" stroke-opacity="0.000" fill="#40E0D0" id="img-5bcd41f6-4">
-  <use xlink:href="#img-5bcd41f6-5" x="100.69" y="100.43"/>
-  <use xlink:href="#img-5bcd41f6-5" x="21.89" y="66.08"/>
-  <use xlink:href="#img-5bcd41f6-5" x="62.55" y="23.32"/>
-  <use xlink:href="#img-5bcd41f6-5" x="121.44" y="16.93"/>
-  <use xlink:href="#img-5bcd41f6-5" x="170.1" y="49.83"/>
-  <use xlink:href="#img-5bcd41f6-5" x="186.27" y="106.44"/>
-  <use xlink:href="#img-5bcd41f6-5" x="162.02" y="160.66"/>
-  <use xlink:href="#img-5bcd41f6-5" x="108.97" y="186.27"/>
-  <use xlink:href="#img-5bcd41f6-5" x="50.77" y="172.55"/>
-  <use xlink:href="#img-5bcd41f6-5" x="16.93" y="125.85"/>
+<g stroke-width="0" stroke="#000000" stroke-opacity="0.000" fill="#40E0D0" id="img-9fb9b37b-4">
+  <use xlink:href="#img-9fb9b37b-5" x="102.51" y="102.4"/>
+  <use xlink:href="#img-9fb9b37b-5" x="152.69" y="32.39"/>
+  <use xlink:href="#img-9fb9b37b-5" x="186.27" y="80.45"/>
+  <use xlink:href="#img-9fb9b37b-5" x="181.13" y="139.57"/>
+  <use xlink:href="#img-9fb9b37b-5" x="138.78" y="181.65"/>
+  <use xlink:href="#img-9fb9b37b-5" x="80.79" y="186.27"/>
+  <use xlink:href="#img-9fb9b37b-5" x="31.39" y="151.39"/>
+  <use xlink:href="#img-9fb9b37b-5" x="16.93" y="95.89"/>
+  <use xlink:href="#img-9fb9b37b-5" x="42.68" y="41.79"/>
+  <use xlink:href="#img-9fb9b37b-5" x="95.51" y="16.93"/>
 </g>
-<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-5bcd41f6-6">
+<g font-size="4" stroke="#000000" stroke-opacity="0.000" fill="#000000" id="img-9fb9b37b-6">
 </g>
 <defs>
-  <g id="img-5bcd41f6-5">
+  <g id="img-9fb9b37b-5">
     <circle cx="0" cy="0" r="6.43"/>
   </g>
 </defs>

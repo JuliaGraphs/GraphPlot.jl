@@ -10,7 +10,7 @@ h = LightGraphs.WheelGraph(10)
 nodelabel = collect(1:nv(g))
 nodesize = outdegree(g) .* 1.0
 
-cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
+cachedout = joinpath(dirname(@__FILE__), "examples")
 facts("karate network (undirected), nodesize is proportion to its degree") do
     filename = joinpath(cachedout, "karate_different_nodesize.svg")
     draw(SVG(filename, 8inch, 8inch), gplot(g, nodesize=nodesize.^0.3, nodelabel=nodelabel, nodelabelsize=nodesize.^0.3))
