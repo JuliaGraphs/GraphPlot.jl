@@ -125,7 +125,7 @@ Compute weighted Laplacian given ideal weights w
 Lʷ defined in (4) of the Reference
 """ ->
 function weightedlaplacian(w)
-    n = Base.LinAlg.chksquare(w)
+    n = Base.LinAlg.checksquare(w)
     T = eltype(w)
     Lw = zeros(T, n, n)
     for i=1:n
