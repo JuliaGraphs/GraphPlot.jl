@@ -41,13 +41,13 @@ end
     
 # These functions are mappings to various graph packages.
 # Currently only LightGraphs is supported.
-_nv(g::LightGraphs.SimpleGraph) = LightGraphs.nv(g)
-_ne(g::LightGraphs.SimpleGraph) = LightGraphs.ne(g)
-_vertices(g::LightGraphs.SimpleGraph) = LightGraphs.vertices(g)
-_edges(g::LightGraphs.SimpleGraph) = LightGraphs.edges(g)
-_src_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.src(e)
-_dst_index(e::LightGraphs.Edge, g::LightGraphs.SimpleGraph) = LightGraphs.dst(e)
-_adjacency_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.adjacency_matrix(g)
-_is_directed(g::LightGraphs.SimpleGraph) = LightGraphs.is_directed(g)
-_laplacian_matrix(g::LightGraphs.SimpleGraph) = LightGraphs.laplacian_matrix(g)
+_nv(g::LightGraphs.AbstractGraph) = LightGraphs.nv(g)
+_ne(g::LightGraphs.AbstractGraph) = LightGraphs.ne(g)
+_vertices(g::LightGraphs.AbstractGraph) = LightGraphs.vertices(g)
+_edges(g::LightGraphs.AbstractGraph) = LightGraphs.edges(g)
+_src_index(e::LightGraphs.Edge, g::LightGraphs.AbstractGraph) = LightGraphs.src(e)
+_dst_index(e::LightGraphs.Edge, g::LightGraphs.AbstractGraph) = LightGraphs.dst(e)
+_adjacency_matrix(g::LightGraphs.AbstractGraph) = LightGraphs.adjacency_matrix(g)
+_is_directed(g::LightGraphs.AbstractGraph) = LightGraphs.is_directed(g)
+_laplacian_matrix(g::LightGraphs.AbstractGraph) = LightGraphs.laplacian_matrix(g)
 end # module
