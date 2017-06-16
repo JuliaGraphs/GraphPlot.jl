@@ -9,17 +9,13 @@ const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
 export
     gplot,
-    gplot1,
     gplothtml,
-    gplothtml1,
     random_layout,
     circular_layout,
     spring_layout,
     spectral_layout,
     shell_layout,
-    stressmajorize_layout,
-    graphfamous,
-    readedgelist
+    stressmajorize_layout
 
 # layout algorithms
 include("layout.jl")
@@ -29,16 +25,8 @@ include("stress.jl")
 include("shape.jl")
 include("lines.jl")
 include("plot.jl")
-include("plot_test.jl")
 
-# read graph
-include("graphio.jl")
 
-function test()
-	include(joinpath(Pkg.dir("GraphPlot"), "test", "runtests.jl"))
-end
-
-    
 # These functions are mappings to various graph packages.
 # Currently only LightGraphs is supported.
 _nv(g::LightGraphs.AbstractGraph) = LightGraphs.nv(g)
