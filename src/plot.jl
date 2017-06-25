@@ -131,8 +131,8 @@ function gplot{T<:Real}(G,
     function scaler(z, a, b)
         2.0*((z - a)/(b - a)) - 1.0
     end
-    map!(z -> scaler(z, min_x, max_x), locs_x)
-    map!(z -> scaler(z, min_y, max_y), locs_y)
+    map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
+    map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     # Determine sizes
     #const NODESIZE    = 0.25/sqrt(N)

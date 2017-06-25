@@ -62,7 +62,7 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T})
 end
 
 function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T)
-    lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
+    lines = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
