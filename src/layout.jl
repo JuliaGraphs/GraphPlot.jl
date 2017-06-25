@@ -155,8 +155,8 @@ function spring_layout(G, locs_x=2*rand(_nv(G)).-1.0, locs_y=2*rand(_nv(G)).-1.0
     function scaler(z, a, b)
         2.0*((z - a)/(b - a)) - 1.0
     end
-    map!(z -> scaler(z, min_x, max_x), locs_x)
-    map!(z -> scaler(z, min_y, max_y), locs_y)
+    map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
+    map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     return locs_x,locs_y
 end
