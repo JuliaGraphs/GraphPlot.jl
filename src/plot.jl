@@ -257,10 +257,10 @@ function gplothtml(G; layout::Function=spring_layout, keyargs...)
           </head>
             <body>
             <script charset="utf-8">
-                $(readall(Compose.snapsvgjs))
+                $(readstring(Compose.snapsvgjs))
             </script>
             <script charset="utf-8">
-                $(readall(gadflyjs))
+                $(readstring(gadflyjs))
             </script>
             $(plotsvg)
           </body>
