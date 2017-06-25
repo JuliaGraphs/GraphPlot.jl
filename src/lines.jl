@@ -23,8 +23,8 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength,
 end
 
 function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleoffset)
-    lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
-    arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
+    lines = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
@@ -44,7 +44,7 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleof
 end
 
 function graphline{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T})
-    lines = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
+    lines = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
@@ -80,8 +80,8 @@ function graphline{T<:Real}(g, locs_x, locs_y, nodesize::T)
 end
 
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset, outangle=pi/5)
-    lines = Array(Vector, _ne(g))
-    arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
+    lines = Array{Vector}(_ne(g))
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
@@ -106,8 +106,8 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength
 end
 
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleoffset, outangle=pi/5)
-    lines = Array(Vector, _ne(g))
-    arrows = Array(Vector{Tuple{Float64,Float64}}, _ne(g))
+    lines = Array{Vector}(_ne(g))
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
@@ -132,7 +132,7 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, arrowlength, angleo
 end
 
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, outangle)
-    lines = Array(Vector, _ne(g))
+    lines = Array{Vector}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
@@ -150,7 +150,7 @@ function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::T, outangle)
 end
 
 function graphcurve{T<:Real}(g, locs_x, locs_y, nodesize::Vector{T}, outangle)
-    lines = Array(Vector, _ne(g))
+    lines = Array{Vector}(_ne(g))
     for (e_idx, e) in enumerate(_edges(g))
         i = _src_index(e, g)
         j = _dst_index(e, g)
