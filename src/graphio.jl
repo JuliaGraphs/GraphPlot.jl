@@ -14,7 +14,7 @@ a graph
     julia> g = graphfamous("karate")
 """
 function graphfamous(graphname::AbstractString)
-    file = joinpath(Pkg.dir("GraphPlot"), "data", graphname*".dat")
+    file = joinpath(dirname(@__DIR__), "data", graphname*".dat")
     readedgelist(file)
 end
 

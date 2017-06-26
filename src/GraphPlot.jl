@@ -32,7 +32,7 @@ include("plot.jl")
 include("graphio.jl")
 
 function test()
-    include(joinpath(Pkg.dir("GraphPlot"), "test", "runtests.jl"))
+    include(joinpath(dirname(@__DIR__), "test", "runtests.jl"))
 end
 
 

@@ -10,7 +10,7 @@ h = LightGraphs.WheelGraph(10)
 nodelabel = collect(1:nv(g))
 nodesize = outdegree(g) .* 1.0
 
-cachedout = joinpath(Pkg.dir("GraphPlot"), "test", "examples")
+cachedout = joinpath(@__DIR__, "examples")
 
 @testset "Undirected Karate Net" begin
     filename = joinpath(cachedout, "karate_different_nodesize.svg")
