@@ -18,20 +18,20 @@ From the Julia REPL the latest version can be installed with
 Pkg.add("GraphPlot")
 ```
 GraphPlot is then loaded with
-```
+```julia
 using GraphPlot
 ```
 
 # Usage
 ## karate network
-```
+```julia
 g = graphfamous("karate")
 gplot(g)
 
 ```
 
 ## Add node label
-```
+```julia
 using Graphs
 nodelabel = [1:num_vertices(g)]
 gplot(g, nodelabel=nodelabel)
@@ -39,12 +39,12 @@ gplot(g, nodelabel=nodelabel)
 ```
 
 ## Adjust node labels
-```
+```julia
 gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
 ```
 
 ## Control the node size
-```
+```julia
 # nodes size proportional to their degree
 nodesize = [Graphs.out_degree(v, g) for v in Graphs.vertices(g)]
 gplot(g, nodesize=nodesize)
@@ -52,7 +52,7 @@ gplot(g, nodesize=nodesize)
 
 ## Control the node color
 Feed the keyword argument `nodefillc` a color array, ensure each node has a color. `length(nodefillc)` must be equal `|V|`.
-```
+```julia
 using Colors
 
 # Generate n maximally distinguishable colors in LCHab space.
@@ -61,32 +61,32 @@ gplot(g, nodefillc=nodefillc, nodelabel=nodelabel, nodelabeldist=1.8, nodelabela
 ```
 
 ## Transparent
-```
+```julia
 # stick out large degree nodes
 alphas = nodesize/maximum(nodesize)
 nodefillc = [RGBA(0.0,0.8,0.8,i) for i in alphas]
 gplot(g, nodefillc=nodefillc)
 ```
 ## Control the node label size
-```
+```julia
 nodelabelsize = nodesize
 gplot(g, nodelabelsize=nodelabelsize, nodesize=nodesize, nodelabel=nodelabel)
 ```
 
 ## Draw edge labels
-```
+```julia
 edgelabel = [1:Graphs.num_edges(g)]
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel)
 ```
 
 ## Adjust edge labels
-```
+```julia
 edgelabel = [1:Graphs.num_edges(g)]
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
 ```
 
 ## Color the graph
-```
+```julia
 # nodes membership
 membership = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,2]
 nodecolor = [colorant"lightseagreen", colorant"orange"]
@@ -97,19 +97,19 @@ gplot(g, nodefillc=nodefillc)
 
 ## Different layout
 ### random layout
-```
+```julia
 gplot(g, layout=random_layout, nodelabel=nodelabel)
 ```
 ### circular layout
-```
+```julia
 gplot(g, layout=circular_layout, nodelabel=nodelabel)
 ```
 ### spectral layout
-```
+```julia
 gplot(g, layout=spectral_layout)
 ```
 ### shell layout
-```
+```julia
 nlist = Array(Vector{Int}, 2) # two shells
 nlist[1] = [1:5] # first shell
 nlist[2] = [6:num_vertices(g)] # second shell
@@ -118,7 +118,7 @@ gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 ```
 
 ## Curve edge
-```
+```julia
 gplot(g, linetype="curve")
 ```
 
@@ -133,7 +133,7 @@ draw(PNG("karate.png", 16cm, 16cm), gplot(g))
 draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
 ```
 # LightGraphs integration
-```
+```julia
 using LightGraphs
 h = watts_strogatz(50, 6, 0.3)
 gplot(h)
@@ -157,4 +157,3 @@ Set to 0 for no arrows. Default: 0 for undirected graph and 0.1 for directed gra
 # Reporting Bugs
 
 Filing an issue to report a bug, counterintuitive behavior, or even to request a feature is extremely valuable in helping me prioritize what to work on, so don't hestitate.
-
