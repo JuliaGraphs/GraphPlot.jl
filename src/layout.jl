@@ -57,7 +57,7 @@ function circular_layout(G)
     else
         # Discard the extra angle since it matches 0 radians.
         θ = linspace(0, 2pi, _nv(G) + 1)[1:end-1]
-        return cos(θ), sin(θ)
+        return cos.(θ), sin.(θ)
     end
 end
 
@@ -177,7 +177,7 @@ Vector of Vector, Vector of node Vector for each shell.
 **Examples**
 ```
 julia> g = graphfamous("karate")
-julia> nlist = Array(Vector{Int}, 2)
+julia> nlist = Array{Vector{Int}}(2)
 julia> nlist[1] = [1:5]
 julia> nlist[2] = [6:num_vertiecs(g)]
 julia> locs_x, locs_y = shell_layout(g, nlist)
@@ -188,7 +188,7 @@ function shell_layout(G, nlist::Union{Void, Vector{Vector{Int}}} = nothing)
         return [0.0], [0.0]
     end
     if nlist == nothing
-        nlist = Array(Vector{Int}, 1)
+        nlist = Array{Vector{Int}}(1)
         nlist[1] = collect(1:_nv(G))
     end
     radius = 0.0
@@ -200,8 +200,8 @@ function shell_layout(G, nlist::Union{Void, Vector{Vector{Int}}} = nothing)
     for nodes in nlist
         # Discard the extra angle since it matches 0 radians.
         θ = linspace(0, 2pi, length(nodes) + 1)[1:end-1]
-        append!(locs_x, radius*cos(θ))
-        append!(locs_y, radius*sin(θ))
+        append!(locs_x, radius*cos.(θ))
+        append!(locs_y, radius*sin.(θ))
         radius += 1.0
     end
     locs_x, locs_y
