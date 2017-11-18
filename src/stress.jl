@@ -63,7 +63,7 @@ function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
 
     if w==nothing
         w = δ.^-2
-        w[!isfinite(w)] = 0
+        w[.!isfinite.(w)] = 0
     end
 
     @assert size(X0, 1)==size(δ, 1)==size(δ, 2)==size(w, 1)==size(w, 2)
@@ -76,7 +76,7 @@ function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
     for iter = 1:maxiter
         #TODO the faster way is to drop the first row and col from the iteration
         X = pinvLw * (LZ(X0, δ, w)*X0)
-        @assert all(isfinite(X))
+        @assert all(isfinite.(X))
         newstress, oldstress = stress(X, δ, w), newstress
         verbose && info("""Iteration $iter
         Change in coordinates: $(vecnorm(X - X0))
@@ -109,7 +109,7 @@ function stress(X, d=fill(1.0, size(X, 1), size(X, 1)), w=nothing)
     n = size(X, 1)
     if w==nothing
         w = d.^-2
-        w[!isfinite(w)] = 0
+        w[!isfinite.(w)] = 0
     end
     @assert n==size(d, 1)==size(d, 2)==size(w, 1)==size(w, 2)
     for j=1:n, i=1:j-1
@@ -162,8 +162,6 @@ function LZ(Z, d, w)
         end
         L[i, i] = D
     end
-    @assert all(isfinite(L))
+    @assert all(isfinite.(L))
     L
 end
-
-
