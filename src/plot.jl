@@ -85,7 +85,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function gplot{T<:Real}(G,
+function gplot(G,
     locs_x_in::Vector{T}, locs_y_in::Vector{T};
     nodelabel = nothing,
     nodelabelc = colorant"black",
@@ -110,7 +110,7 @@ function gplot{T<:Real}(G,
     arrowlengthfrac = _is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
     linetype = "straight",
-    outangle = pi/5)
+    outangle = pi/5) where {T <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     const N = _nv(G)
