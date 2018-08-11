@@ -85,7 +85,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function gplot{T<:Real}(G,
+function gplot(G,
     locs_x_in::Vector{T}, locs_y_in::Vector{T};
     nodelabel = nothing,
     nodelabelc = colorant"black",
@@ -110,11 +110,11 @@ function gplot{T<:Real}(G,
     arrowlengthfrac = _is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
     linetype = "straight",
-    outangle = pi/5)
+    outangle = pi/5) where {T <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
-    const N = _nv(G)
-    const NE = _ne(G)
+    N = _nv(G)
+    NE = _ne(G)
     if nodelabel != nothing && length(nodelabel) != N
         error("Must have one label per node (or none)")
     end
@@ -135,8 +135,8 @@ function gplot{T<:Real}(G,
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     # Determine sizes
-    #const NODESIZE    = 0.25/sqrt(N)
-    #const LINEWIDTH   = 3.0/sqrt(N)
+    #NODESIZE    = 0.25/sqrt(N)
+    #LINEWIDTH   = 3.0/sqrt(N)
 
     max_nodesize = NODESIZE/maximum(nodesize)
     nodesize *= max_nodesize
@@ -226,14 +226,14 @@ end
 
 # take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 function open_file(filename)
-    if OS_NAME == :Darwin
+    if Sys.KERNEL == :Darwin
         run(`open $(filename)`)
-    elseif OS_NAME == :Linux || OS_NAME == :FreeBSD
+    elseif Sys.KERNEL == :Linux || Sys.KERNEL == :FreeBSD
         run(`xdg-open $(filename)`)
-    elseif OS_NAME == :Windows
+    elseif Sys.KERNEL == :Windows
         run(`$(ENV["COMSPEC"]) /c start $(filename)`)
     else
-        warn("Showing plots is not supported on OS $(string(OS_NAME))")
+        warn("Showing plots is not supported on OS $(string(Sys.KERNEL))")
     end
 end
 
@@ -245,7 +245,7 @@ function gplothtml(G; layout::Function=spring_layout, keyargs...)
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
                Compose.default_graphic_width, false), gplot(G, layout(G)...; keyargs...))
-    plotsvg = takebuf_string(plot_output)
+    plotsvg = String(take!(plot_output))
 
     write(output,
         """
@@ -257,10 +257,10 @@ function gplothtml(G; layout::Function=spring_layout, keyargs...)
           </head>
             <body>
             <script charset="utf-8">
-                $(readstring(Compose.snapsvgjs))
+                $(read(Compose.snapsvgjs, String))
             </script>
             <script charset="utf-8">
-                $(readstring(gadflyjs))
+                $(read(gadflyjs, String))
             </script>
             $(plotsvg)
           </body>
