@@ -1,5 +1,3 @@
-__precompile__(true)
-
 module GraphPlot
 
 using Compose  # for plotting features
@@ -30,10 +28,6 @@ include("plot.jl")
 
 # read graph
 include("graphio.jl")
-
-function test()
-    include(joinpath(dirname(@__DIR__), "test", "runtests.jl"))
-end
 
 
 # These functions are mappings to various graph packages.
