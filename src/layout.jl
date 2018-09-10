@@ -1,5 +1,4 @@
 using SparseArrays: SparseMatrixCSC
-using Arpack: eigs
 
 """
 Position nodes uniformly at random in the unit square.
@@ -262,7 +261,7 @@ function _spectral(A::SparseMatrixCSC)
     D = sparse([1:length(data)], [1:length(data)], data)
     L = D - A
     ncv = max(7, int(sqrt(length(data))))
-    eigenvalues, eigenvectors = eigs(L, nev=3, ncv=ncv)
+    eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, ncv=ncv)
     index = sortperm(real(eigenvalues))[2:3]
     real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end
