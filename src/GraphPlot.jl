@@ -10,6 +10,8 @@ export
     gplothtml,
     random_layout,
     circular_layout,
+    collapse_layout,
+    community_layout,
     spring_layout,
     spectral_layout,
     shell_layout,
@@ -25,6 +27,7 @@ include("stress.jl")
 include("shape.jl")
 include("lines.jl")
 include("plot.jl")
+include("collapse_plot.jl")
 
 # read graph
 include("graphio.jl")

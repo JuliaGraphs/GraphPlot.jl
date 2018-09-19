@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 # This layout algorithm is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 @doc """
 Compute graph layout using stress majorization
@@ -52,7 +54,7 @@ Reference:
         publisher={Springer Berlin Heidelberg},
         pages={239--250},
     }
-""" ->
+"""
 function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
         maxiter = 400size(X0, 1)^2, abstols=√(eps(eltype(X0))),
         reltols=√(eps(eltype(X0))), abstolx=√(eps(eltype(X0))),
@@ -63,7 +65,7 @@ function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
 
     if w==nothing
         w = δ.^-2
-        w[.!isfinite.(w)] = 0
+        w[.!isfinite.(w)] .= 0
     end
 
     @assert size(X0, 1)==size(δ, 1)==size(δ, 2)==size(w, 1)==size(w, 2)
@@ -73,23 +75,23 @@ function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
     Xs = Matrix[X0]
     stresses = [newstress]
     iter = 0
-    for iter = 1:maxiter
+    for outer iter = 1:maxiter
         #TODO the faster way is to drop the first row and col from the iteration
         X = pinvLw * (LZ(X0, δ, w)*X0)
         @assert all(isfinite.(X))
         newstress, oldstress = stress(X, δ, w), newstress
-        verbose && info("""Iteration $iter
-        Change in coordinates: $(vecnorm(X - X0))
+        verbose && @info("""Iteration $iter
+        Change in coordinates: $(norm(X - X0))
         Stress: $newstress (change: $(newstress-oldstress))
         """)
         push!(Xs, X)
         push!(stresses, newstress)
         abs(newstress - oldstress) < reltols * newstress && break
         abs(newstress - oldstress) < abstols && break
-        vecnorm(X - X0) < abstolx && break
+        norm(X - X0) < abstolx && break
         X0 = X
     end
-    iter == maxiter && warn("Maximum number of iterations reached without convergence")
+    iter == maxiter && @warn("Maximum number of iterations reached without convergence")
     #returnall ? (Xs, stresses) : Xs[end]
     Xs[end][:,1], Xs[end][:,2]
 end
@@ -103,7 +105,7 @@ Input:
     w: Weights for each pairwise distance
 
 See (1) of Reference
-""" ->
+"""
 function stress(X, d=fill(1.0, size(X, 1), size(X, 1)), w=nothing)
     s = 0.0
     n = size(X, 1)
@@ -123,9 +125,9 @@ end
 Compute weighted Laplacian given ideal weights w
 
 Lʷ defined in (4) of the Reference
-""" ->
+"""
 function weightedlaplacian(w)
-    n = Base.LinAlg.checksquare(w)
+    n = LinearAlgebra.checksquare(w)
     T = eltype(w)
     Lw = zeros(T, n, n)
     for i=1:n
@@ -146,7 +148,7 @@ Computes L^Z defined in (5) of the Reference
 Input: Z: current layout (coordinates)
        d: Ideal distances (default: all 1)
        w: weights (default: d.^-2)
-""" ->
+"""
 function LZ(Z, d, w)
     n = size(Z, 1)
     L = zeros(n, n)
