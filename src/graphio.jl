@@ -1,3 +1,5 @@
+using DelimitedFiles: readdlm
+
 """
 read some famous graphs
 
@@ -21,9 +23,9 @@ end
 """read graph from in edgelist format"""
 function readedgelist(filename; is_directed::Bool=false, start_index::Int=0, delim::Char=' ')
     es = readdlm(filename, delim, Int)
-    es = unique(es, 1)
+    es = unique(es, dims=1)
     if start_index == 0
-        es = es + 1
+        es = es .+ 1
     end
     N = maximum(es)
     if is_directed
@@ -38,7 +40,7 @@ function readedgelist(filename; is_directed::Bool=false, start_index::Int=0, del
                 es[i,1], es[i,2] = es[i,2], es[i,1]
             end
         end
-        es = unique(es, 1)
+        es = unique(es, dims=1)
         g = Graph(N)
         for i=1:size(es,1)
             add_edge!(g, es[i,1], es[i,2])

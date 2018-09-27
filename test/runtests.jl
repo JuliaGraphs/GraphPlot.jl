@@ -1,8 +1,14 @@
+
+# This should fix an error, see : https://github.com/JuliaIO/ImageMagick.jl/issues/133
+(Sys.islinux() || Sys.iswindows()) && import ImageMagick
+
 using GraphPlot
 using LightGraphs
+using Cairo
 using Colors
 using Compose
-using Base.Test
+using Random
+using Test
 using VisualRegressionTests
 
 # global variables
@@ -15,7 +21,7 @@ h = LightGraphs.WheelGraph(10)
 
 # plot and save function for visual regression tests
 function plot_and_save(fname, g; gplot_kwargs...)
-    srand(2017)
+    Random.seed!(2017)
     draw(PNG(fname, 8inch, 8inch), gplot(g; gplot_kwargs...))
 end
 

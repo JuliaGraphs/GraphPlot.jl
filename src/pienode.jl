@@ -1,5 +1,5 @@
 # to do
-type PIENODE
+mutable struct PIENODE
     x::Float64
     y::Float64
     r::Float64
@@ -32,7 +32,7 @@ function sector(x, y, r, θ1, θ2)
     end
 end
 
-function sector{T<:Real}(x::Vector{T}, y::Vector{T}, r::Vector{T}, θ1::Vector{T}, θ2::Vector{T})
+function sector(x::Vector{T}, y::Vector{T}, r::Vector{T}, θ1::Vector{T}, θ2::Vector{T}) where {T}
     s = Vector[]
     for i=1:length(x)
         push!(s, sector(x[i],y[i],r[i],θ1[i],θ2[i]))

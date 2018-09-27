@@ -1,5 +1,3 @@
-__precompile__(true)
-
 module GraphPlot
 
 using Compose  # for plotting features
@@ -12,6 +10,8 @@ export
     gplothtml,
     random_layout,
     circular_layout,
+    collapse_layout,
+    community_layout,
     spring_layout,
     spectral_layout,
     shell_layout,
@@ -27,13 +27,10 @@ include("stress.jl")
 include("shape.jl")
 include("lines.jl")
 include("plot.jl")
+include("collapse_plot.jl")
 
 # read graph
 include("graphio.jl")
-
-function test()
-    include(joinpath(dirname(@__DIR__), "test", "runtests.jl"))
-end
 
 
 # These functions are mappings to various graph packages.
