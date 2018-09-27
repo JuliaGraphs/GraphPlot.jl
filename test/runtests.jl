@@ -1,3 +1,7 @@
+
+# This should fix an error, see : https://github.com/JuliaIO/ImageMagick.jl/issues/133
+(Sys.islinux() || Sys.iswindows()) && import ImageMagick
+
 using GraphPlot
 using LightGraphs
 using Cairo
