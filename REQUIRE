@@ -1,5 +1,6 @@
-julia 0.6
+julia 0.7
+ArnoldiMethod
 Colors
 ColorTypes
-Compose
-LightGraphs
+Compose 0.7.0
+LightGraphs 1.1.0
