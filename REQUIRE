@@ -4,4 +4,3 @@ Colors
 ColorTypes
 Compose 0.7.0
 LightGraphs 1.1.0
-VisualRegressionTests 0.2.2 # this shouldn't be necessary here as it is only used by the tests
