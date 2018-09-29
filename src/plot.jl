@@ -1,5 +1,6 @@
 using Colors
 
+
 # this function is copy from [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl) and make some modifications.
 """
 Given a graph and two vectors of X and Y coordinates, returns
@@ -48,7 +49,7 @@ Optional. Relative fontsize for the vertice labels, can be a Vector. Default: `1
 Optional. Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
 
 `nodestrokec`
-Optional. Color for the nodes stroke, can be a Vector. Default: `nothing`
+Optional. Color for the nodes stroke, can be a Vector. Default: `colorant"lightgray"`
 
 `nodestrokelw`
 Optional. Line width for the nodes stroke, can be a Vector. Default: `0.0`
@@ -68,8 +69,8 @@ Optional. Largest fontsize for the edge labels. Default: `4.0`
 `edgelabelsize`
 Optional. Relative fontsize for the edge labels, can be a Vector. Default: `1.0`
 
-`EDGELINEWIDTH`
-Optional. Max line width for the edges. Default: `0.25/sqrt(N)`
+`LINEWIDTH`
+Optional. Max line width for edges and node strokes. Default: `3.0/sqrt(N)`
 
 `edgelinewidth`
 Optional. Relative line width for the edges, can be a Vector. Default: `1.0`
@@ -99,13 +100,13 @@ function gplot(G,
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
-    EDGELINEWIDTH = 3.0/sqrt(_nv(G)),
+    LINEWIDTH = 3.0/sqrt(_nv(G)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
     NODESIZE = 0.25/sqrt(_nv(G)),
     nodefillc = colorant"turquoise",
-    nodestrokec = nothing,
+    nodestrokec = colorant"lightgray",
     nodestrokelw = 0.0,
     arrowlengthfrac = _is_directed(G) ? 0.1 : 0.0,
     arrowangleoffset = π/9.0,
@@ -140,17 +141,24 @@ function gplot(G,
 
     max_nodesize = NODESIZE/maximum(nodesize)
     nodesize *= max_nodesize
-    max_edgelinewidth = EDGELINEWIDTH/maximum(edgelinewidth)
-    edgelinewidth *= max_edgelinewidth
-    max_edgelabelsize = EDGELABELSIZE/maximum(edgelabelsize)
+	
+	max_edgelabelsize = EDGELABELSIZE/maximum(edgelabelsize)
     edgelabelsize *= max_edgelabelsize
-    max_nodelabelsize = NODELABELSIZE/maximum(nodelabelsize)
+    
+	max_nodelabelsize = NODELABELSIZE/maximum(nodelabelsize)
     nodelabelsize *= max_nodelabelsize
-    max_nodestrokelw = maximum(nodestrokelw)
-    if max_nodestrokelw > 0.0
-        max_nodestrokelw = EDGELINEWIDTH/max_nodestrokelw
-        nodestrokelw *= max_nodestrokelw
-    end
+	
+	
+	if length(edgelinewidth) > 1
+		edgelinewidth /= maximum(edgelinewidth)
+	end
+	edgelinewidth *= LINEWIDTH
+
+	if length(nodestrokelw) > 1
+		nodestrokelw /= maximum(nodestrokelw)
+	end
+	nodestrokelw *= LINEWIDTH
+
 
     # Create nodes
     nodecircle = fill(0.4Compose.w, length(locs_x))
