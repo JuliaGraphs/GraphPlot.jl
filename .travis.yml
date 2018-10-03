@@ -19,4 +19,4 @@ notifications:
 #  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("GraphPlot"); Pkg.test("GraphPlot"; coverage=true)'
 after_success:
   # push coverage results to Codecov
-  - julia -e 'cd(using Pkg; Pkg.dir("GraphPlot")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg; cd(Pkg.dir("GraphPlot")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
