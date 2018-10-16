@@ -28,8 +28,8 @@ julia> loc_x, loc_y = random_layout(g)
 ```
 
 """
-function random_layout(G)
-    rand(_nv(G)), rand(_nv(G))
+function random_layout(g)
+    rand(nv(g)), rand(nv(g))
 end
 
 """
@@ -55,8 +55,8 @@ julia> g = simple_house_graph()
 julia> locs_x, locs_y = circular_layout(g)
 ```
 """
-function circular_layout(G)
-    if _nv(G) == 1
+function circular_layout(g)
+    if nv(g) == 1
         return [0.0], [0.0]
     else
         # Discard the extra angle since it matches 0 radians.
@@ -79,7 +79,7 @@ where C is a parameter we can adjust
 
 **Parameters**
 
-*G*
+*g*
 a graph
 
 *C*
@@ -97,11 +97,11 @@ julia> g = graphfamous("karate")
 julia> locs_x, locs_y = spring_layout(g)
 ```
 """
-function spring_layout(G, locs_x=2*rand(_nv(G)).-1.0, locs_y=2*rand(_nv(G)).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0)
+function spring_layout(g::AbstractGraph{T}, locs_x=2*rand(nv(g)).-1.0, locs_y=2*rand(nv(g)).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0) where {T<:Integer}
 
     #size(adj_matrix, 1) != size(adj_matrix, 2) && error("Adj. matrix must be square.")
-    N = _nv(G)
-    adj_matrix = _adjacency_matrix(G)
+    N = nv(g)
+    adj_matrix = adjacency_matrix(g)
 
     # The optimal distance bewteen vertices
     K = C * sqrt(4.0 / N)
@@ -218,7 +218,7 @@ Position nodes using the eigenvectors of the graph Laplacian.
 
 **Parameters**
 
-*G*
+*g*
 a graph
 
 *weight*
@@ -233,26 +233,26 @@ julia> weight = rand(num_edges(g))
 julia> locs_x, locs_y = spectral_layout(g, weight)
 ```
 """
-function spectral_layout(G, weight=nothing)
-    if _nv(G) == 1
+function spectral_layout(g::AbstractGraph{T}, weight=nothing) where {T<:Integer}
+    if nv(g) == 1
         return [0.0], [0.0]
-    elseif _nv(G) == 2
+    elseif nv(g) == 2
         return [0.0, 1.0], [0.0, 0.0]
     end
 
     if weight == nothing
-        weight = ones(length(_edges(G)))
+        weight = ones(length(edges(g)))
     end
-    if _nv(G) > 500
-        A = sparse(Int[_src_index(e, G) for e in _edges(G)],
-                   Int[_dst_index(e, G) for e in _edges(G)],
-                   weight, _nv(G), _nv(G))
-        if _is_directed(G)
-            A = A + A'
+    if nv(g) > 500
+        A = sparse(Int[src(e) for e in edges(g)],
+                   Int[dst(e) for e in edges(g)],
+                   weight, nv(g), nv(g))
+        if is_directed(g)
+            A = A + transpose(A)
         end
         return _spectral(A)
     else
-        L = _laplacian_matrix(G)
+        L = laplacian_matrix(g)
         return _spectral(Matrix(L))
     end
 end
@@ -260,7 +260,7 @@ end
 function _spectral(L::Matrix)
     eigenvalues, eigenvectors = eigen(L)
     index = sortperm(eigenvalues)[2:3]
-    eigenvectors[:, index[1]], eigenvectors[:, index[2]]
+    return eigenvectors[:, index[1]], eigenvectors[:, index[2]]
 end
 
 function _spectral(A::SparseMatrixCSC)
@@ -269,5 +269,5 @@ function _spectral(A::SparseMatrixCSC)
     L = D - A
     eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, which=LR())
     index = sortperm(real(eigenvalues))[2:3]
-    real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
+    return real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end

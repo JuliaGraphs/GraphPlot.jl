@@ -55,13 +55,13 @@ Reference:
         pages={239--250},
     }
 """
-function stressmajorize_layout(G, p::Int=2, w=nothing, X0=randn(_nv(G), p);
+function stressmajorize_layout(g::AbstractGraph, p::Int=2, w=nothing, X0=randn(nv(g), p);
         maxiter = 400size(X0, 1)^2, abstols=√(eps(eltype(X0))),
         reltols=√(eps(eltype(X0))), abstolx=√(eps(eltype(X0))),
         verbose = false, returnall = false)
 
     @assert size(X0, 2)==p
-    δ = fill(1.0, _nv(G), _nv(G))
+    δ = fill(1.0, nv(g), nv(g))
 
     if w==nothing
         w = δ.^-2
@@ -118,7 +118,7 @@ function stress(X, d=fill(1.0, size(X, 1), size(X, 1)), w=nothing)
         s += w[i, j] * (norm(X[i,:] - X[j,:]) - d[i,j])^2
     end
     @assert isfinite(s)
-    s
+    return s
 end
 
 @doc """
@@ -139,7 +139,7 @@ function weightedlaplacian(w)
         end
         Lw[i, i]=D
     end
-    Lw
+    return Lw
 end
 
 @doc """

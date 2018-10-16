@@ -96,6 +96,15 @@ gplot(g, nodefillc=nodefillc)
 ```
 
 ## Different layout
+
+### spring layout (default)
+This is the defaut layout and will be chosen if no layout is specified. The [default parameters to the spring layout algorithm](https://github.com/JuliaGraphs/GraphPlot.jl/blob/master/src/layout.jl#L78) can be changed by supplying an anonymous function, e.g., if nodes appear clustered too tightly together, try 
+```julia
+layout=(args...)->spring_layout(args...; C=20)
+gplot(g, layout=layout, nodelabel=nodelabel)
+```
+where `C` influences the desired distance between nodes.
+
 ### random layout
 ```julia
 gplot(g, layout=random_layout, nodelabel=nodelabel)

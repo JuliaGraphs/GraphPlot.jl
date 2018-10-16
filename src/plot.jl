@@ -85,8 +85,8 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 """
-function gplot(G,
-    locs_x_in::Vector{T}, locs_y_in::Vector{T};
+function gplot(g::AbstractGraph{T},
+    locs_x_in::Vector{R}, locs_y_in::Vector{R};
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -99,22 +99,22 @@ function gplot(G,
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
-    EDGELINEWIDTH = 3.0 / sqrt(_nv(G)),
+    EDGELINEWIDTH = 3.0 / sqrt(nv(g)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
-    NODESIZE = 0.25 / sqrt(_nv(G)),
+    NODESIZE = 0.25 / sqrt(nv(g)),
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
-    arrowlengthfrac = _is_directed(G) ? 0.1 : 0.0,
+    arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9.0,
     linetype = "straight",
-    outangle = pi/5) where {T <: Real}
+    outangle = pi/5) where {T <:Integer, R <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
-    N = _nv(G)
-    NE = _ne(G)
+    N = nv(g)
+    NE = ne(g)
     if nodelabel != nothing && length(nodelabel) != N
         error("Must have one label per node (or none)")
     end
@@ -177,15 +177,16 @@ function gplot(G,
     # Create edge labels if provided
     edgetexts = nothing
     if !isempty(edgelabel)
-        edge_locs_x = zeros(T, NE)
-        edge_locs_y = zeros(T, NE)
-        for (e_idx, e) in enumerate(_edges(G))
-            i = _src_index(e, G)
-            j = _dst_index(e, G)
-            mid_x = (locs_x[i] + locs_x[j]) / 2.0
-            mid_y = (locs_y[i] + locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = (_is_directed(G) ? (mid_x + locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = (_is_directed(G) ? (mid_y + locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
+        edge_locs_x = zeros(R, NE)
+        edge_locs_y = zeros(R, NE)
+        for (e_idx, e) in enumerate(edges(g))
+            i = src(e)
+            j = dst(e)
+            mid_x = (locs_x[i]+locs_x[j]) / 2.0
+            mid_y = (locs_y[i]+locs_y[j]) / 2.0
+            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
+            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
+
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
@@ -194,20 +195,20 @@ function gplot(G,
     lines, arrows = nothing, nothing
     if linetype == "curve"
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphcurve(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+            lines_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
             lines = path(lines_cord)
             arrows = line(arrows_cord)
         else
-            lines_cord = graphcurve(G, locs_x, locs_y, nodesize, outangle)
+            lines_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
             lines = path(lines_cord)
         end
     else
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(G, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
             lines = line(lines_cord)
             arrows = line(arrows_cord)
         else
-            lines_cord = graphline(G, locs_x, locs_y, nodesize)
+            lines_cord = graphline(g, locs_x, locs_y, nodesize)
             lines = line(lines_cord)
         end
     end
@@ -220,8 +221,8 @@ function gplot(G,
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
-function gplot(G; layout::Function=spring_layout, keyargs...)
-    gplot(G, layout(G)...; keyargs...)
+function gplot(g; layout::Function=spring_layout, keyargs...)
+    gplot(g, layout(g)...; keyargs...)
 end
 
 # take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
@@ -237,14 +238,14 @@ function open_file(filename)
     end
 end
 
-# take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
-function gplothtml(G; layout::Function=spring_layout, keyargs...)
-    	filename = string(tempname(), ".html")
+# taken from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
+function gplothtml(g; layout::Function=spring_layout, keyargs...)
+    filename = string(tempname(), ".html")
     output = open(filename, "w")
 
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
-               Compose.default_graphic_width, false), gplot(G, layout(G)...; keyargs...))
+               Compose.default_graphic_width, false), gplot(g, layout(g)...; keyargs...))
     plotsvg = String(take!(plot_output))
 
     write(output,
