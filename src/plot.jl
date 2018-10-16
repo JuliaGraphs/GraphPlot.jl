@@ -92,23 +92,23 @@ function gplot(g::AbstractGraph{T},
     nodelabelsize = 1.0,
     NODELABELSIZE = 4.0,
     nodelabeldist = 0.0,
-    nodelabelangleoffset = π/4.0,
+    nodelabelangleoffset = π / 4.0,
     edgelabel = [],
     edgelabelc = colorant"black",
     edgelabelsize = 1.0,
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
-    EDGELINEWIDTH = 3.0/sqrt(nv(g)),
+    EDGELINEWIDTH = 3.0 / sqrt(nv(g)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
-    NODESIZE = 0.25/sqrt(nv(g)),
+    NODESIZE = 0.25 / sqrt(nv(g)),
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
-    arrowangleoffset = π/9.0,
+    arrowangleoffset = π / 9.0,
     linetype = "straight",
     outangle = pi/5) where {T <:Integer, R <: Real}
 
@@ -122,14 +122,14 @@ function gplot(g::AbstractGraph{T},
         error("Must have one label per edge (or none)")
     end
 
-    locs_x = deepcopy(locs_x_in)
-    locs_y = deepcopy(locs_y_in)
+    locs_x = Float64.(locs_x_in)
+    locs_y = Float64.(locs_y_in)
 
     # Scale to unit square
-    min_x, max_x = minimum(locs_x), maximum(locs_x)
-    min_y, max_y = minimum(locs_y), maximum(locs_y)
+    min_x, max_x = extrema(locs_x)
+    min_y, max_y = extrema(locs_y)
     function scaler(z, a, b)
-        2.0*((z - a)/(b - a)) - 1.0
+        2.0 * ((z - a) / (b - a)) - 1.0
     end
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
@@ -138,31 +138,31 @@ function gplot(g::AbstractGraph{T},
     #NODESIZE    = 0.25/sqrt(N)
     #LINEWIDTH   = 3.0/sqrt(N)
 
-    max_nodesize = NODESIZE/maximum(nodesize)
+    max_nodesize = NODESIZE / maximum(nodesize)
     nodesize *= max_nodesize
-    max_edgelinewidth = EDGELINEWIDTH/maximum(edgelinewidth)
+    max_edgelinewidth = EDGELINEWIDTH / maximum(edgelinewidth)
     edgelinewidth *= max_edgelinewidth
-    max_edgelabelsize = EDGELABELSIZE/maximum(edgelabelsize)
+    max_edgelabelsize = EDGELABELSIZE / maximum(edgelabelsize)
     edgelabelsize *= max_edgelabelsize
-    max_nodelabelsize = NODELABELSIZE/maximum(nodelabelsize)
+    max_nodelabelsize = NODELABELSIZE / maximum(nodelabelsize)
     nodelabelsize *= max_nodelabelsize
     max_nodestrokelw = maximum(nodestrokelw)
     if max_nodestrokelw > 0.0
-        max_nodestrokelw = EDGELINEWIDTH/max_nodestrokelw
+        max_nodestrokelw = EDGELINEWIDTH / max_nodestrokelw
         nodestrokelw *= max_nodestrokelw
     end
 
     # Create nodes
     nodecircle = fill(0.4Compose.w, length(locs_x))
     if isa(nodesize, Real)
-	    for i=1:length(locs_x)
-	    	nodecircle[i] *= nodesize
-	    end
-	else
-		for i=1:length(locs_x)
-	    	nodecircle[i] *= nodesize[i]
-	    end
-	end
+        	    for i = 1:length(locs_x)
+            	    	nodecircle[i] *= nodesize
+        	    end
+    	else
+        		for i = 1:length(locs_x)
+            	    	nodecircle[i] *= nodesize[i]
+        	    end
+    	end
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
@@ -170,8 +170,8 @@ function gplot(g::AbstractGraph{T},
     if nodelabel != nothing
         text_locs_x = deepcopy(locs_x)
         text_locs_y = deepcopy(locs_y)
-        texts = text(text_locs_x .+ nodesize .* (nodelabeldist*cos(nodelabelangleoffset)),
-                     text_locs_y .- nodesize .* (nodelabeldist*sin(nodelabelangleoffset)),
+        texts = text(text_locs_x .+ nodesize .* (nodelabeldist * cos(nodelabelangleoffset)),
+                     text_locs_y .- nodesize .* (nodelabeldist * sin(nodelabelangleoffset)),
                      map(string, nodelabel), [hcenter], [vcenter])
     end
     # Create edge labels if provided
@@ -182,17 +182,18 @@ function gplot(g::AbstractGraph{T},
         for (e_idx, e) in enumerate(edges(g))
             i = src(e)
             j = dst(e)
-            mid_x = (locs_x[i]+locs_x[j])/2.0
-            mid_y = (locs_y[i]+locs_y[j])/2.0
-            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j])/2.0 : mid_x) + edgelabeldistx*NODESIZE
-            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j])/2.0 : mid_y) + edgelabeldisty*NODESIZE
+            mid_x = (locs_x[i]+locs_x[j]) / 2.0
+            mid_y = (locs_y[i]+locs_y[j]) / 2.0
+            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
+            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
+
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
 
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
-    if linetype=="curve"
+    if linetype == "curve"
         if arrowlengthfrac > 0.0
             lines_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
             lines = path(lines_cord)
@@ -212,7 +213,7 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2,-1.2,+2.4,+2.4)),
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
@@ -237,9 +238,9 @@ function open_file(filename)
     end
 end
 
-# take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
+# taken from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 function gplothtml(g; layout::Function=spring_layout, keyargs...)
-	filename = string(tempname(), ".html")
+    filename = string(tempname(), ".html")
     output = open(filename, "w")
 
     plot_output = IOBuffer()
