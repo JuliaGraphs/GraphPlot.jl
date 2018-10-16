@@ -1,6 +1,6 @@
 using GraphPlot
 
-function collapse_graph(g::AbstractGraph, membership::Vector{Int})
+function collapse_graph(g::AbstractGraph{T}, membership::Vector{Int}) where {T<:Integer}
     nb_comm = maximum(membership)
 
     collapsed_edge_weights = Vector{Dict{Int,Float64}}(undef, nb_comm)
@@ -8,14 +8,14 @@ function collapse_graph(g::AbstractGraph, membership::Vector{Int})
         collapsed_edge_weights[i] = Dict{Int,Float64}()
     end
 
-    for e in _edges(g)
-        u = _src_index(e,g)
-        v = _dst_index(e,g)
+    for e in edges(g)
+        u = src(e)
+        v = dst(e)
         u_comm = membership[u]
         v_comm = membership[v]
 
         # for special case of undirected network
-        if !_is_directed(g)
+        if !is_directed(g)
             u_comm, v_comm = minmax(u_comm, v_comm)
         end
 
@@ -63,11 +63,11 @@ function community_layout(g::AbstractGraph, membership::Vector{Int})
     lx, ly
 end
 
-function collapse_layout(g::AbstractGraph, membership::Vector{Int})
-    lightg = LightGraphs.SimpleGraph(_nv(g))
-    for e in _edges(g)
-        u = _src_index(e, g)
-        v = _dst_index(e, g)
+function collapse_layout(g::AbstractGraph{T}, membership::Vector{Int}) where {T<:Integer}
+    lightg = LightGraphs.SimpleGraph(nv(g))
+    for e in edges(g)
+        u = src(e)
+        v = dst(e)
         LightGraphs.add_edge!(lightg, u, v)
     end
     N = length(membership)
