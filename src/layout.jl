@@ -55,12 +55,12 @@ julia> g = simple_house_graph()
 julia> locs_x, locs_y = circular_layout(g)
 ```
 """
-function circular_layout(g)
+function circular_layout(g::AbstractGraph{T}) where {T<:Integer}
     if nv(g) == 1
         return [0.0], [0.0]
     else
         # Discard the extra angle since it matches 0 radians.
-        θ = range(0, stop=2pi, length=_nv(G)+1)[1:end-1]
+        θ = range(0, stop=2pi, length=nv(g)+1)[1:end-1]
         return cos.(θ), sin.(θ)
     end
 end

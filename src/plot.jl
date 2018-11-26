@@ -107,6 +107,7 @@ function gplot(g::AbstractGraph{T},
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
+    node_bitmap = [],
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9.0,
     linetype = "straight",
@@ -163,7 +164,15 @@ function gplot(g::AbstractGraph{T},
             	    	nodecircle[i] *= nodesize[i]
         	    end
     	end
-    nodes = circle(locs_x, locs_y, nodecircle)
+
+    if isempty(node_bitmap)
+        nodes = circle(locs_x, locs_y, nodecircle)
+    else
+        bsize = 3*nodesize
+        xc = locs_x .- bsize/2
+        yc = locs_y .- bsize/2
+        nodes = bitmap(["image/png"], node_bitmap, xc, yc, [bsize], [bsize])
+    end
 
     # Create node labels if provided
     texts = nothing
@@ -216,9 +225,11 @@ function gplot(g::AbstractGraph{T},
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+            #compose(context(), nodes),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
