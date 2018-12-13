@@ -91,13 +91,16 @@ Number of iterations we apply the forces
 *INITTEMP*
 Initial "temperature", controls movement per iteration
 
+*seed*
+Integer seed for pseudorandom generation of locations (default = 0).
+
 **Examples**
 ```
 julia> g = graphfamous("karate")
 julia> locs_x, locs_y = spring_layout(g)
 ```
 """
-function spring_layout(g::AbstractGraph{T}, locs_x=2*rand(nv(g)).-1.0, locs_y=2*rand(nv(g)).-1.0; C=2.0, MAXITER=100, INITTEMP=2.0) where {T<:Integer}
+function spring_layout(g::AbstractGraph{T}, locs_x, locs_y; C=2.0, MAXITER=100, INITTEMP=2.0) where {T<:Integer}
 
     #size(adj_matrix, 1) != size(adj_matrix, 2) && error("Adj. matrix must be square.")
     N = nv(g)
@@ -163,6 +166,11 @@ function spring_layout(g::AbstractGraph{T}, locs_x=2*rand(nv(g)).-1.0, locs_y=2*
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     return locs_x,locs_y
+end
+
+function spring_layout(g::AbstractGraph; seed::Integer=0, kws...)
+    rng = MersenneTwister(seed)
+    spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
 end
 
 """
