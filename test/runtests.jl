@@ -37,8 +37,7 @@ h = LightGraphs.WheelGraph(10)
 
 # plot and save function for visual regression tests
 function plot_and_save(fname, g; gplot_kwargs...)
-    Random.seed!(2017)
-    draw(PNG(fname, 8inch, 8inch), gplot(g; gplot_kwargs...))
+    draw(PNG(fname, 8inch, 8inch), gplot(g; seed=2017, gplot_kwargs...))
 end
 
 @testset "Karate Net" begin
