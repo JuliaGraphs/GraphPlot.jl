@@ -168,6 +168,7 @@ function spring_layout(g::AbstractGraph{T}, locs_x, locs_y; C=2.0, MAXITER=100, 
     return locs_x,locs_y
 end
 
+using Random: MersenneTwister
 function spring_layout(g::AbstractGraph; seed::Integer=0, kws...)
     rng = MersenneTwister(seed)
     spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
