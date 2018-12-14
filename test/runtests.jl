@@ -35,9 +35,11 @@ karate_edges = Edge.([
 g = SimpleGraph(karate_edges)
 h = LightGraphs.WheelGraph(10)
 
+test_layout(g::AbstractGraph; kws...) = spring_layout(g; seed=2017, kws...)
+
 # plot and save function for visual regression tests
 function plot_and_save(fname, g; gplot_kwargs...)
-    draw(PNG(fname, 8inch, 8inch), gplot(g; seed=2017, gplot_kwargs...))
+    draw(PNG(fname, 8inch, 8inch), gplot(g; layout=test_layout, gplot_kwargs...))
 end
 
 @testset "Karate Net" begin
