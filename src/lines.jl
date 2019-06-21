@@ -158,10 +158,10 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         Δy = locs_y[j] - locs_y[i]
         d  = sqrt(Δx^2 + Δy^2)
         θ  = atan(Δy,Δx)
-        startx = locs_x[i] + nodesize*cos(θ)
-        starty = locs_y[i] + nodesize*sin(θ)
-        endx  = locs_x[i] + (d-nodesize)*1.00*cos(θ)
-        endy  = locs_y[i] + (d-nodesize)*1.00*sin(θ)
+        startx = locs_x[i] + nodesize[i]*cos(θ)
+        starty = locs_y[i] + nodesize[i]*sin(θ)
+        endx  = locs_x[i] + (d-nodesize[j])*1.00*cos(θ)
+        endy  = locs_y[i] + (d-nodesize[j])*1.00*sin(θ)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
     end
     return vcat.(curves...)
