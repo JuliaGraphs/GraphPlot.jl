@@ -96,6 +96,10 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
 
         d2 = sqrt((endx-startx)^2 + (endy-starty)^2)
 
+        if i == j
+            d2 = 2 * π * nodesize[i]
+        end
+
         curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
@@ -121,6 +125,10 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
 
         d2 = sqrt((endx-startx)^2 + (endy-starty)^2)
 
+        if i == j
+            d2 = 2 * π * nodesize
+        end
+
         curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
@@ -145,6 +153,10 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
 
         d2 = sqrt((endx-startx)^2 + (endy-starty)^2)
 
+        if i == j
+            d2 = 2 * π * nodesize
+        end
+
         curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
     end
     return vcat.(curves...)
@@ -165,6 +177,10 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         endy = locs_y[j] + nodesize[j]*sin(θ+π-outangle)
 
         d2 = sqrt((endx-startx)^2 + (endy-starty)^2)
+
+        if i == j
+            d2 = 2 * π * nodesize[i]
+        end
 
         curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
     end
