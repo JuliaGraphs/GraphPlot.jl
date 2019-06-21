@@ -13,8 +13,8 @@ function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoff
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
-        endx = locs_x[j] + nodesize[j]*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize[j]*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize[j]*cos(θ+π)
+        endy = locs_y[j] + nodesize[j]*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -34,8 +34,8 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlen
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
-        endx = locs_x[j] + nodesize*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize*cos(θ+π)
+        endy = locs_y[j] + nodesize*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -54,8 +54,8 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
-        endx = locs_x[j] + nodesize[j]*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize[j]*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize[j]*cos(θ+π)
+        endy = locs_y[j] + nodesize[j]*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
     end
     lines
@@ -72,8 +72,8 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
-        endx = locs_x[j] + nodesize*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize*cos(θ+π)
+        endy = locs_y[j] + nodesize*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
     end
     return lines
@@ -91,8 +91,8 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
-        endx = locs_x[j] + nodesize[j]*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize[j]*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize[j]*cos(θ+π)
+        endy = locs_y[j] + nodesize[j]*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
@@ -117,8 +117,8 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
-        endx = locs_x[j] + nodesize*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize*cos(θ+π)
+        endy = locs_y[j] + nodesize*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
@@ -142,8 +142,8 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
-        endx = locs_x[j] + nodesize*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize*cos(θ+π)
+        endy = locs_y[j] + nodesize*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
     end
     return vcat.(curves...)
@@ -160,8 +160,8 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
-        endx = locs_x[j] + nodesize[j]*1.00*cos(θ+π)
-        endy = locs_y[j] + nodesize[j]*1.00*sin(θ+π)
+        endx = locs_x[j] + nodesize[j]*cos(θ+π)
+        endy = locs_y[j] + nodesize[j]*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
     end
     return vcat.(curves...)
