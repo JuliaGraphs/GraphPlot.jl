@@ -94,11 +94,7 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         endx = locs_x[j] + nodesize[j]*cos(θ+π)
         endy = locs_y[j] + nodesize[j]*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
-        if startx <= endx
-            arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
-        else
-            arr1, arr2 = curvearrowcoords2(θ, outangle, endx, endy, arrowlength, angleoffset)
-        end
+        arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return vcat.(curves...), arrows
@@ -119,11 +115,7 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
         endx = locs_x[j] + nodesize*cos(θ+π)
         endy = locs_y[j] + nodesize*sin(θ+π)
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
-        if startx <= endx
-            arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
-        else
-            arr1, arr2 = curvearrowcoords2(θ, outangle, endx, endy, arrowlength, angleoffset)
-        end
+        arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return vcat.(curves...), arrows
@@ -171,26 +163,6 @@ function arrowcoords(θ, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
     arr1y = endy - arrowlength*sin(θ+angleoffset)
     arr2x = endx - arrowlength*cos(θ-angleoffset)
     arr2y = endy - arrowlength*sin(θ-angleoffset)
-    return (arr1x, arr1y), (arr2x, arr2y)
-end
-
-# using when startx <= endx
-# θ1 is the angle between line from start point to end point with x axis
-# θ2 is the out angle of edge
-function curvearrowcoords1(θ1, θ2, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
-    arr1x = endx + arrowlength*cos(pi+θ1-θ2-angleoffset)
-    arr1y = endy + arrowlength*sin(pi+θ1-θ2-angleoffset)
-    arr2x = endx + arrowlength*cos(pi+θ1-θ2+angleoffset)
-    arr2y = endy + arrowlength*sin(pi+θ1-θ2+angleoffset)
-    return (arr1x, arr1y), (arr2x, arr2y)
-end
-
-# using when startx > endx
-function curvearrowcoords2(θ1, θ2, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
-    arr1x = endx + arrowlength*cos(pi+θ1+θ2-angleoffset)
-    arr1y = endy + arrowlength*sin(pi+θ1+θ2-angleoffset)
-    arr2x = endx + arrowlength*cos(pi+θ1+θ2+angleoffset)
-    arr2y = endy + arrowlength*sin(pi+θ1+θ2+angleoffset)
     return (arr1x, arr1y), (arr2x, arr2y)
 end
 
