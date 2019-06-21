@@ -96,11 +96,10 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
-            arrows[e_idx] = [arr1, (endx, endy), arr2]
         else
             arr1, arr2 = curvearrowcoords2(θ, outangle, endx, endy, arrowlength, angleoffset)
-            arrows[e_idx] = [arr1, (endx, endy), arr2]
         end
+        arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return vcat.(curves...), arrows
 end
@@ -122,11 +121,10 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
         curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
-            arrows[e_idx] = [arr1, (endx, endy), arr2]
         else
             arr1, arr2 = curvearrowcoords2(θ, outangle, endx, endy, arrowlength, angleoffset)
-            arrows[e_idx] = [arr1, (endx, endy), arr2]
         end
+        arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return vcat.(curves...), arrows
 end
