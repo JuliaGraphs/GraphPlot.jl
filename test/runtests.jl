@@ -72,3 +72,14 @@ end
     refimg1 = joinpath(datadir, "wheel10.png")
     @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> success
 end
+
+@testset "Curves" begin
+
+    g2 = DiGraph(2)
+    add_edge!(g2, 1,2)
+    add_edge!(g2, 2,1)
+
+    plot_and_save1(fname) = plot_and_save(fname, g2, linetype="curve")
+    refimg1 = joinpath(datadir, "curve.png")
+    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> success
+end

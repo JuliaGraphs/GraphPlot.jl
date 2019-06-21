@@ -195,12 +195,12 @@ function gplot(g::AbstractGraph{T},
     lines, arrows = nothing, nothing
     if linetype == "curve"
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = path(lines_cord)
+            curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+            lines = curve(curves_cord...)
             arrows = line(arrows_cord)
         else
-            lines_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = path(lines_cord)
+            curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
+            lines = curve(curves_cord...)
         end
     else
         if arrowlengthfrac > 0.0

@@ -80,7 +80,7 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, arrowlength, angleoffset, outangle=pi/5) where {T<:Integer}
-    lines = Array{Vector}(ne(g))
+    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -93,7 +93,7 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         starty = locs_y[i] + nodesize[i]*sin(θ)
         endx  = locs_x[i] + (d-nodesize[j])*1.00*cos(θ)
         endy  = locs_y[i] + (d-nodesize[j])*1.00*sin(θ)
-        lines[e_idx] = curveedge(startx, starty, endx, endy, outangle)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
             arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -102,11 +102,11 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
             arrows[e_idx] = [arr1, (endx, endy), arr2]
         end
     end
-    return lines, arrows
+    return vcat.(curves...), arrows
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, outangle=pi/5)
-    lines = Array{Vector}(ne(g))
+    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -119,7 +119,7 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
         starty = locs_y[i] + nodesize*sin(θ)
         endx  = locs_x[i] + (d-nodesize)*1.00*cos(θ)
         endy  = locs_y[i] + (d-nodesize)*1.00*sin(θ)
-        lines[e_idx] = curveedge(startx, starty, endx, endy, outangle)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
         if startx <= endx
             arr1, arr2 = curvearrowcoords1(θ, outangle, endx, endy, arrowlength, angleoffset)
             arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -128,11 +128,11 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
             arrows[e_idx] = [arr1, (endx, endy), arr2]
         end
     end
-    return lines, arrows
+    return vcat.(curves...), arrows
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
-    lines = Array{Vector}(ne(g))
+    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
@@ -144,13 +144,13 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
         starty = locs_y[i] + nodesize*sin(θ)
         endx  = locs_x[i] + (d-nodesize)*1.00*cos(θ)
         endy  = locs_y[i] + (d-nodesize)*1.00*sin(θ)
-        lines[e_idx] = curveedge(startx, starty, endx, endy, outangle)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
     end
-    lines
+    return vcat.(curves...)
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, outangle) where {T<:Integer}
-    lines = Array{Vector}(ne(g))
+    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
@@ -162,9 +162,9 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         starty = locs_y[i] + nodesize*sin(θ)
         endx  = locs_x[i] + (d-nodesize)*1.00*cos(θ)
         endy  = locs_y[i] + (d-nodesize)*1.00*sin(θ)
-        lines[e_idx] = curveedge(startx, starty, endx, endy, outangle)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, outangle)
     end
-    return lines
+    return vcat.(curves...)
 end
 
 # this function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
@@ -197,15 +197,21 @@ function curvearrowcoords2(θ1, θ2, endx, endy, arrowlength, angleoffset=20.0/1
 end
 
 function curveedge(x1, y1, x2, y2, θ)
-    θ1 = atan((y2-y1)/(x2-x1))
-    d = sqrt((x2-x1)^2+(y2-y1)^2)
-    r = d/2cos(θ)
-    if x1 <= x2
-        x = x1 + r*cos(θ+θ1)
-        y = y1 + r*sin(θ+θ1)
-    else
-        x = x2 + r*cos(θ+θ1)
-        y = y2 + r*sin(θ+θ1)
-    end
-    return [:M, x1,y1, :Q, x, y, x2, y2]
+    Δx = x2 - x1
+    Δy = y2 - y1
+
+    θ1 = atan(Δy,Δx)
+
+    d = sqrt(Δx^2 + Δy^2)
+
+    r = d/2
+
+    # Control points for left bending curve.
+    xc1 = x1 + r * cos(θ1 + θ)
+    yc1 = y1 + r * sin(θ1 + θ)
+
+    xc2 = x2 + r * cos(θ1 + π - θ)
+    yc2 = y2 + r * sin(θ1 + π - θ)
+
+    return [(x1,y1), (xc1, yc1), (xc2, yc2), (x2, y2)]
 end
