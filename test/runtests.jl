@@ -10,6 +10,7 @@ using Compose
 using Random
 using Test
 using VisualRegressionTests
+using ImageMagick
 
 # global variables
 istravis = "TRAVIS" ∈ keys(ENV)
@@ -42,6 +43,13 @@ function plot_and_save(fname, g; gplot_kwargs...)
     draw(PNG(fname, 8inch, 8inch), gplot(g; layout=test_layout, gplot_kwargs...))
 end
 
+function save_comparison(result::VisualTestResult)
+    grid = hcat(result.refImage, result.testImage)
+    path = joinpath(datadir, string(basename(result.refFilename)[1:end-length(".png")], "-comparison.png"))
+    ImageMagick.save(path, grid)
+    return result
+end
+
 @testset "Karate Net" begin
     # auxiliary variables
     nodelabel = collect(1:nv(g))
@@ -50,12 +58,12 @@ end
     # test nodesize
     plot_and_save1(fname) = plot_and_save(fname, g, nodesize=nodesize.^0.3, nodelabel=nodelabel, nodelabelsize=nodesize.^0.3)
     refimg1 = joinpath(datadir, "karate_different_nodesize.png")
-    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
 
     # test directed graph
     plot_and_save2(fname) = plot_and_save(fname, g, arrowlengthfrac=0.02, nodelabel=nodelabel)
     refimg2 = joinpath(datadir, "karate_straight_directed.png")
-    @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
     # test node membership
     membership = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,2]
@@ -63,14 +71,14 @@ end
     nodefillc = nodecolor[membership]
     plot_and_save3(fname) = plot_and_save(fname, g, nodelabel=nodelabel, nodefillc=nodefillc)
     refimg3 = joinpath(datadir, "karate_groups.png")
-    @test test_images(VisualTest(plot_and_save3, refimg3), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save3, refimg3), popup=!istravis) |> save_comparison |> success
 end
 
 @testset "WheelGraph" begin
     # default options
     plot_and_save1(fname) = plot_and_save(fname, h)
     refimg1 = joinpath(datadir, "wheel10.png")
-    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
 end
 
 @testset "Curves" begin
@@ -81,7 +89,7 @@ end
 
     plot_and_save1(fname) = plot_and_save(fname, g2, linetype="curve")
     refimg1 = joinpath(datadir, "curve.png")
-    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
 
     g3 = DiGraph(2)
     add_edge!(g3, 1,1)
@@ -90,6 +98,6 @@ end
 
     plot_and_save2(fname) = plot_and_save(fname, g3, linetype="curve")
     refimg2 = joinpath(datadir, "self_directed.png")
-    @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> success
+    @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
 end
