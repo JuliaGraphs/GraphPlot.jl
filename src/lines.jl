@@ -9,7 +9,6 @@ function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoff
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
@@ -30,7 +29,6 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlen
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
@@ -50,7 +48,6 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ)
         starty = locs_y[i] + nodesize[i]*sin(θ)
@@ -68,7 +65,6 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ)
         starty = locs_y[i] + nodesize*sin(θ)
@@ -87,20 +83,19 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        # d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ+outangle)
         starty = locs_y[i] + nodesize[i]*sin(θ+outangle)
         endx = locs_x[j] + nodesize[j]*cos(θ+π-outangle)
         endy = locs_y[j] + nodesize[j]*sin(θ+π-outangle)
 
-        d2 = hypot(endx-startx, endy-starty)
+        d = hypot(endx-startx, endy-starty)
 
         if i == j
-            d2 = 2 * π * nodesize[i]
+            d = 2 * π * nodesize[i]
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -116,20 +111,19 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        # d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ+outangle)
         starty = locs_y[i] + nodesize*sin(θ+outangle)
         endx = locs_x[j] + nodesize*cos(θ+π-outangle)
         endy = locs_y[j] + nodesize*sin(θ+π-outangle)
 
-        d2 = hypot(endx-startx, endy-starty)
+        d = hypot(endx-startx, endy-starty)
 
         if i == j
-            d2 = 2 * π * nodesize
+            d = 2 * π * nodesize
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
@@ -144,20 +138,19 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        # d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize*cos(θ+outangle)
         starty = locs_y[i] + nodesize*sin(θ+outangle)
         endx = locs_x[j] + nodesize*cos(θ+π-outangle)
         endy = locs_y[j] + nodesize*sin(θ+π-outangle)
 
-        d2 = hypot(endx-startx, endy-starty)
+        d = hypot(endx-startx, endy-starty)
 
         if i == j
-            d2 = 2 * π * nodesize
+            d = 2 * π * nodesize
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
     end
     return vcat.(curves...)
 end
@@ -169,20 +162,19 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
         Δy = locs_y[j] - locs_y[i]
-        # d = hypot(Δx, Δy)
         θ = atan(Δy,Δx)
         startx = locs_x[i] + nodesize[i]*cos(θ+outangle)
         starty = locs_y[i] + nodesize[i]*sin(θ+outangle)
         endx = locs_x[j] + nodesize[j]*cos(θ+π-outangle)
         endy = locs_y[j] + nodesize[j]*sin(θ+π-outangle)
 
-        d2 = hypot(endx-startx, endy-starty)
+        d = hypot(endx-startx, endy-starty)
 
         if i == j
-            d2 = 2 * π * nodesize[i]
+            d = 2 * π * nodesize[i]
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d2)
+        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
     end
     return vcat.(curves...)
 end
