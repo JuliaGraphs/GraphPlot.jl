@@ -1,7 +1,32 @@
 import Optim
 using Distances
-function kamada_kawai_layout(G, X=nothing; C= 1.0, MAXITER=100 )
-    Offset = 0.0
+@doc raw"""
+ Computes the layout corresponding to
+
+ ```math
+\min \sum_{i,j} (K_{ij} - \|x_i - x_j\|)^\frac{1}{2},
+ ```
+where $K_{ij}$ is the shortest path distance between vertices `i` abd `j`, and $x_i$ and $x_j$ are the positions of vertices `i` and `j` in the layout, respectively.
+
+Inputs:
+
+ - G: Graph to layout
+ - X: starting positions. If no starting positions are provided a shell_layout is constructed.
+
+Optional keyword arguments:
+
+ - maxiter: maximum number of iterations Optim.optimize will perform in an attempt to optimize the layout.
+ - distmx: Distance matrix for the Floyd-Warshall algorithm to discern shortest path distances on the graph. By default the edge weights of the graph.
+
+ Outputs:
+
+ - (`locs_x`, `locs_y`) positions in the x and y directions, respectively.
+
+"""
+function kamada_kawai_layout(G, X=nothing; maxiter=100, distmx=weights(G) )
+    if !is_connected(G)
+        @warn "This graph is disconnected. Results may not be reasonable."
+    end
     if X===nothing
         locs_x = zeros(nv(G))
         locs_y = zeros(nv(G))
@@ -36,50 +61,45 @@ function kamada_kawai_layout(G, X=nothing; C= 1.0, MAXITER=100 )
     function scaler(z, a, b)
         2.0*((z - a)/(b - a)) - 1.0
     end
-    # Stack individual graphs next to each other
-    for SubGraphVertices in connected_components(G)
-        SubGraph = induced_subgraph(G,SubGraphVertices)[1]
-        N = nv(SubGraph)
-        if X !== nothing
-            _locs_x = locs_x[SubGraphVertices]
-            _locs_y = locs_y[SubGraphVertices]
-        else
-            Vertices=collect(vertices(SubGraph))
-            Vmax=findmax([degree(SubGraph,x) for x in vertices(SubGraph)])[2]
-            filter!(x->x!=Vmax, Vertices)
-            Shells=[[Vmax]]
-            VComplement = copy(Shells[1])
-            while length(Vertices)>0
-                Interim = filter(x->!(x ∈ VComplement),vcat([collect(neighbors(SubGraph,s)) for s in Shells[end]]...))
-                unique!(Interim)
-                push!(Shells,Interim)
-                filter!(x->!(x ∈ Shells[end]),Vertices)
-                append!(VComplement,Shells[end])
-            end
-            _locs_x, _locs_y = shell_layout(SubGraph,Shells)
-        end
+    N = nv(G)
+    Vertices=collect(vertices(G))
 
-        # The optimal distance between vertices
-        # Currently only LightGraphs are supported using the Dijkstra shortest path algorithm
-        K = zeros(N,N)
-        for v in 1:N
-            K[:,v] = dijkstra_shortest_paths(SubGraph,v).dists
+    if X !== nothing
+        _locs_x = locs_x
+        _locs_y = locs_y
+    else
+        Vmax=findmax([degree(G,x) for x in vertices(G)])[2]
+        filter!(!isequal(Vmax), Vertices)
+        Shells=[[Vmax]]
+        VComplement = copy(Shells[1])
+        while !isempty(Vertices)
+            Interim = filter(!∈(VComplement),vcat([collect(neighbors(G,s)) for s in Shells[end]]...))
+            unique!(Interim)
+            push!(Shells,Interim)
+            filter!(!∈(Shells[end]),Vertices)
+            append!(VComplement,Shells[end])
         end
-
-        M0 =  vcat(_locs_x',_locs_y')
-        OptResult = Optim.optimize(x->Objective(x,K),(x,y) -> dObjective!(x,y,K), M0, method=Optim.LBFGS(),iterations = MAXITER )
-        M0 = Optim.minimizer(OptResult)
-        min_x, max_x = minimum(M0[1,:]), maximum(M0[1,:])
-        min_y, max_y = minimum(M0[2,:]), maximum(M0[2,:])
-        map!(z -> scaler(z, min_x, max_x), M0[1,:], M0[1,:])
-        map!(z -> scaler(z, min_y, max_y), M0[2,:], M0[2,:])
-        locs_x[SubGraphVertices] .= M0[1,:] .+ Offset
-        locs_y[SubGraphVertices] .= M0[2,:]
-        Offset += maximum(M0[1,:])+C
+        _locs_x, _locs_y = shell_layout(G,Shells)
     end
+
+    # The optimal distance between vertices
+    # Currently only LightGraphs are supported using the Dijkstra shortest path algorithm
+    K = zeros(N,N)
+    for v in 1:N
+        K[:,v] = dijkstra_shortest_paths(G,v).dists
+    end
+
+    K = floyd_warshall_shortest_paths(G,distmx).dists
+
+    M0 =  vcat(_locs_x',_locs_y')
+    OptResult = Optim.optimize(x->Objective(x,K),(x,y) -> dObjective!(x,y,K), M0, method=Optim.LBFGS(), iterations = maxiter )
+    M0 = Optim.minimizer(OptResult)
+
+    (min_x, max_x), (min_y, max_y) = extrema(M0,dims=2)
+    locs_x .= M0[1,:]
+    locs_y .= M0[2,:]
+
     # Scale to unit square
-    min_x, max_x = minimum(locs_x), maximum(locs_x)
-    min_y, max_y = minimum(locs_y), maximum(locs_y)
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
