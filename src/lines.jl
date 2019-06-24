@@ -76,7 +76,7 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, arrowlength, angleoffset, outangle=pi/5) where {T<:Integer}
-    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
+    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -104,7 +104,7 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, outangle=pi/5)
-    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
+    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -132,7 +132,7 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
-    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
+    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
@@ -156,7 +156,7 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, outangle) where {T<:Integer}
-    curves = Array{Vector{Tuple{Real,Real}}}(undef, ne(g))
+    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
