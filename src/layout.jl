@@ -92,6 +92,9 @@ Number of iterations we apply the forces
 *INITTEMP*
 Initial "temperature", controls movement per iteration
 
+*seed*
+Integer seed for pseudorandom generation of locations (default = 0).
+
 **Examples**
 ```
 julia> g = smallgraph(:karate)
@@ -167,6 +170,12 @@ function spring_layout(g::AbstractGraph,
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     return locs_x, locs_y
+end
+
+using Random: MersenneTwister
+function spring_layout(g::AbstractGraph; seed::Integer=0, kws...)
+    rng = MersenneTwister(seed)
+    spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
 end
 
 """

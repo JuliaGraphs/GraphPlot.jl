@@ -11,9 +11,9 @@ a Compose tree of the graph layout
 Graph to draw
 
 `layout`
-Optional. Layout algorithm. Currently can be one of [random_layout,
-circular_layout, spring_layout, shell_layout, stressmajorize_layout,
-spectral_layout].
+Optional. Layout algorithm. Currently can be one of [`random_layout`,
+`circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`,
+`spectral_layout`].
 Default: `spring_layout`
 
 `locs_x, locs_y`
