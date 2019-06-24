@@ -84,10 +84,6 @@ function kamada_kawai_layout(G, X=nothing; maxiter=100, distmx=weights(G) )
 
     # The optimal distance between vertices
     # Currently only LightGraphs are supported using the Dijkstra shortest path algorithm
-    K = zeros(N,N)
-    for v in 1:N
-        K[:,v] = dijkstra_shortest_paths(G,v).dists
-    end
 
     K = floyd_warshall_shortest_paths(G,distmx).dists
 
