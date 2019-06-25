@@ -26,4 +26,4 @@ test = ["Test", "Cairo", "ImageMagick", "VisualRegressionTests"]
 [compat]
 "Compose" = "~0.7"
 "LightGraphs" = "~1"
-"VisualRegressionTests" = "~0.3"
+"VisualRegressionTests" = "~0.2, ~0.3"
