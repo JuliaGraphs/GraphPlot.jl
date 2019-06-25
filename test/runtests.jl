@@ -37,7 +37,7 @@ karate_edges = Edge.([
 ])
 # graphs to test
 #g = smallgraph(:karate)
-g = smallgraph(karate_edges)
+g = SimpleGraph(karate_edges)
 h = LightGraphs.WheelGraph(10)
 
 
