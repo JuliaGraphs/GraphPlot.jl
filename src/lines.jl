@@ -76,7 +76,7 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, arrowlength, angleoffset, outangle=pi/5) where {T<:Integer}
-    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -95,16 +95,16 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
             d = 2 * π * nodesize[i]
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
+        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
-    return vcat.(curves...), arrows
+    return curves, arrows
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, outangle=pi/5)
-    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
@@ -123,16 +123,16 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
             d = 2 * π * nodesize
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
+        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
 
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
-    return vcat.(curves...), arrows
+    return curves, arrows
 end
 
 function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
-    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
@@ -150,13 +150,13 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
             d = 2 * π * nodesize
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
+        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
     end
-    return vcat.(curves...)
+    return curves
 end
 
 function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, outangle) where {T<:Integer}
-    curves = Vector{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
     for (e_idx, e) in enumerate(edges(g))
         i = src(e)
         j = dst(e)
@@ -174,9 +174,9 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
             d = 2 * π * nodesize[i]
         end
 
-        curves[e_idx] = curveedge(startx, starty, endx, endy, θ, outangle, d)
+        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
     end
-    return vcat.(curves...)
+    return curves
 end
 
 # this function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
@@ -199,5 +199,5 @@ function curveedge(x1, y1, x2, y2, θ, outangle, d; k=0.5)
     xc2 = x2 + r * cos(θ + π - outangle)
     yc2 = y2 + r * sin(θ + π - outangle)
 
-    return [(x1,y1), (xc1, yc1), (xc2, yc2), (x2, y2)]
+    return [(x1,y1) (xc1, yc1) (xc2, yc2) (x2, y2)]
 end

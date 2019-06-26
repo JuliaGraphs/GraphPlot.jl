@@ -196,11 +196,11 @@ function gplot(g::AbstractGraph{T},
     if linetype == "curve"
         if arrowlengthfrac > 0.0
             curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = curve(curves_cord...)
+            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
             arrows = line(arrows_cord)
         else
             curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = curve(curves_cord...)
+            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
         end
     else
         if arrowlengthfrac > 0.0
