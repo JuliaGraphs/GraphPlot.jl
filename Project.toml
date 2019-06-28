@@ -24,6 +24,6 @@ VisualRegressionTests = "34922c18-7c2a-561c-bac1-01e79b2c4c92"
 test = ["Test", "Cairo", "ImageMagick", "VisualRegressionTests"]
 
 [compat]
-"Compose" = "~0.7"
-"LightGraphs" = "~1"
-"VisualRegressionTests" = "~0.2, ~0.3"
+"Compose" = ">= 0.7"
+"LightGraphs" = ">= 1.1"
+"VisualRegressionTests" = ">= 0.2"

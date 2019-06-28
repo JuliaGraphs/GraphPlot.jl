@@ -16,6 +16,11 @@ using ImageMagick
 istravis = "TRAVIS" ∈ keys(ENV)
 datadir = joinpath(@__DIR__, "data")
 
+
+
+
+# TODO smallgraph(:karate) has already been added to LightGraphs
+# but as there hasn't been any new version tagged, we relay on this instead
 karate_edges = Edge.([
   1 => 2,   1 => 3,   1 => 4,   1 => 5,   1 => 6,   1 => 7,
   1 => 8,   1 => 9,   1 => 11,  1 => 12,  1 => 13,  1 => 14,
@@ -31,10 +36,11 @@ karate_edges = Edge.([
  27 => 30, 27 => 34, 28 => 34, 29 => 32, 29 => 34, 30 => 33,
  30 => 34, 31 => 33, 31 => 34, 32 => 33, 32 => 34, 33 => 34,
 ])
-
 # graphs to test
+#g = smallgraph(:karate)
 g = SimpleGraph(karate_edges)
 h = LightGraphs.WheelGraph(10)
+
 
 test_layout(g::AbstractGraph; kws...) = spring_layout(g; seed=2017, kws...)
 
