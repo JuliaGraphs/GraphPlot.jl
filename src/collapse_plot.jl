@@ -1,6 +1,6 @@
 using GraphPlot
 
-function collapse_graph(g::AbstractGraph{T}, membership::Vector{Int}) where {T<:Integer}
+function collapse_graph(g::AbstractGraph, membership::Vector{Int})
     nb_comm = maximum(membership)
 
     collapsed_edge_weights = Vector{Dict{Int,Float64}}(undef, nb_comm)
@@ -36,7 +36,7 @@ function collapse_graph(g::AbstractGraph{T}, membership::Vector{Int}) where {T<:
         end
     end
 
-    collapsed_graph, collapsed_weights
+    return collapsed_graph, collapsed_weights
 end
 
 function community_layout(g::AbstractGraph, membership::Vector{Int})
@@ -60,10 +60,10 @@ function community_layout(g::AbstractGraph, membership::Vector{Int})
             ly[node] = 1.8*length(nodes)/N*sin(θ[idx]) + cly[lbl]
         end
     end
-    lx, ly
+    return lx, ly
 end
 
-function collapse_layout(g::AbstractGraph{T}, membership::Vector{Int}) where {T<:Integer}
+function collapse_layout(g::AbstractGraph, membership::Vector{Int})
     lightg = LightGraphs.SimpleGraph(nv(g))
     for e in edges(g)
         u = src(e)
@@ -92,5 +92,5 @@ function collapse_layout(g::AbstractGraph{T}, membership::Vector{Int}) where {T<
             ly[node] = 1.8*length(nodes)/N*subly[idx] + cly[lbl]
         end
     end
-    lx, ly
+    return lx, ly
 end

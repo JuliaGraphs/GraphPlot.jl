@@ -1,5 +1,6 @@
 using SparseArrays: SparseMatrixCSC, sparse
-using ArnoldiMethod: LR
+using ArnoldiMethod: SR
+using Base: OneTo
 using LinearAlgebra: eigen
 
 """
@@ -39,7 +40,7 @@ Position nodes on a circle.
 
 **Parameters**
 
-*G*
+*g*
 a graph
 
 **Returns**
@@ -51,7 +52,7 @@ but will be normalized and centered anyway
 **Examples**
 
 ```
-julia> g = simple_house_graph()
+julia> g = smallgraph(:house)
 julia> locs_x, locs_y = circular_layout(g)
 ```
 """
@@ -60,7 +61,7 @@ function circular_layout(g)
         return [0.0], [0.0]
     else
         # Discard the extra angle since it matches 0 radians.
-        θ = range(0, stop=2pi, length=_nv(G)+1)[1:end-1]
+        θ = range(0, stop=2pi, length=nv(g)+1)[1:end-1]
         return cos.(θ), sin.(θ)
     end
 end
@@ -68,10 +69,10 @@ end
 """
 This function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 
-Use the spring/repulsion model of Fruchterman and Reingold (1991):
+Use a modified version of the spring/repulsion model of Fruchterman and Reingold (1991):
 
-+ Attractive force:  f_a(d) =  d^2 / k
-+ Repulsive force:  f_r(d) = -k^2 / d
++ Attractive force:  f_a(d) =  d / k
++ Repulsive force:  f_r(d) = -k^2 / d^2
 
 where d is distance between two vertices and the optimal distance
 between vertices k is defined as C * sqrt( area / num_vertices )
@@ -96,47 +97,50 @@ Integer seed for pseudorandom generation of locations (default = 0).
 
 **Examples**
 ```
-julia> g = graphfamous("karate")
+julia> g = smallgraph(:karate)
 julia> locs_x, locs_y = spring_layout(g)
 ```
 """
-function spring_layout(g::AbstractGraph{T}, locs_x, locs_y; C=2.0, MAXITER=100, INITTEMP=2.0) where {T<:Integer}
+function spring_layout(g::AbstractGraph,
+                       locs_x=2*rand(nv(g)).-1.0,
+                       locs_y=2*rand(nv(g)).-1.0;
+                       C=2.0,
+                       MAXITER=100,
+                       INITTEMP=2.0)
 
-    #size(adj_matrix, 1) != size(adj_matrix, 2) && error("Adj. matrix must be square.")
-    N = nv(g)
+    nvg = nv(g)
     adj_matrix = adjacency_matrix(g)
 
     # The optimal distance bewteen vertices
-    K = C * sqrt(4.0 / N)
+    k = C * sqrt(4.0 / nvg)
+    k² = k * k
 
     # Store forces and apply at end of iteration all at once
-    force_x = zeros(N)
-    force_y = zeros(N)
+    force_x = zeros(nvg)
+    force_y = zeros(nvg)
 
     # Iterate MAXITER times
     @inbounds for iter = 1:MAXITER
         # Calculate forces
-        for i = 1:N
+        for i = 1:nvg
             force_vec_x = 0.0
             force_vec_y = 0.0
-            for j = 1:N
+            for j = 1:nvg
                 i == j && continue
                 d_x = locs_x[j] - locs_x[i]
                 d_y = locs_y[j] - locs_y[i]
-                d   = sqrt(d_x^2 + d_y^2)
-                if adj_matrix[i,j] != zero(eltype(adj_matrix)) || adj_matrix[j,i] != zero(eltype(adj_matrix))
-                    # F = d^2 / K - K^2 / d
-                    F_d = d / K - K^2 / d^2
+                dist²  = (d_x * d_x) + (d_y * d_y)
+                dist = sqrt(dist²)
+
+                if !( iszero(adj_matrix[i,j]) && iszero(adj_matrix[j,i]) )
+                    # Attractive + repulsive force
+                    # F_d = dist² / k - k² / dist # original FR algorithm
+                    F_d = dist / k - k² / dist²
                 else
                     # Just repulsive
-                    # F = -K^2 / d^
-                    F_d = -K^2 / d^2
+                    # F_d = -k² / dist  # original FR algorithm
+                    F_d = -k² / dist²
                 end
-                # d  /          sin θ = d_y/d = fy/F
-                # F /| dy fy    -> fy = F*d_y/d
-                #  / |          cos θ = d_x/d = fx/F
-                # /---          -> fx = F*d_x/d
-                # dx fx
                 force_vec_x += F_d*d_x
                 force_vec_y += F_d*d_y
             end
@@ -144,15 +148,15 @@ function spring_layout(g::AbstractGraph{T}, locs_x, locs_y; C=2.0, MAXITER=100, 
             force_y[i] = force_vec_y
         end
         # Cool down
-        TEMP = INITTEMP / iter
+        temp = INITTEMP / iter
         # Now apply them, but limit to temperature
-        for i = 1:N
-            force_mag  = sqrt(force_x[i]^2 + force_y[i]^2)
-            scale      = min(force_mag, TEMP)/force_mag
+        for i = 1:nvg
+            fx = force_x[i]
+            fy = force_y[i]
+            force_mag  = sqrt((fx * fx) + (fy * fy))
+            scale      = min(force_mag, temp) / force_mag
             locs_x[i] += force_x[i] * scale
-            #locs_x[i]  = max(-1.0, min(locs_x[i], +1.0))
             locs_y[i] += force_y[i] * scale
-            #locs_y[i]  = max(-1.0, min(locs_y[i], +1.0))
         end
     end
 
@@ -165,7 +169,7 @@ function spring_layout(g::AbstractGraph{T}, locs_x, locs_y; C=2.0, MAXITER=100, 
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
-    return locs_x,locs_y
+    return locs_x, locs_y
 end
 
 using Random: MersenneTwister
@@ -181,7 +185,7 @@ Position nodes in concentric circles.
 
 **Parameters**
 
-*G*
+*g*
 a graph
 
 *nlist*
@@ -189,20 +193,19 @@ Vector of Vector, Vector of node Vector for each shell.
 
 **Examples**
 ```
-julia> g = graphfamous("karate")
+julia> g = smallgraph(:karate)
 julia> nlist = Array{Vector{Int}}(2)
 julia> nlist[1] = [1:5]
 julia> nlist[2] = [6:num_vertices(g)]
 julia> locs_x, locs_y = shell_layout(g, nlist)
 ```
 """
-function shell_layout(G, nlist::Union{Nothing, Vector{Vector{Int}}} = nothing)
-    if _nv(G) == 1
+function shell_layout(g, nlist::Union{Nothing, Vector{Vector{Int}}} = nothing)
+    if nv(g) == 1
         return [0.0], [0.0]
     end
     if nlist == nothing
-        nlist = Array{Vector{Int}}(1)
-        nlist[1] = collect(1:_nv(G))
+        nlist = [collect(1:nv(g))]
     end
     radius = 0.0
     if length(nlist[1]) > 1
@@ -217,7 +220,7 @@ function shell_layout(G, nlist::Union{Nothing, Vector{Vector{Int}}} = nothing)
         append!(locs_y, radius*sin.(θ))
         radius += 1.0
     end
-    locs_x, locs_y
+    return locs_x, locs_y
 end
 
 """
@@ -237,12 +240,12 @@ the edge weight.  If None, then all edge weights are 1.
 
 **Examples**
 ```
-julia> g = graphfamous("karate")
+julia> g = smallgraph(:karate)
 julia> weight = rand(num_edges(g))
 julia> locs_x, locs_y = spectral_layout(g, weight)
 ```
 """
-function spectral_layout(g::AbstractGraph{T}, weight=nothing) where {T<:Integer}
+function spectral_layout(g::AbstractGraph, weight=nothing)
     if nv(g) == 1
         return [0.0], [0.0]
     elseif nv(g) == 2
@@ -250,7 +253,7 @@ function spectral_layout(g::AbstractGraph{T}, weight=nothing) where {T<:Integer}
     end
 
     if weight == nothing
-        weight = ones(length(edges(g)))
+        weight = ones(ne(g))
     end
     if nv(g) > 500
         A = sparse(Int[src(e) for e in edges(g)],
@@ -276,7 +279,7 @@ function _spectral(A::SparseMatrixCSC)
     data = vec(sum(A, dims=1))
     D = sparse(Base.OneTo(length(data)), Base.OneTo(length(data)), data)
     L = D - A
-    eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, which=LR())
+    eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, which=SR())
     index = sortperm(real(eigenvalues))[2:3]
     return real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end
