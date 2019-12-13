@@ -194,31 +194,46 @@ function gplot(g::AbstractGraph{T},
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
     if linetype == "curve"
-        if arrowlengthfrac > 0.0
-            curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-            arrows = line(arrows_cord)
+        if arrowlengthfrac > 0.0            
+            curves_cord, arrows_cord = GraphPlot.graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+            lines = [ curve(curves_cord[i,1], curves_cord[i,2], curves_cord[i,3], curves_cord[i,4]) for i in 1:size(curves_cord)[1]]
+            arrows = [line(arrows_cord[i]) for i in 1:size(arrows_cord)[1] ]
         else
-            curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
+            curves_cord = GraphPlot.graphcurve(g, locs_x, locs_y, nodesize, outangle)
+            lines = [ curve(curves_cord[i,1], curves_cord[i,2], curves_cord[i,3], curves_cord[i,4]) for i in 1:size(curves_cord)[1]]
         end
     else
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-            lines = line(lines_cord)
-            arrows = line(arrows_cord)
+            lines_cord, arrows_cord = GraphPlot.graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+            lines = [ line(lines_cord[i]) for i in 1:size(lines_cord)[1]]
+            arrows = [line(arrows_cord[i]) for i in 1:size(arrows_cord)[1]]
+      
         else
-            lines_cord = graphline(g, locs_x, locs_y, nodesize)
-            lines = line(lines_cord)
+            lines_cord = GraphPlot.graphline(g, locs_x, locs_y, nodesize)
+            lines = [ line(lines_cord[i]) for i in 1:size(lines_cord)[1]]      
         end
+    end  
+  
+    if !(typeof(edgestrokec) <: Array)
+      _edgestrokec = Array{typeof(edgestrokec),1}(undef,size(lines)[1])    
+      _edgestrokec .= edgestrokec      
+    else
+      _edgestrokec = edgestrokec  
+    end 
+  
+    if !(typeof(edgelinewidth) <: Array)  
+      _edgelinewidth = Array{typeof(edgelinewidth),1}(undef,size(lines)[1])      
+      _edgelinewidth .= edgelinewidth
+    else
+        _edgelinewidth = edgelinewidth
     end
 
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
-            compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+        compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+        compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+        compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+        [compose(context(), arrows[i],stroke(_edgestrokec[i]), linewidth(_edgelinewidth[i])) for i in 1:length(arrows)]...,
+        [compose(context(), lines[i] ,stroke(_edgestrokec[i]) ,linewidth(_edgelinewidth[i])) for i in 1:length(lines)]...)
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
