@@ -227,13 +227,21 @@ function gplot(g::AbstractGraph{T},
     else
         _edgelinewidth = edgelinewidth
     end
-
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-        compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
-        compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-        compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-        [compose(context(), arrows[i],stroke(_edgestrokec[i]), linewidth(_edgelinewidth[i])) for i in 1:length(arrows)]...,
-        [compose(context(), lines[i] ,stroke(_edgestrokec[i]) ,linewidth(_edgelinewidth[i])) for i in 1:length(lines)]...)
+    compose_lst = []
+    push!(compose_lst,compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)))
+    push!(compose_lst,compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)))
+    push!(compose_lst,compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)))
+    if arrows != nothing
+        for i in 1:size(arrows)[1] 
+            push!(compose_lst,compose(context(), arrows[i],stroke(_edgestrokec[i]), linewidth(_edgelinewidth[i])))
+        end
+    end
+    if lines != nothing
+        for i in 1:size(lines)[1]
+            push!(compose_lst,compose(context(), lines[i] ,stroke(_edgestrokec[i]) ,linewidth(_edgelinewidth[i])))
+        end
+    end
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),compose_lst...)
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
