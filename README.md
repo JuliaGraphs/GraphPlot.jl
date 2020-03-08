@@ -25,7 +25,8 @@ using GraphPlot
 # Usage
 ## karate network
 ```julia
-g = graphfamous("karate")
+using LightGraphs: smallgraph
+g = smallgraph(:karate)
 gplot(g)
 
 ```
