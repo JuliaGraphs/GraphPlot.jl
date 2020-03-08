@@ -120,7 +120,7 @@ gplot(g, layout=spectral_layout)
 ```
 ### shell layout
 ```julia
-nlist = Array(Vector{Int}, 2) # two shells
+nlist = Vector{Vector{Int}}(undef, 2) # two shells
 nlist[1] = [1:5] # first shell
 nlist[2] = [6:nv(g)] # second shell
 locs_x, locs_y = shell_layout(g, nlist)
