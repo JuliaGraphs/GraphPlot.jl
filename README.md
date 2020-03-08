@@ -134,7 +134,7 @@ gplot(g, linetype="curve")
 
 ## Save to figure
 ```{execute="false"}
-using Compose
+using Cairo, Compose
 # save to pdf
 draw(PDF("karate.pdf", 16cm, 16cm), gplot(g))
 # save to png
