@@ -33,8 +33,8 @@ gplot(g)
 
 ## Add node label
 ```julia
-using Graphs
-nodelabel = [1:num_vertices(g)]
+using LightGraphs
+nodelabel = [1:nv(g)]
 gplot(g, nodelabel=nodelabel)
 
 ```
@@ -47,7 +47,7 @@ gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
 ## Control the node size
 ```julia
 # nodes size proportional to their degree
-nodesize = [Graphs.out_degree(v, g) for v in Graphs.vertices(g)]
+nodesize = [LightGraphs.out_degree(g, v) for v in LightGraphs.vertices(g)]
 gplot(g, nodesize=nodesize)
 ```
 
@@ -57,7 +57,7 @@ Feed the keyword argument `nodefillc` a color array, ensure each node has a colo
 using Colors
 
 # Generate n maximally distinguishable colors in LCHab space.
-nodefillc = distinguishable_colors(num_vertices(g), colorant"blue")
+nodefillc = distinguishable_colors(nv(g), colorant"blue")
 gplot(g, nodefillc=nodefillc, nodelabel=nodelabel, nodelabeldist=1.8, nodelabelangleoffset=π/4)
 ```
 
@@ -76,13 +76,13 @@ gplot(g, nodelabelsize=nodelabelsize, nodesize=nodesize, nodelabel=nodelabel)
 
 ## Draw edge labels
 ```julia
-edgelabel = [1:Graphs.num_edges(g)]
+edgelabel = [1:LightGraphs.ne(g)]
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel)
 ```
 
 ## Adjust edge labels
 ```julia
-edgelabel = [1:Graphs.num_edges(g)]
+edgelabel = [1:LightGraphs.ne(g)]
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
 ```
 
@@ -122,7 +122,7 @@ gplot(g, layout=spectral_layout)
 ```julia
 nlist = Array(Vector{Int}, 2) # two shells
 nlist[1] = [1:5] # first shell
-nlist[2] = [6:num_vertices(g)] # second shell
+nlist[2] = [6:nv(g)] # second shell
 locs_x, locs_y = shell_layout(g, nlist)
 gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 ```
