@@ -173,7 +173,8 @@ function spring_layout(g::AbstractGraph,
 end
 
 using Random: MersenneTwister
-function spring_layout(g::AbstractGraph; seed::Integer=0, kws...)
+
+function spring_layout(g::AbstractGraph, seed::Integer, kws...)
     rng = MersenneTwister(seed)
     spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
 end

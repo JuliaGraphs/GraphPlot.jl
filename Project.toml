@@ -1,7 +1,7 @@
 name = "GraphPlot"
 uuid = "a2cc645c-3eea-5389-862e-a155d0052231"
 authors = ["JuliaGraphs"]
-version = "0.4.0"
+version = "0.4.2"
 
 [deps]
 ArnoldiMethod = "ec485272-7323-5ecc-a04f-4719b315124d"
@@ -17,9 +17,13 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
-"Compose" = ">= 0.7"
-"LightGraphs" = ">= 1.1"
-"VisualRegressionTests" = ">= 0.2"
+ArnoldiMethod = "0.0.4"
+ColorTypes = "0.9, 0.10"
+Colors = "0.11, 0.12"
+Compose = "0.7, 0.8"
+LightGraphs = "1.1"
+VisualRegressionTests = "0.2, 0.3"
+julia = "1"
 
 [extras]
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"
