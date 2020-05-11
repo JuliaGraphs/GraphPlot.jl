@@ -197,7 +197,7 @@ Vector of Vector, Vector of node Vector for each shell.
 julia> g = smallgraph(:karate)
 julia> nlist = Array{Vector{Int}}(2)
 julia> nlist[1] = [1:5]
-julia> nlist[2] = [6:num_vertiecs(g)]
+julia> nlist[2] = [6:num_vertices(g)]
 julia> locs_x, locs_y = shell_layout(g, nlist)
 ```
 """
@@ -284,3 +284,5 @@ function _spectral(A::SparseMatrixCSC)
     index = sortperm(real(eigenvalues))[2:3]
     return real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end
+
+include("KamadaKawai.jl")

@@ -4,3 +4,5 @@ Colors
 ColorTypes
 Compose 0.7.0
 LightGraphs 1.1.0
+Optim
+Distances
