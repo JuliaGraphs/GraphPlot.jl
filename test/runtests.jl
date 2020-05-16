@@ -106,3 +106,21 @@ end
     @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
 end
+
+@testset "ChainGraph" begin
+	g = SimpleDiGraph([ 0 1 0 1 ; 1 0 1 0 ; 1 0 0 0 ; 1 0 1 0])
+    refimg1 = joinpath(datadir, "chainGraphTrue.png")
+    refimg2 = joinpath(datadir, "chainGraphFalse.png")
+    plot_and_save1(fname) = plot_and_save(fname, g, chainGraph = true)
+    plot_and_save2(fname) = plot_and_save(fname, g, chainGraph = false)
+    @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
+    @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
+
+	g2 = SimpleDiGraph([ 0 1 0 0 0; 0 0 1 1 1; 0 1 0 1 1; 0 1 1 0 1; 0 1 1 1 0])
+    refimg3 = joinpath(datadir, "chainGraphSizeTrue.png")
+    refimg4 = joinpath(datadir, "chainGraphSizeFalse.png")
+	plot_and_save3(fname) = plot_and_save(fname, g2, chainGraph=true, nodesize = [0.6; 1.0; 1.0; 1.0; 1.0])
+	plot_and_save4(fname) = plot_and_save(fname, g2, chainGraph=false, nodesize = [0.6; 1.0; 1.0; 1.0; 1.0])
+    @test test_images(VisualTest(plot_and_save3, refimg3), popup=!istravis) |> save_comparison |> success
+    @test test_images(VisualTest(plot_and_save4, refimg4), popup=!istravis) |> save_comparison |> success
+end

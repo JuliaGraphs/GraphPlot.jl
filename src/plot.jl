@@ -110,6 +110,7 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9.0,
     linetype = "straight",
+	chainGraph = false,
     outangle = pi/5) where {T <:Integer, R <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
@@ -204,9 +205,7 @@ function gplot(g::AbstractGraph{T},
         end
     else
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-			println("lines_cord== $lines_cord")
-			println("arrows_cord == $arrows_cord")
+            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, chainGraph)
             lines = line(lines_cord)
             arrows = line(arrows_cord)
         else

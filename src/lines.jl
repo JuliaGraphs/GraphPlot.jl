@@ -1,26 +1,3 @@
-"""
-Return lines and arrow heads
-"""
-function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
-    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
-        i = src(e)
-        j = dst(e)
-        Δx = locs_x[j] - locs_x[i]
-        Δy = locs_y[j] - locs_y[i]
-        θ = atan(Δy,Δx)
-        startx = locs_x[i] + nodesize[i]*cos(θ)
-        starty = locs_y[i] + nodesize[i]*sin(θ)
-        endx = locs_x[j] + nodesize[j]*cos(θ+π)
-        endy = locs_y[j] + nodesize[j]*sin(θ+π)
-        lines[e_idx] = [(startx, starty), (endx, endy)]
-        arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
-        arrows[e_idx] = [arr1, (endx, endy), arr2]
-    end
-    lines, arrows
-end
-
 function hasReverseEdge(g, e)
 	return has_edge(g,dst(e),src(e))
 end
@@ -38,7 +15,38 @@ function filterUndef(array)
 	return result
 end
 
-function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset) where {T<:Integer}
+"""
+Return lines and arrow heads
+"""
+function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset, chainGraph) where {T<:Real}
+    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
+    for (e_idx, e) in enumerate(edges(g))
+        i = src(e)
+        j = dst(e)
+        Δx = locs_x[j] - locs_x[i]
+        Δy = locs_y[j] - locs_y[i]
+        θ = atan(Δy,Δx)
+        startx = locs_x[i] + nodesize[i]*cos(θ)
+        starty = locs_y[i] + nodesize[i]*sin(θ)
+        endx = locs_x[j] + nodesize[j]*cos(θ+π)
+        endy = locs_y[j] + nodesize[j]*sin(θ+π)
+        lines[e_idx] = [(startx, starty), (endx, endy)]
+		if chainGraph
+			if !hasReverseEdge(g,e) 	
+				arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+				arrows[e_idx] = [arr1, (endx, endy), arr2]
+			end
+		else
+			arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+			arrows[e_idx] = [arr1, (endx, endy), arr2]
+		end
+    end
+	arrows = chainGraph ? filterUndef(arrows) : arrows
+    lines, arrows
+end
+
+function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, chainGraph) where {T<:Integer}
     lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
@@ -52,15 +60,17 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlen
         endx = locs_x[j] + nodesize*cos(θ+π)
         endy = locs_y[j] + nodesize*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
-		println("graphLineEdited")
-		#TODO add propertie in patch
-		#TODO extend to other functions
-		if !hasReverseEdge(g,e) 	
+		if chainGraph
+			if !hasReverseEdge(g,e) 	
+				arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+				arrows[e_idx] = [arr1, (endx, endy), arr2]
+			end
+		else
 			arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
 			arrows[e_idx] = [arr1, (endx, endy), arr2]
 		end
     end
-	arrows = filterUndef(arrows)
+	arrows = chainGraph ? filterUndef(arrows) : arrows
     lines, arrows
 end
 
