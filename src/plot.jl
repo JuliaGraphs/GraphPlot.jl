@@ -84,6 +84,8 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 `arrowangleoffset`
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
+`chainGraph`
+Optional. Hides arrows for bidirectional edges in a directed graph. Default: false
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R}, locs_y_in::Vector{R};
