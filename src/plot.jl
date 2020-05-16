@@ -205,6 +205,8 @@ function gplot(g::AbstractGraph{T},
     else
         if arrowlengthfrac > 0.0
             lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+			println("lines_cord== $lines_cord")
+			println("arrows_cord == $arrows_cord")
             lines = line(lines_cord)
             arrows = line(arrows_cord)
         else
