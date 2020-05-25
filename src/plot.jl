@@ -129,7 +129,11 @@ function gplot(g::AbstractGraph{T},
     min_x, max_x = extrema(locs_x)
     min_y, max_y = extrema(locs_y)
     function scaler(z, a, b)
-        2.0 * ((z - a) / (b - a)) - 1.0
+        if (a - b) == 0.0
+            return 0.5
+        else
+            return 2.0 * ((z - a) / (b - a)) - 1.0
+        end
     end
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
