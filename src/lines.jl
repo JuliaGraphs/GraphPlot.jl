@@ -3,10 +3,10 @@ function hasReverseEdge(g, e)
 end
 
 function filterUndef(array)
-	result = nothing
+	result = [] 
 	for i in 1:length(array) 
 		if isassigned(array,i) 
-			if result == nothing
+			if result == [] 
 				result = typeof(array[i])[]
 			end
 			push!(result,array[i])
