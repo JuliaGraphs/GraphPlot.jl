@@ -34,7 +34,7 @@ gplot(g)
 ## Add node label
 ```julia
 using LightGraphs
-nodelabel = [1:nv(g)]
+nodelabel = 1:nv(g)
 gplot(g, nodelabel=nodelabel)
 
 ```
@@ -47,7 +47,7 @@ gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
 ## Control the node size
 ```julia
 # nodes size proportional to their degree
-nodesize = [LightGraphs.out_degree(g, v) for v in LightGraphs.vertices(g)]
+nodesize = [LightGraphs.outdegree(g, v) for v in LightGraphs.vertices(g)]
 gplot(g, nodesize=nodesize)
 ```
 
@@ -76,13 +76,13 @@ gplot(g, nodelabelsize=nodelabelsize, nodesize=nodesize, nodelabel=nodelabel)
 
 ## Draw edge labels
 ```julia
-edgelabel = [1:LightGraphs.ne(g)]
+edgelabel = 1:LightGraphs.ne(g)
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel)
 ```
 
 ## Adjust edge labels
 ```julia
-edgelabel = [1:LightGraphs.ne(g)]
+edgelabel = 1:LightGraphs.ne(g)
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
 ```
 
@@ -99,7 +99,7 @@ gplot(g, nodefillc=nodefillc)
 ## Different layout
 
 ### spring layout (default)
-This is the defaut layout and will be chosen if no layout is specified. The [default parameters to the spring layout algorithm](https://github.com/JuliaGraphs/GraphPlot.jl/blob/master/src/layout.jl#L78) can be changed by supplying an anonymous function, e.g., if nodes appear clustered too tightly together, try 
+This is the defaut layout and will be chosen if no layout is specified. The [default parameters to the spring layout algorithm](https://github.com/JuliaGraphs/GraphPlot.jl/blob/master/src/layout.jl#L78) can be changed by supplying an anonymous function, e.g., if nodes appear clustered too tightly together, try
 ```julia
 layout=(args...)->spring_layout(args...; C=20)
 gplot(g, layout=layout, nodelabel=nodelabel)
@@ -152,7 +152,7 @@ gplot(h)
 # Arguments
 + `G` graph to plot
 + `layout` Optional. layout algorithm. Currently can choose from
-[random_layout, circular_layout, spring_layout, stressmajorize_layout, 
+[random_layout, circular_layout, spring_layout, stressmajorize_layout,
 shell_layout, spectral_layout].
 Default: `spring_layout`
 + `nodelabel` Optional. Labels for the vertices. Default: `nothing`
