@@ -47,7 +47,7 @@ gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
 ## Control the node size
 ```julia
 # nodes size proportional to their degree
-nodesize = [LightGraphs.out_degree(g, v) for v in LightGraphs.vertices(g)]
+nodesize = [LightGraphs.outdegree(g, v) for v in LightGraphs.vertices(g)]
 gplot(g, nodesize=nodesize)
 ```
 
