@@ -20,6 +20,9 @@ Default: `spring_layout`
 Locations of the nodes. Can be any units you want,
 but will be normalized and centered anyway
 
+`preserveratio`
+True if the plot shall use the same scaling factor for x and y axes.
+
 `NODESIZE`
 Optional. Max size for the nodes. Default: `3.0/sqrt(N)`
 
@@ -77,6 +80,9 @@ Optional. Relative line width for the edges, can be a Vector. Default: `1.0`
 `edgestrokec`
 Optional. Color for the edge strokes, can be a Vector. Default: `colorant"lightgray"`
 
+`edgedashstyle`
+Optional. Dash style for the edge. Default: no dashed line.
+
 `arrowlengthfrac`
 Optional. Fraction of line length to use for arrows.
 Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
@@ -87,6 +93,7 @@ Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R}, locs_y_in::Vector{R};
+    preserveratio = false,
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -96,6 +103,7 @@ function gplot(g::AbstractGraph{T},
     edgelabel = [],
     edgelabelc = colorant"black",
     edgelabelsize = 1.0,
+    edgedashstyle = [],
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
@@ -125,18 +133,33 @@ function gplot(g::AbstractGraph{T},
     locs_x = Float64.(locs_x_in)
     locs_y = Float64.(locs_y_in)
 
-    # Scale to unit square
+    # Scale data
     min_x, max_x = extrema(locs_x)
     min_y, max_y = extrema(locs_y)
-    function scaler(z, a, b)
-        if (a - b) == 0.0
-            return 0.5
-        else
-            return 2.0 * ((z - a) / (b - a)) - 1.0
+    if preserveratio
+        # Uniform scale
+        function scaler(z, min, ratio)
+            2 * (z - min) * ratio - 1
         end
+        min_ratio = min(1/(max_x - min_x), 1/(max_y - min_y))
+        map!(z -> scaler(z, min_x, min_ratio), locs_x, locs_x)
+        map!(z -> scaler(z, min_y, min_ratio), locs_y, locs_y)
+    else
+        # Scale to unit square
+        function scalerunitsquare(z, a, b)
+            2.0 * ((z - a) / (b - a)) - 1.0
+        end
+        map!(z -> scalerunitsquare(z, min_x, max_x), locs_x, locs_x)
+        map!(z -> scalerunitsquare(z, min_y, max_y), locs_y, locs_y)
     end
-    map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
-    map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
+
+    # Calculate the size of the box
+    min_x, max_x = extrema(locs_x)
+    min_y, max_y = extrema(locs_y)
+    bound = 0.2
+    units = UnitBox(min_x - bound, min_y - bound,
+        max_x - min_x + 2*bound, max_y - min_y + 2*bound)
+    units = UnitBox(-1.2, -1.2, 2.4, 2.4)
 
     # Determine sizes
     #NODESIZE    = 0.25/sqrt(N)
@@ -217,12 +240,12 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+    compose(context(units=units),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), strokedash(edgedashstyle), fill(nothing), linewidth(edgelinewidth)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
