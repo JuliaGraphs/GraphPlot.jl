@@ -130,7 +130,6 @@ function gplot(g::AbstractGraph{T},
     locs_y = Float64.(locs_y_in)
 
     # Scale to unit square
-    # Scale data
     min_x, max_x = extrema(locs_x)
     min_y, max_y = extrema(locs_y)
     function scaler(z, a, b)
