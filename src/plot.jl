@@ -20,9 +20,6 @@ Default: `spring_layout`
 Locations of the nodes. Can be any units you want,
 but will be normalized and centered anyway
 
-`preserveratio`
-True if the plot shall use the same scaling factor for x and y axes.
-
 `NODESIZE`
 Optional. Max size for the nodes. Default: `3.0/sqrt(N)`
 
@@ -93,7 +90,6 @@ Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R}, locs_y_in::Vector{R};
-    preserveratio = false,
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -136,29 +132,15 @@ function gplot(g::AbstractGraph{T},
     # Scale data
     min_x, max_x = extrema(locs_x)
     min_y, max_y = extrema(locs_y)
-    if preserveratio
-        # Uniform scale
-        function scaler(z, min, ratio)
-            2 * (z - min) * ratio - 1
-        end
-        min_ratio = min(1/(max_x - min_x), 1/(max_y - min_y))
-        map!(z -> scaler(z, min_x, min_ratio), locs_x, locs_x)
-        map!(z -> scaler(z, min_y, min_ratio), locs_y, locs_y)
-    else
-        # Scale to unit square
-        function scalerunitsquare(z, a, b)
-            2.0 * ((z - a) / (b - a)) - 1.0
-        end
-        map!(z -> scalerunitsquare(z, min_x, max_x), locs_x, locs_x)
-        map!(z -> scalerunitsquare(z, min_y, max_y), locs_y, locs_y)
+
+    # Scale to unit square
+    function scalerunitsquare(z, a, b)
+        2.0 * ((z - a) / (b - a)) - 1.0
     end
+    map!(z -> scalerunitsquare(z, min_x, max_x), locs_x, locs_x)
+    map!(z -> scalerunitsquare(z, min_y, max_y), locs_y, locs_y)
 
     # Calculate the size of the box
-    min_x, max_x = extrema(locs_x)
-    min_y, max_y = extrema(locs_y)
-    bound = 0.2
-    units = UnitBox(min_x - bound, min_y - bound,
-        max_x - min_x + 2*bound, max_y - min_y + 2*bound)
     units = UnitBox(-1.2, -1.2, 2.4, 2.4)
 
     # Determine sizes
