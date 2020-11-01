@@ -129,16 +129,19 @@ function gplot(g::AbstractGraph{T},
     locs_x = Float64.(locs_x_in)
     locs_y = Float64.(locs_y_in)
 
+    # Scale to unit square
     # Scale data
     min_x, max_x = extrema(locs_x)
     min_y, max_y = extrema(locs_y)
-
-    # Scale to unit square
-    function scalerunitsquare(z, a, b)
-        2.0 * ((z - a) / (b - a)) - 1.0
+    function scaler(z, a, b)
+        if (a - b) == 0.0
+            return 0.5
+        else
+            return 2.0 * ((z - a) / (b - a)) - 1.0
+        end
     end
-    map!(z -> scalerunitsquare(z, min_x, max_x), locs_x, locs_x)
-    map!(z -> scalerunitsquare(z, min_y, max_y), locs_y, locs_y)
+    map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
+    map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
     # Calculate the size of the box
     units = UnitBox(-1.2, -1.2, 2.4, 2.4)
