@@ -1,7 +1,7 @@
 # GraphPlot
 
-[![Build Status](https://travis-ci.org/JuliaGraphs/GraphPlot.jl.svg?branch=master)](https://travis-ci.org/JuliaGraphs/GraphPlot.jl)
-[![Julia Build](http://pkg.julialang.org/badges/GraphPlot_0.6.svg)](http://pkg.julialang.org/?pkg=GraphPlot)
+![CI](https://github.com/JuliaGraphs/GraphPlot.jl/workflows/CI/badge.svg?branch=master)
+[![version](https://juliahub.com/docs/GraphPlot/version.svg)](https://juliahub.com/ui/Packages/GraphPlot/bUwXr)
 
 Graph layout and visualization algorithms based on [Compose.jl](https://github.com/dcjones/Compose.jl) and inspired by [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl).
 
