@@ -16,7 +16,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 ArnoldiMethod = "0.0.4, 0.1"
-ColorTypes = "0.9, 0.10"
+ColorTypes = "0.9, 0.10, 0.11"
 Colors = "0.11, 0.12"
 Compose = "0.8, 0.9"
 LightGraphs = "1.1"
