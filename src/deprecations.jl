@@ -1,49 +1,49 @@
 using Base: depwarn
 
 
-function _nv(g) 
-    depwarn("`GraphPlot._nv(g)` is deprectated. Use `LightGraphs.nv(g)` instead.", :_nv)  
-    return LightGraphs.nv(g)
+function _nv(g)
+    depwarn("`GraphPlot._nv(g)` is deprectated. Use `Graphs.nv(g)` instead.", :_nv)
+    return Graphs.nv(g)
 end
 
-function _ne(g) 
-    depwarn("`GraphPlot._ne(g)` is deprectated. Use `LightGraphs.ne(g)` instead.", :_ne)  
-    return LightGraphs.ne(g)
+function _ne(g)
+    depwarn("`GraphPlot._ne(g)` is deprectated. Use `Graphs.ne(g)` instead.", :_ne)
+    return Graphs.ne(g)
 end
 
-function _vertices(g) 
-    depwarn("`GraphPlot._vertices(g)` is deprectated. Use `LightGraphs.vertices(g)` instead.", :_vertices)  
-    return LightGraphs.vertices(g)
+function _vertices(g)
+    depwarn("`GraphPlot._vertices(g)` is deprectated. Use `Graphs.vertices(g)` instead.", :_vertices)
+    return Graphs.vertices(g)
 end
 
-function _edges(g) 
-    depwarn("`GraphPlot._edges(g)` is deprectated. Use `LightGraphs.edges(g)` instead.", :_edges)  
-    return LightGraphs.edges(g)
+function _edges(g)
+    depwarn("`GraphPlot._edges(g)` is deprectated. Use `Graphs.edges(g)` instead.", :_edges)
+    return Graphs.edges(g)
 end
 
-function _src_index(e, g) 
-    depwarn("`GraphPlot._src_index(g)` is deprectated. Use `LightGraphs.src(e)` instead.", :_src_index)  
-    return LightGraphs.src(e)
+function _src_index(e, g)
+    depwarn("`GraphPlot._src_index(g)` is deprectated. Use `Graphs.src(e)` instead.", :_src_index)
+    return Graphs.src(e)
 end
 
-function _dst_index(e, g) 
-    depwarn("`GraphPlot._dst_index(g)` is deprectated. Use `LightGraphs.dst(e)` instead.", :_dst_index)  
-    return LightGraphs.dst(e)
+function _dst_index(e, g)
+    depwarn("`GraphPlot._dst_index(g)` is deprectated. Use `Graphs.dst(e)` instead.", :_dst_index)
+    return Graphs.dst(e)
 end
 
-function _adjacency_matrix(g) 
-    depwarn("`GraphPlot._adjacency_matrix(g)` is deprectated. Use `LightGraphs.adjacency_matrix(g)` instead.", :_adjacency_matrix)  
-    return LightGraphs.adjacency_matrix(g)
+function _adjacency_matrix(g)
+    depwarn("`GraphPlot._adjacency_matrix(g)` is deprectated. Use `Graphs.adjacency_matrix(g)` instead.", :_adjacency_matrix)
+    return Graphs.adjacency_matrix(g)
 end
 
-function _is_directed(g) 
-    depwarn("`GraphPlot._is_directed(g)` is deprectated. Use `LightGraphs.is_directed(g)` instead.", :_is_directed)  
-    return LightGraphs.is_directed(g)
+function _is_directed(g)
+    depwarn("`GraphPlot._is_directed(g)` is deprectated. Use `Graphs.is_directed(g)` instead.", :_is_directed)
+    return Graphs.is_directed(g)
 end
 
-function _laplacian_matrix(g) 
-    depwarn("`GraphPlot._laplacian_matrix(g)` is deprectated. Use `LightGraphs.laplacian_matrix(g)` instead.", :_laplacian_matrix)  
-    return LightGraphs.laplacian_matrix(g)
+function _laplacian_matrix(g)
+    depwarn("`GraphPlot._laplacian_matrix(g)` is deprectated. Use `Graphs.laplacian_matrix(g)` instead.", :_laplacian_matrix)
+    return Graphs.laplacian_matrix(g)
 end
 
 

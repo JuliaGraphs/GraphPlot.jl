@@ -3,7 +3,7 @@
 (Sys.islinux() || Sys.iswindows()) && import ImageMagick
 
 using GraphPlot
-using LightGraphs
+using Graphs
 using Cairo
 using Colors
 using Compose
@@ -19,7 +19,7 @@ datadir = joinpath(@__DIR__, "data")
 
 
 
-# TODO smallgraph(:karate) has already been added to LightGraphs
+# TODO smallgraph(:karate) has already been added to Graphs
 # but as there hasn't been any new version tagged, we relay on this instead
 karate_edges = Edge.([
   1 => 2,   1 => 3,   1 => 4,   1 => 5,   1 => 6,   1 => 7,
@@ -39,7 +39,7 @@ karate_edges = Edge.([
 # graphs to test
 #g = smallgraph(:karate)
 g = SimpleGraph(karate_edges)
-h = LightGraphs.WheelGraph(10)
+h = Graphs.WheelGraph(10)
 
 test_layout(g::AbstractGraph; kws...) = spring_layout(g, 2017, kws...)
 

@@ -280,7 +280,7 @@ function _spectral(A::SparseMatrixCSC)
     data = vec(sum(A, dims=1))
     D = sparse(Base.OneTo(length(data)), Base.OneTo(length(data)), data)
     L = D - A
-    eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, which=SR())
+    eigenvalues, eigenvectors = Graphs.LinAlg.eigs(L, nev=3, which=SR())
     index = sortperm(real(eigenvalues))[2:3]
     return real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end

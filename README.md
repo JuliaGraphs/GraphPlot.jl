@@ -25,7 +25,7 @@ using GraphPlot
 # Usage
 ## karate network
 ```julia
-using LightGraphs: smallgraph
+using Graphs: smallgraph
 g = smallgraph(:karate)
 gplot(g)
 
@@ -33,7 +33,7 @@ gplot(g)
 
 ## Add node label
 ```julia
-using LightGraphs
+using Graphs
 nodelabel = 1:nv(g)
 gplot(g, nodelabel=nodelabel)
 
@@ -47,7 +47,7 @@ gplot(g, nodelabel=nodelabel, nodelabeldist=1.5, nodelabelangleoffset=π/4)
 ## Control the node size
 ```julia
 # nodes size proportional to their degree
-nodesize = [LightGraphs.outdegree(g, v) for v in LightGraphs.vertices(g)]
+nodesize = [Graphs.outdegree(g, v) for v in Graphs.vertices(g)]
 gplot(g, nodesize=nodesize)
 ```
 
@@ -76,13 +76,13 @@ gplot(g, nodelabelsize=nodelabelsize, nodesize=nodesize, nodelabel=nodelabel)
 
 ## Draw edge labels
 ```julia
-edgelabel = 1:LightGraphs.ne(g)
+edgelabel = 1:Graphs.ne(g)
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel)
 ```
 
 ## Adjust edge labels
 ```julia
-edgelabel = 1:LightGraphs.ne(g)
+edgelabel = 1:Graphs.ne(g)
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
 ```
 
@@ -142,9 +142,9 @@ draw(PNG("karate.png", 16cm, 16cm), gplot(g))
 # save to svg
 draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
 ```
-# LightGraphs integration
+# Graphs.jl integration
 ```julia
-using LightGraphs
+using Graphs
 h = watts_strogatz(50, 6, 0.3)
 gplot(h)
 ```
