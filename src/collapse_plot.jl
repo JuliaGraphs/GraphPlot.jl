@@ -64,11 +64,11 @@ function community_layout(g::AbstractGraph, membership::Vector{Int})
 end
 
 function collapse_layout(g::AbstractGraph, membership::Vector{Int})
-    lightg = LightGraphs.SimpleGraph(nv(g))
+    sg = Graphs.SimpleGraph(nv(g))
     for e in edges(g)
         u = src(e)
         v = dst(e)
-        LightGraphs.add_edge!(lightg, u, v)
+        Graphs.add_edge!(sg, u, v)
     end
     N = length(membership)
     lx = zeros(N)
@@ -84,7 +84,7 @@ function collapse_layout(g::AbstractGraph, membership::Vector{Int})
     h, w = collapse_graph(g, membership)
     clx, cly = spring_layout(h)
     for (lbl, nodes) in comms
-        subg = lightg[nodes]
+        subg = sg[nodes]
         sublx, subly = spring_layout(subg)
         θ = range(0, stop=2pi, length=(length(nodes) + 1))[1:end-1]
         for (idx, node) in enumerate(nodes)
