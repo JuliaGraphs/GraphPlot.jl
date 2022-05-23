@@ -195,9 +195,9 @@ Vector of Vector, Vector of node Vector for each shell.
 **Examples**
 ```
 julia> g = smallgraph(:karate)
-julia> nlist = Array{Vector{Int}}(2)
-julia> nlist[1] = [1:5]
-julia> nlist[2] = [6:num_vertiecs(g)]
+julia> nlist = Vector{Vector{Int}}()
+julia> push!(nlist, collect(1:5))
+julia> push!(nlist, collect(6:nv(g)))
 julia> locs_x, locs_y = shell_layout(g, nlist)
 ```
 """
@@ -242,7 +242,7 @@ the edge weight.  If None, then all edge weights are 1.
 **Examples**
 ```
 julia> g = smallgraph(:karate)
-julia> weight = rand(num_edges(g))
+julia> weight = rand(ne(g))
 julia> locs_x, locs_y = spectral_layout(g, weight)
 ```
 """
@@ -280,7 +280,7 @@ function _spectral(A::SparseMatrixCSC)
     data = vec(sum(A, dims=1))
     D = sparse(Base.OneTo(length(data)), Base.OneTo(length(data)), data)
     L = D - A
-    eigenvalues, eigenvectors = LightGraphs.LinAlg.eigs(L, nev=3, which=SR())
+    eigenvalues, eigenvectors = Graphs.LinAlg.eigs(L, nev=3, which=SR())
     index = sortperm(real(eigenvalues))[2:3]
     return real(eigenvectors[:, index[1]]), real(eigenvectors[:, index[2]])
 end

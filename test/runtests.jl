@@ -1,12 +1,12 @@
-
+@info "Importing test packages..."
 # This should fix an error, see : https://github.com/JuliaIO/ImageMagick.jl/issues/133
 (Sys.islinux() || Sys.iswindows()) && import ImageMagick
 
 using GraphPlot
-using LightGraphs
+using GraphPlot.Graphs
 using Cairo
-using Colors
-using Compose
+using GraphPlot.Colors
+using GraphPlot.Compose
 using Random
 using Test
 using VisualRegressionTests
@@ -17,9 +17,10 @@ istravis = "TRAVIS" ∈ keys(ENV)
 datadir = joinpath(@__DIR__, "data")
 
 
+@info "Starting tests..."
 
 
-# TODO smallgraph(:karate) has already been added to LightGraphs
+# TODO smallgraph(:karate) has already been added to Graphs
 # but as there hasn't been any new version tagged, we relay on this instead
 karate_edges = Edge.([
   1 => 2,   1 => 3,   1 => 4,   1 => 5,   1 => 6,   1 => 7,
@@ -39,7 +40,7 @@ karate_edges = Edge.([
 # graphs to test
 #g = smallgraph(:karate)
 g = SimpleGraph(karate_edges)
-h = LightGraphs.WheelGraph(10)
+h = Graphs.WheelGraph(10)
 
 test_layout(g::AbstractGraph; kws...) = spring_layout(g, 2017, kws...)
 
