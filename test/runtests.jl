@@ -40,7 +40,7 @@ karate_edges = Edge.([
 # graphs to test
 #g = smallgraph(:karate)
 g = SimpleGraph(karate_edges)
-h = Graphs.WheelGraph(10)
+h = Graphs.wheel_graph(10)
 
 test_layout(g::AbstractGraph; kws...) = spring_layout(g, 2017, kws...)
 
