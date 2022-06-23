@@ -1,7 +1,24 @@
+function hasReverseEdge(g, e)
+	return has_edge(g,dst(e),src(e))
+end
+
+function filterUndef(array)
+	result = [] 
+	for i in 1:length(array) 
+		if isassigned(array,i) 
+			if result == [] 
+				result = typeof(array[i])[]
+			end
+			push!(result,array[i])
+		end
+	end
+	return result
+end
+
 """
 Return lines and arrow heads
 """
-function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
+function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset, chainGraph) where {T<:Real}
     lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
@@ -15,13 +32,21 @@ function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoff
         endx = locs_x[j] + nodesize[j]*cos(θ+π)
         endy = locs_y[j] + nodesize[j]*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
-        arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
-        arrows[e_idx] = [arr1, (endx, endy), arr2]
+		if chainGraph
+			if !hasReverseEdge(g,e) 	
+				arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+				arrows[e_idx] = [arr1, (endx, endy), arr2]
+			end
+		else
+			arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+			arrows[e_idx] = [arr1, (endx, endy), arr2]
+		end
     end
+	arrows = chainGraph ? filterUndef(arrows) : arrows
     lines, arrows
 end
 
-function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset) where {T<:Integer}
+function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, chainGraph) where {T<:Integer}
     lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
     for (e_idx, e) in enumerate(edges(g))
@@ -35,9 +60,17 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlen
         endx = locs_x[j] + nodesize*cos(θ+π)
         endy = locs_y[j] + nodesize*sin(θ+π)
         lines[e_idx] = [(startx, starty), (endx, endy)]
-        arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
-        arrows[e_idx] = [arr1, (endx, endy), arr2]
+		if chainGraph
+			if !hasReverseEdge(g,e) 	
+				arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+				arrows[e_idx] = [arr1, (endx, endy), arr2]
+			end
+		else
+			arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+			arrows[e_idx] = [arr1, (endx, endy), arr2]
+		end
     end
+	arrows = chainGraph ? filterUndef(arrows) : arrows
     lines, arrows
 end
 

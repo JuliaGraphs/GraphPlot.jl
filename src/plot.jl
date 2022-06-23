@@ -84,6 +84,8 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 `arrowangleoffset`
 Optional. Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
+`chainGraph`
+Optional. Hides arrows for bidirectional edges in a directed graph. Default: false
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R}, locs_y_in::Vector{R};
@@ -110,6 +112,7 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9.0,
     linetype = "straight",
+	chainGraph = false,
     outangle = pi/5) where {T <:Integer, R <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
@@ -208,7 +211,7 @@ function gplot(g::AbstractGraph{T},
         end
     else
         if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, chainGraph)
             lines = line(lines_cord)
             arrows = line(arrows_cord)
         else
