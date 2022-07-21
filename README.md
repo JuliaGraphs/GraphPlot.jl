@@ -135,6 +135,7 @@ gplot(g, linetype="curve")
 ## Show plot
 
 When using an IDE such as VSCode, `Cairo.jl` is required to visualize the plot inside the IDE.
+When using the REPL, `gplothtml` will allow displaying the plot on a browser.
 
 ## Save to figure
 ```julia
