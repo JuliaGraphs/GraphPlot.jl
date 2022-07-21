@@ -241,11 +241,11 @@ end
 
 # take from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
 function open_file(filename)
-    if Sys.isapple(Sys.KERNEL) #apple
+    if Sys.isapple() #apple
         run(`open $(filename)`)
-    elseif Sys.islinux(Sys.KERNEL) || Sys.isbsd(Sys.KERNEL) #linux
+    elseif Sys.islinux() || Sys.isbsd() #linux
         run(`xdg-open $(filename)`)
-    elseif Sys.iswindows(Sys.KERNEL) #windows
+    elseif Sys.iswindows() #windows
         run(`$(ENV["COMSPEC"]) /c start $(filename)`)
     else
         @warn("Showing plots is not supported on OS $(string(Sys.KERNEL))")
