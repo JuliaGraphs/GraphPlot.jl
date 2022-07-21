@@ -14,7 +14,7 @@ Other layout algorithms are wrapped from [NetworkX](https://github.com/networkx/
 # Getting Started
 
 From the Julia REPL the latest version can be installed with
-```{execute="false"}
+```julia
 Pkg.add("GraphPlot")
 ```
 GraphPlot is then loaded with
@@ -131,6 +131,10 @@ gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 ```julia
 gplot(g, linetype="curve")
 ```
+
+## Show plot
+
+When using an IDE such as VSCode, `Cairo.jl` is required to visualize the plot inside the IDE.
 
 ## Save to figure
 ```julia
