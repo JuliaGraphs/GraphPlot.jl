@@ -78,7 +78,7 @@ Optional. Relative line width for the edges, can be a Vector. Default: `1.0`
 Optional. Color for the edge strokes, can be a Vector. Default: `colorant"lightgray"`
 
 `edgedashstyle`
-Optional. Dash style for the edge. Default: no dashed line.
+Optional. Dash style for the edge, can be a Vector. Default: no dashed line.
 
 `arrowlengthfrac`
 Optional. Fraction of line length to use for arrows.

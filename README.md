@@ -86,6 +86,15 @@ edgelabel = 1:Graphs.ne(g)
 gplot(g, edgelabel=edgelabel, nodelabel=nodelabel, edgelabeldistx=0.5, edgelabeldisty=0.5)
 ```
 
+## Add dash style to edges
+```julia
+using Measures
+gplot(g, edgedashstyle=[5mm, 2mm])
+# vary edge styles
+using Compose
+gplot(g, EDGELINEWIDTH=0.7, edgedashstyle=[[10px, 5px], [10px, 5px, 3px, 5px], [4px, 4px], []])
+```
+
 ## Color the graph
 ```julia
 # nodes membership
