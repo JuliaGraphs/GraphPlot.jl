@@ -96,7 +96,7 @@ Default: `π/5 (36 degrees)`
 
 """
 function gplot(g::AbstractGraph{T},
-    locs_x_in::Vector{R}, locs_y_in::Vector{R};
+    locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -120,7 +120,7 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
     linetype = "straight",
-    outangle = π / 5) where {T <:Integer, R <: Real}
+    outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -253,13 +253,13 @@ function open_file(filename)
 end
 
 # taken from [Gadfly.jl](https://github.com/dcjones/Gadfly.jl)
-function gplothtml(g; layout::Function=spring_layout, keyargs...)
+function gplothtml(args...; keyargs...)
     filename = string(tempname(), ".html")
     output = open(filename, "w")
 
     plot_output = IOBuffer()
     draw(SVGJS(plot_output, Compose.default_graphic_width,
-               Compose.default_graphic_width, false), gplot(g, layout(g)...; keyargs...))
+               Compose.default_graphic_width, false), gplot(args...; keyargs...))
     plotsvg = String(take!(plot_output))
 
     write(output,
