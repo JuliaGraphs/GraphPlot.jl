@@ -42,10 +42,10 @@ Distances for the node labels from center of nodes. Default: `0.0`
 Angle offset for the node labels. Default: `π/4.0`
 
 `NODELABELSIZE`
-Largest fontsize for the vertice labels. Default: `4.0`
+Largest fontsize for the vertex labels. Default: `4.0`
 
 `nodelabelsize`
-Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
+Relative fontsize for the vertex labels, can be a Vector. Default: `1.0`
 
 `nodefillc`
 Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
@@ -94,6 +94,9 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
+`backgroundc`
+Color for the plot background. Default: `nothing`
+
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
@@ -120,7 +123,8 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
     linetype = "straight",
-    outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
+    outangle = π / 5,
+    backgroundc = nothing) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -169,19 +173,19 @@ function gplot(g::AbstractGraph{T},
     # Create nodes
     nodecircle = fill(0.4Compose.w, length(locs_x))
     if isa(nodesize, Real)
-        	    for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize
-        	    end
-    	else
-        		for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize[i]
-        	    end
-    	end
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize
+        end
+    else
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize[i]
+        end
+    end
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
     texts = nothing
-    if nodelabel != nothing
+    if !isnothing(nodelabel)
         text_locs_x = deepcopy(locs_x)
         text_locs_y = deepcopy(locs_y)
         texts = text(text_locs_x .+ nodesize .* (nodelabeldist * cos(nodelabelangleoffset)),
@@ -227,7 +231,7 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
