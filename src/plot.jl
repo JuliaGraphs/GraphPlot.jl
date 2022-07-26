@@ -80,6 +80,9 @@ Relative line width for the edges, can be a Vector. Default: `1.0`
 `edgestrokec`
 Color for the edge strokes, can be a Vector. Default: `colorant"lightgray"`
 
+`edgedashstyle`
+Optional. Dash style for the edge, can be a Vector. Default: no dashed line.
+
 `arrowlengthfrac`
 Fraction of line length to use for arrows.
 Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
@@ -106,6 +109,7 @@ function gplot(g::AbstractGraph{T},
     edgelabel = [],
     edgelabelc = colorant"black",
     edgelabelsize = 1.0,
+    edgedashstyle = [],
     EDGELABELSIZE = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
@@ -147,6 +151,9 @@ function gplot(g::AbstractGraph{T},
     end
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
+
+    # Calculate the size of the box
+    units = UnitBox(-1.2, -1.2, 2.4, 2.4)
 
     # Determine sizes
     #NODESIZE    = 0.25/sqrt(N)
@@ -227,12 +234,12 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+    compose(context(units=units),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), strokedash(edgedashstyle), fill(nothing), linewidth(edgelinewidth)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
