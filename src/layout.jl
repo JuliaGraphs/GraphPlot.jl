@@ -102,11 +102,11 @@ julia> locs_x, locs_y = spring_layout(g)
 ```
 """
 function spring_layout(g::AbstractGraph,
-                       locs_x=2*rand(nv(g)).-1.0,
-                       locs_y=2*rand(nv(g)).-1.0;
+                       locs_x::Vector{R1}=2*rand(nv(g)).-1.0,
+                       locs_y::Vector{R2}=2*rand(nv(g)).-1.0;
                        C=2.0,
                        MAXITER=100,
-                       INITTEMP=2.0)
+                       INITTEMP=2.0) where {R1 <: Real, R2 <: Real}
 
     nvg = nv(g)
     adj_matrix = adjacency_matrix(g)
@@ -174,7 +174,7 @@ end
 
 using Random: MersenneTwister
 
-function spring_layout(g::AbstractGraph, seed::Integer, kws...)
+function spring_layout(g::AbstractGraph, seed::Integer; kws...)
     rng = MersenneTwister(seed)
     spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
 end
