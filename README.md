@@ -183,7 +183,7 @@ gplot(h)
 + `arrowangleoffset` Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 + `linetype` Type of line used for edges ("straight", "curve"). Default: "straight"
 + `outangle` Angular width in radians for the edges (only used if `linetype = "curve`). Default: `π/5 (36 degrees)`
-+ `backgroundc` Color for the plot background. Default: `nothing`
++ `background_color` Color for the plot background. Default: `nothing`
 
 # Reporting Bugs
 

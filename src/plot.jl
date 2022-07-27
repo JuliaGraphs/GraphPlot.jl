@@ -94,7 +94,7 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
-`backgroundc`
+`background_color`
 Color for the plot background. Default: `nothing`
 
 """
@@ -124,7 +124,7 @@ function gplot(g::AbstractGraph{T},
     arrowangleoffset = π / 9,
     linetype = "straight",
     outangle = π / 5,
-    backgroundc = nothing) where {T <:Integer, R1 <: Real, R2 <: Real}
+    background_color = nothing) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -232,12 +232,12 @@ function gplot(g::AbstractGraph{T},
     end
 
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
+            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(background_color)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)

@@ -78,6 +78,11 @@ end
     plot_and_save3(fname) = plot_and_save(fname, g, nodelabel=nodelabel, nodefillc=nodefillc)
     refimg3 = joinpath(datadir, "karate_groups.png")
     @test test_images(VisualTest(plot_and_save3, refimg3), popup=!istravis) |> save_comparison |> success
+
+    # test background color
+    plot_and_save4(fname) = plot_and_save(fname, g, background_color=colorant"lightyellow")
+    refimg4 = joinpath(datadir, "karate_background_color.png")
+    @test test_images(VisualTest(plot_and_save4, refimg4), popup=!istravis) |> save_comparison |> success
 end
 
 @testset "WheelGraph" begin
