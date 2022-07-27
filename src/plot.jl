@@ -39,7 +39,7 @@ Color for the node labels, can be a Vector. Default: `colorant"black"`
 Distances for the node labels from center of nodes. Default: `0.0`
 
 `nodelabelangleoffset`
-Angle offset for the node labels. Default: `π/4.0`
+Angle offset for the node labels (only used when `nodelabeldist` is not zero). Default: `π/4.0`
 
 `max_nodelabelsize`
 Largest fontsize for the vertex labels. Default: `4.0`
@@ -188,7 +188,7 @@ function gplot(g::AbstractGraph{T},
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
     if linetype == :curve
-        if arrowlengthfrac > 0.0
+        if !iszero(arrowlengthfrac)
             curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
             lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
             arrows = line(arrows_cord)
@@ -197,7 +197,7 @@ function gplot(g::AbstractGraph{T},
             lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
         end
     else
-        if arrowlengthfrac > 0.0
+        if !iszero(arrowlengthfrac)
             lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
             lines = line(lines_cord)
             arrows = line(arrows_cord)
@@ -207,7 +207,8 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc),
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),

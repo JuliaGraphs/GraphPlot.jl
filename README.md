@@ -165,7 +165,7 @@ gplot(h)
 + `nodelabel` Labels for the vertices, a Vector or nothing. Default: `nothing`
 + `nodelabelc` Color for the node labels, can be a Vector. Default: `colorant"black"`
 + `nodelabeldist` Distances for the node labels from center of nodes. Default: `0.0`
-+ `nodelabelangleoffset` Angle offset for the node labels. Default: `π/4.0`
++ `nodelabelangleoffset` Angle offset for the node labels (only used when `nodelabeldist` is not zero). Default: `π/4.0`
 + `max_nodelabelsize` Largest fontsize for the vertice labels. Default: `4.0`
 + `nodelabelsize` Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
 + `nodefillc` Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
