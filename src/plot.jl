@@ -20,7 +20,7 @@ be obtained from `layout` kwarg.
 `layout`
 Layout algorithm. Currently can be one of [`random_layout`,
 `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`,
-`spectral_layout`].
+`spectral_layout`, `community_layout`].
 Default: `spring_layout`
 
 `max_nodesize`

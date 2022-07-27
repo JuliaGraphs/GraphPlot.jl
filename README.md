@@ -127,6 +127,19 @@ locs_x, locs_y = shell_layout(g, nlist)
 gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 ```
 
+### stress majorize layout
+```julia
+gplot(g, layout=stressmajorize_layout)
+```
+
+### community layout
+```julia
+community_id = rand(1:3, nv(g)) #membership for each node
+node_c = [colorant"red",colorant"yellow",colorant"blue"] #colors for each community
+locs_x, locs_y = community_layout(g,community_id)
+gplot(g, locs_x, locs_y, nodefillc = node_c[community_id])
+```
+
 ## Curve edge
 ```julia
 gplot(g, linetype=:curve)
@@ -159,7 +172,7 @@ gplot(h)
 + `locs_x, locs_y` Locations of the nodes (will be normalized and centered). If not specified, will be obtained from `layout` kwarg.
 
 # Keyword Arguments
-+ `layout` Layout algorithm: `random_layout`, `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`, `spectral_layout`. Default: `spring_layout`
++ `layout` Layout algorithm: `random_layout`, `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`, `spectral_layout`, `community_layout`. Default: `spring_layout`
 + `max_nodesize` Max size for the nodes. Default: `3.0/sqrt(N)`
 + `nodesize` Relative size for the nodes, can be a Vector. Default: `1.0`
 + `nodelabel` Labels for the vertices, a Vector or nothing. Default: `nothing`
