@@ -152,7 +152,7 @@ function gplot(g::AbstractGraph{T},
     edgelabelsize *= (max_edgelabelsize / maximum(edgelabelsize))
     nodelabelsize *= (max_nodelabelsize / maximum(nodelabelsize))
     max_nodestrokelw = maximum(nodestrokelw)
-    if max_nodestrokelw > 0.0
+    if !iszero(max_nodestrokelw)
         nodestrokelw *= (max_edgelinewidth / max_nodestrokelw)
     end
 
@@ -207,13 +207,14 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
+    #build plot
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
             compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+            compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+            compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
