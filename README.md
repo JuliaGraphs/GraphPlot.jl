@@ -129,7 +129,7 @@ gplot(g, locs_x, locs_y, nodelabel=nodelabel)
 
 ## Curve edge
 ```julia
-gplot(g, linetype="curve")
+gplot(g, linetype=:curve)
 ```
 
 ## Show plot
@@ -160,28 +160,28 @@ gplot(h)
 
 # Keyword Arguments
 + `layout` Layout algorithm: `random_layout`, `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`, `spectral_layout`. Default: `spring_layout`
-+ `NODESIZE` Max size for the nodes. Default: `3.0/sqrt(N)`
++ `max_nodesize` Max size for the nodes. Default: `3.0/sqrt(N)`
 + `nodesize` Relative size for the nodes, can be a Vector. Default: `1.0`
 + `nodelabel` Labels for the vertices, a Vector or nothing. Default: `nothing`
 + `nodelabelc` Color for the node labels, can be a Vector. Default: `colorant"black"`
 + `nodelabeldist` Distances for the node labels from center of nodes. Default: `0.0`
 + `nodelabelangleoffset` Angle offset for the node labels. Default: `π/4.0`
-+ `NODELABELSIZE` Largest fontsize for the vertice labels. Default: `4.0`
++ `max_nodelabelsize` Largest fontsize for the vertice labels. Default: `4.0`
 + `nodelabelsize` Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
 + `nodefillc` Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
 + `nodestrokec` Color for the nodes stroke, can be a Vector. Default: `nothing`
 + `nodestrokelw` Line width for the nodes stroke, can be a Vector. Default: `0.0`
-+ `edgelabel` Labels for the edges, a Vector or nothing. Default: `[]`
++ `edgelabel` Labels for the edges, a Vector or nothing. Default: `nothing`
 + `edgelabelc` Color for the edge labels, can be a Vector. Default: `colorant"black"`
 + `edgelabeldistx, edgelabeldisty` Distance for the edge label from center of edge. Default: `0.0`
-+ `EDGELABELSIZE` Largest fontsize for the edge labels. Default: `4.0`
++ `max_edgelabelsize` Largest fontsize for the edge labels. Default: `4.0`
 + `edgelabelsize` Relative fontsize for the edge labels, can be a Vector. Default: `1.0`
-+ `EDGELINEWIDTH` Max line width for the edges. Default: `0.25/sqrt(N)`
++ `max_edgelinewidth` Max line width for the edges. Default: `0.25/sqrt(N)`
 + `edgelinewidth` Relative line width for the edges, can be a Vector. Default: `1.0`
 + `edgestrokec` Color for the edge strokes, can be a Vector. Default: `colorant"lightgray"`
 + `arrowlengthfrac` Fraction of line length to use for arrows. Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 + `arrowangleoffset` Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
-+ `linetype` Type of line used for edges ("straight", "curve"). Default: "straight"
++ `linetype` Type of line used for edges (:straight, :curve). Default: :straight
 + `outangle` Angular width in radians for the edges (only used if `linetype = "curve`). Default: `π/5 (36 degrees)`
 + `backgroundc` Color for the plot background. Default: `nothing`
 
