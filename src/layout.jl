@@ -56,7 +56,7 @@ julia> g = smallgraph(:house)
 julia> locs_x, locs_y = circular_layout(g)
 ```
 """
-function circular_layout(g)
+function circular_layout(g::AbstractGraph{T}) where {T<:Integer}
     if nv(g) == 1
         return [0.0], [0.0]
     else
