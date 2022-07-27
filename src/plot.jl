@@ -231,7 +231,8 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc),
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
