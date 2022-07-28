@@ -94,6 +94,9 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
+`plot_size`
+Tuple of measures for width x height of plot area. Default: `nothing`
+
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
@@ -120,7 +123,9 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
     linetype = "straight",
-    outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
+    outangle = π / 5,
+    plot_size = nothing
+    ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -227,6 +232,12 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
+    if !isnothing(plot_size)
+        if length(plot_size) != 2 || !isa(plot_size[1], Compose.AbsoluteLength) || !isa(plot_size[2], Compose.AbsoluteLength)
+            error("`plot_size` must be a Tuple of lengths or `nothing`")
+        end
+        Compose.set_default_graphic_size(plot_size...)
+    end
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
