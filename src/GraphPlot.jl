@@ -17,16 +17,11 @@ export
     shell_layout,
     stressmajorize_layout
 
-include("deprecations.jl")
-
 # layout algorithms
 include("layout.jl")
-include("stress.jl")
 
 # ploting utilities
-include("shape.jl")
 include("lines.jl")
 include("plot.jl")
-include("collapse_plot.jl")
 
 end # module

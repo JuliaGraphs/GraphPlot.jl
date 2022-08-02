@@ -180,7 +180,7 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
 end
 
 # this function is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
-function arrowcoords(θ, endx, endy, arrowlength, angleoffset=20.0/180.0*π)
+function arrowcoords(θ, endx, endy, arrowlength, angleoffset=π/9)
     arr1x = endx - arrowlength*cos(θ+angleoffset)
     arr1y = endy - arrowlength*sin(θ+angleoffset)
     arr2x = endx - arrowlength*cos(θ-angleoffset)

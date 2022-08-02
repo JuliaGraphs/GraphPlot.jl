@@ -93,7 +93,7 @@ end
     add_edge!(g2, 1,2)
     add_edge!(g2, 2,1)
 
-    plot_and_save1(fname) = plot_and_save(fname, g2, linetype="curve")
+    plot_and_save1(fname) = plot_and_save(fname, g2, linetype=:curve)
     refimg1 = joinpath(datadir, "curve.png")
     @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
 
@@ -102,7 +102,7 @@ end
     add_edge!(g3, 1,2)
     add_edge!(g3, 2,1)
 
-    plot_and_save2(fname) = plot_and_save(fname, g3, linetype="curve")
+    plot_and_save2(fname) = plot_and_save(fname, g3, linetype=:curve)
     refimg2 = joinpath(datadir, "self_directed.png")
     @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 

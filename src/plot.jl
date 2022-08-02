@@ -20,10 +20,10 @@ be obtained from `layout` kwarg.
 `layout`
 Layout algorithm. Currently can be one of [`random_layout`,
 `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`,
-`spectral_layout`].
+`spectral_layout`, `community_layout`].
 Default: `spring_layout`
 
-`NODESIZE`
+`max_nodesize`
 Max size for the nodes. Default: `3.0/sqrt(N)`
 
 `nodesize`
@@ -39,10 +39,10 @@ Color for the node labels, can be a Vector. Default: `colorant"black"`
 Distances for the node labels from center of nodes. Default: `0.0`
 
 `nodelabelangleoffset`
-Angle offset for the node labels. Default: `π/4.0`
+Angle offset for the node labels (only used when `nodelabeldist` is not zero). Default: `π/4.0`
 
-`NODELABELSIZE`
-Largest fontsize for the vertice labels. Default: `4.0`
+`max_nodelabelsize`
+Largest fontsize for the vertex labels. Default: `4.0`
 
 `nodelabelsize`
 Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
@@ -57,7 +57,7 @@ Color for the nodes stroke, can be a Vector. Default: `nothing`
 Line width for the nodes stroke, can be a Vector. Default: `0.0`
 
 `edgelabel`
-Labels for the edges, a Vector or nothing. Default: `[]`
+Labels for the edges, a Vector or nothing. Default: `nothing`
 
 `edgelabelc`
 Color for the edge labels, can be a Vector. Default: `colorant"black"`
@@ -65,13 +65,13 @@ Color for the edge labels, can be a Vector. Default: `colorant"black"`
 `edgelabeldistx, edgelabeldisty`
 Distance for the edge label from center of edge. Default: `0.0`
 
-`EDGELABELSIZE`
+`max_edgelabelsize`
 Largest fontsize for the edge labels. Default: `4.0`
 
 `edgelabelsize`
 Relative fontsize for the edge labels, can be a Vector. Default: `1.0`
 
-`EDGELINEWIDTH`
+`max_edgelinewidth`
 Max line width for the edges. Default: `0.25/sqrt(N)`
 
 `edgelinewidth`
@@ -88,7 +88,7 @@ Equal to 0 for undirected graphs. Default: `0.1` for the directed graphs
 Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 
 `linetype`
-Type of line used for edges ("straight", "curve"). Default: "straight"
+Type of line used for edges (:straight, :curve). Default: :straight
 
 `outangle`
 Angular width in radians for the edges (only used if `linetype = "curve`). 
@@ -100,37 +100,31 @@ function gplot(g::AbstractGraph{T},
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
-    NODELABELSIZE = 4.0,
+    max_nodelabelsize = 4.0,
     nodelabeldist = 0.0,
     nodelabelangleoffset = π / 4.0,
-    edgelabel = [],
+    edgelabel = nothing,
     edgelabelc = colorant"black",
     edgelabelsize = 1.0,
-    EDGELABELSIZE = 4.0,
+    max_edgelabelsize = 4.0,
     edgestrokec = colorant"lightgray",
     edgelinewidth = 1.0,
-    EDGELINEWIDTH = 3.0 / sqrt(nv(g)),
+    max_edgelinewidth = 3.0 / sqrt(nv(g)),
     edgelabeldistx = 0.0,
     edgelabeldisty = 0.0,
     nodesize = 1.0,
-    NODESIZE = 0.25 / sqrt(nv(g)),
+    max_nodesize = 0.25 / sqrt(nv(g)),
     nodefillc = colorant"turquoise",
     nodestrokec = nothing,
     nodestrokelw = 0.0,
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
-    linetype = "straight",
+    linetype = :straight,
     outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
 
-    length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
-    N = nv(g)
-    NE = ne(g)
-    if nodelabel != nothing && length(nodelabel) != N
-        error("Must have one label per node (or none)")
-    end
-    if !isempty(edgelabel) && length(edgelabel) != NE
-        error("Must have one label per edge (or none)")
-    end
+    @assert length(locs_x_in) == length(locs_y_in) == nv(g) "Position vectors must be of the same length as the number of nodes"
+    @assert isnothing(nodelabel) || length(nodelabel) == nv(g) "`nodelabel` must either be `nothing` or a vector of the same length as the number of nodes"
+    @assert isnothing(edgelabel) || length(edgelabel) == ne(g) "`edgelabel` must either be `nothing` or a vector of the same length as the number of edges"
 
     locs_x = Float64.(locs_x_in)
     locs_y = Float64.(locs_y_in)
@@ -148,35 +142,18 @@ function gplot(g::AbstractGraph{T},
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
-    # Determine sizes
-    #NODESIZE    = 0.25/sqrt(N)
-    #LINEWIDTH   = 3.0/sqrt(N)
-
-    max_nodesize = NODESIZE / maximum(nodesize)
-    nodesize *= max_nodesize
-    max_edgelinewidth = EDGELINEWIDTH / maximum(edgelinewidth)
-    edgelinewidth *= max_edgelinewidth
-    max_edgelabelsize = EDGELABELSIZE / maximum(edgelabelsize)
-    edgelabelsize *= max_edgelabelsize
-    max_nodelabelsize = NODELABELSIZE / maximum(nodelabelsize)
-    nodelabelsize *= max_nodelabelsize
+    # Scale sizes
+    nodesize *= (max_nodesize / maximum(nodesize))
+    edgelinewidth *= (max_edgelinewidth / maximum(edgelinewidth))
+    edgelabelsize *= (max_edgelabelsize / maximum(edgelabelsize))
+    nodelabelsize *= (max_nodelabelsize / maximum(nodelabelsize))
     max_nodestrokelw = maximum(nodestrokelw)
-    if max_nodestrokelw > 0.0
-        max_nodestrokelw = EDGELINEWIDTH / max_nodestrokelw
-        nodestrokelw *= max_nodestrokelw
+    if !iszero(max_nodestrokelw)
+        nodestrokelw *= (max_edgelinewidth / max_nodestrokelw)
     end
 
     # Create nodes
-    nodecircle = fill(0.4Compose.w, length(locs_x))
-    if isa(nodesize, Real)
-        	    for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize
-        	    end
-    	else
-        		for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize[i]
-        	    end
-    	end
+    nodecircle = fill(0.4Compose.w, nv(g)) .* nodesize
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
@@ -190,7 +167,7 @@ function gplot(g::AbstractGraph{T},
     end
     # Create edge labels if provided
     edgetexts = nothing
-    if !isempty(edgelabel)
+    if !isnothing(edgelabel)
         edge_locs_x = zeros(R, NE)
         edge_locs_y = zeros(R, NE)
         for (e_idx, e) in enumerate(edges(g))
@@ -198,17 +175,16 @@ function gplot(g::AbstractGraph{T},
             j = dst(e)
             mid_x = (locs_x[i]+locs_x[j]) / 2.0
             mid_y = (locs_y[i]+locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
-
+            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * max_nodesize
+            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * max_nodesize
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
 
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
-    if linetype == "curve"
-        if arrowlengthfrac > 0.0
+    if linetype == :curve
+        if !iszero(arrowlengthfrac)
             curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
             lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
             arrows = line(arrows_cord)
@@ -217,7 +193,7 @@ function gplot(g::AbstractGraph{T},
             lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
         end
     else
-        if arrowlengthfrac > 0.0
+        if !iszero(arrowlengthfrac)
             lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
             lines = line(lines_cord)
             arrows = line(arrows_cord)
@@ -227,12 +203,13 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
+    #build plot
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+            compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+            compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
