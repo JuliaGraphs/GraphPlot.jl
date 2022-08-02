@@ -206,33 +206,24 @@ function gplot(g::AbstractGraph{T},
     end
 
     # Create lines and arrow heads
-    lines, arrows = nothing, nothing
+    lines, larrows = nothing, nothing
+    curves, carrows = nothing, nothing
     if linetype == "curve"
-        if arrowlengthfrac > 0.0
-            curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-            arrows = line(arrows_cord)
-        else
-            curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-        end
+        curves, carrows = build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    elseif has_self_loops(g)
+        lines, larrows, curves, carrows = build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     else
-        if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-            lines = line(lines_cord)
-            arrows = line(arrows_cord)
-        else
-            lines_cord = graphline(g, locs_x, locs_y, nodesize)
-            lines = line(lines_cord)
-        end
+        lines, larrows = build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     end
 
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
+            compose(context(), curves, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
