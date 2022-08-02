@@ -243,9 +243,9 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-    title_offset = isempty(title) ? 0 : 0.3
+    title_offset = isempty(title) ? 0 : 0.1*title_size/4
     compose(context(units=UnitBox(-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)),
-            compose(context(), text(0,-1.2,title), fill(title_color), fontsize(title_size), font(font_family)),
+            compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
             compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize), font(font_family)),
