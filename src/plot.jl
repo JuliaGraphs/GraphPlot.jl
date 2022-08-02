@@ -44,10 +44,6 @@ Angle offset for the node labels (only used when `nodelabeldist` is not zero). D
 <<<<<<< HEAD
 `max_nodelabelsize`
 Largest fontsize for the vertex labels. Default: `4.0`
-=======
-`NODELABELSIZE`
-Largest fontsize for the vertice labels. Default: `4.0`
->>>>>>> parent of 14d62b4 (Fix #172. set background color (`backgroundc` kwarg):)
 
 `nodelabelsize`
 Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
@@ -124,14 +120,8 @@ function gplot(g::AbstractGraph{T},
     nodestrokelw = 0.0,
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
-<<<<<<< HEAD
     linetype = :straight,
-    outangle = π / 5,
-    backgroundc = nothing) where {T <:Integer, R1 <: Real, R2 <: Real}
-=======
-    linetype = "straight",
     outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
->>>>>>> parent of 14d62b4 (Fix #172. set background color (`backgroundc` kwarg):)
 
     @assert length(locs_x_in) == length(locs_y_in) == nv(g) "Position vectors must be of the same length as the number of nodes"
     @assert isnothing(nodelabel) || length(nodelabel) == nv(g) "`nodelabel` must either be `nothing` or a vector of the same length as the number of nodes"
@@ -164,20 +154,7 @@ function gplot(g::AbstractGraph{T},
     end
 
     # Create nodes
-<<<<<<< HEAD
     nodecircle = fill(0.4Compose.w, nv(g)) .* nodesize
-=======
-    nodecircle = fill(0.4Compose.w, length(locs_x))
-    if isa(nodesize, Real)
-        	    for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize
-        	    end
-    	else
-        		for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize[i]
-        	    end
-    	end
->>>>>>> parent of 14d62b4 (Fix #172. set background color (`backgroundc` kwarg):)
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
@@ -227,15 +204,9 @@ function gplot(g::AbstractGraph{T},
         end
     end
 
-<<<<<<< HEAD
     #build plot
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(backgroundc)),
             compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize)),
-=======
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
->>>>>>> parent of 14d62b4 (Fix #172. set background color (`backgroundc` kwarg):)
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
             compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
