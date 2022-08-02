@@ -41,7 +41,6 @@ Distances for the node labels from center of nodes. Default: `0.0`
 `nodelabelangleoffset`
 Angle offset for the node labels (only used when `nodelabeldist` is not zero). Default: `π/4.0`
 
-<<<<<<< HEAD
 `max_nodelabelsize`
 Largest fontsize for the vertex labels. Default: `4.0`
 
