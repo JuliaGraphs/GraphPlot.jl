@@ -97,6 +97,8 @@ Default: `π/5 (36 degrees)`
 `plot_size`
 Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10cm)`
 
+`leftpad, rightpad, toppad, bottompad`
+Padding for the plot margins. Default: `0mm`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
@@ -124,7 +126,11 @@ function gplot(g::AbstractGraph{T},
     arrowangleoffset = π / 9,
     linetype = "straight",
     outangle = π / 5,
-    plot_size = (sqrt(2)*10cm, 10cm)
+    plot_size = (sqrt(2)*10cm, 10cm),
+    leftpad = 0mm, 
+    rightpad = 0mm, 
+    toppad = 0mm, 
+    bottompad = 0mm
     ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
@@ -236,7 +242,7 @@ function gplot(g::AbstractGraph{T},
         error("`plot_size` must be a Tuple of lengths or `nothing`")
     end
     Compose.set_default_graphic_size(plot_size...)
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
+    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4; leftpad, rightpad, toppad, bottompad)),
             compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
