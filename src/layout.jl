@@ -102,11 +102,11 @@ julia> locs_x, locs_y = spring_layout(g)
 ```
 """
 function spring_layout(g::AbstractGraph,
-                       locs_x=2*rand(nv(g)).-1.0,
-                       locs_y=2*rand(nv(g)).-1.0;
+                       locs_x::Vector{R1}=2*rand(nv(g)).-1.0,
+                       locs_y::Vector{R2}=2*rand(nv(g)).-1.0;
                        C=2.0,
                        MAXITER=100,
-                       INITTEMP=2.0)
+                       INITTEMP=2.0) where {R1 <: Real, R2 <: Real}
 
     nvg = nv(g)
     adj_matrix = adjacency_matrix(g)
@@ -174,7 +174,7 @@ end
 
 using Random: MersenneTwister
 
-function spring_layout(g::AbstractGraph, seed::Integer, kws...)
+function spring_layout(g::AbstractGraph, seed::Integer; kws...)
     rng = MersenneTwister(seed)
     spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
 end
@@ -205,20 +205,20 @@ function shell_layout(g, nlist::Union{Nothing, Vector{Vector{Int}}} = nothing)
     if nv(g) == 1
         return [0.0], [0.0]
     end
-    if nlist == nothing
+    if isnothing(nlist)
         nlist = [collect(1:nv(g))]
     end
     radius = 0.0
     if length(nlist[1]) > 1
         radius = 1.0
     end
-    locs_x = Float64[]
-    locs_y = Float64[]
+    locs_x = zeros(nv(g))
+    locs_y = zeros(nv(g))
     for nodes in nlist
         # Discard the extra angle since it matches 0 radians.
         θ = range(0, stop=2pi, length=length(nodes)+1)[1:end-1]
-        append!(locs_x, radius*cos.(θ))
-        append!(locs_y, radius*sin.(θ))
+        locs_x[nodes] = radius*cos.(θ)
+        locs_y[nodes] = radius*sin.(θ)
         radius += 1.0
     end
     return locs_x, locs_y

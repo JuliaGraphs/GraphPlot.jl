@@ -160,6 +160,10 @@ gplot(h)
 
 # Keyword Arguments
 + `layout` Layout algorithm: `random_layout`, `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`, `spectral_layout`. Default: `spring_layout`
++ `title` Plot title. Default: `""`
++ `title_color` Plot title color. Default: `colorant"black"`
++ `title_size` Plot title size. Default: `4.0`
++ `font_family` Font family for all text. Default: `"Helvetica"`
 + `NODESIZE` Max size for the nodes. Default: `3.0/sqrt(N)`
 + `nodesize` Relative size for the nodes, can be a Vector. Default: `1.0`
 + `nodelabel` Labels for the vertices, a Vector or nothing. Default: `nothing`

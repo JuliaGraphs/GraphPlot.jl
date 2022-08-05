@@ -23,6 +23,18 @@ Layout algorithm. Currently can be one of [`random_layout`,
 `spectral_layout`].
 Default: `spring_layout`
 
+`title`
+Plot title. Default: `""`
+
+`title_color`
+Plot title color. Default: `colorant"black"`
+
+`title_size`
+Plot title size. Default: `4.0`
+
+`font_family`
+Font family for all text. Default: `"Helvetica"`
+
 `NODESIZE`
 Max size for the nodes. Default: `3.0/sqrt(N)`
 
@@ -97,6 +109,10 @@ Default: `π/5 (36 degrees)`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
+    title = "",
+    title_color = colorant"black",
+    title_size = 4.0,
+    font_family = "Helvetica",
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -216,8 +232,10 @@ function gplot(g::AbstractGraph{T},
         lines, larrows = build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+    title_offset = isempty(title) ? 0 : 0.1*title_size/4
+    compose(context(units=UnitBox(-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)),
+            compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
+            compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
             compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
