@@ -239,7 +239,7 @@ function gplot(g::AbstractGraph{T},
     end
 
     if length(plot_size) != 2 || !isa(plot_size[1], Compose.AbsoluteLength) || !isa(plot_size[2], Compose.AbsoluteLength)
-        error("`plot_size` must be a Tuple of lengths or `nothing`")
+        error("`plot_size` must be a Tuple of lengths")
     end
     Compose.set_default_graphic_size(plot_size...)
     compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4; leftpad, rightpad, toppad, bottompad)),
