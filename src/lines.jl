@@ -201,3 +201,49 @@ function curveedge(x1, y1, x2, y2, θ, outangle, d; k=0.5)
 
     return [(x1,y1) (xc1, yc1) (xc2, yc2) (x2, y2)]
 end
+
+function build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    if arrowlengthfrac > 0.0
+        curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+        curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
+        carrows = line(arrows_cord)
+    else
+        curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
+        curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
+        carrows = nothing
+    end
+
+    return curves, carrows
+end
+
+function build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+    if arrowlengthfrac > 0.0
+        lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+        lines = line(lines_cord)
+        larrows = line(arrows_cord)
+    else
+        lines_cord = graphline(g, locs_x, locs_y, nodesize)
+        lines = line(lines_cord)
+        larrows = nothing
+    end
+
+    return lines, larrows
+end
+
+function build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    A = adjacency_matrix(g) #adjacency matrix
+    B = spdiagm(diag(A)) #diagonal matrix (self-loops)
+    A[diagind(A)] .= 0 #set diagonal elements to 0 (remove self-loops)
+    if is_directed(g)
+        g1 = SimpleDiGraph(A)
+        g2 = SimpleDiGraph(B)
+    else
+        g1 = SimpleGraph(A)
+        g2 = SimpleGraph(B)
+    end
+
+    lines, larrows = build_straight_edges(g1, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+    curves, carrows = build_curved_edges(g2, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+
+    return lines, larrows, curves, carrows
+end

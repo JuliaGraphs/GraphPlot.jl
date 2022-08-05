@@ -23,6 +23,18 @@ Layout algorithm. Currently can be one of [`random_layout`,
 `spectral_layout`].
 Default: `spring_layout`
 
+`title`
+Plot title. Default: `""`
+
+`title_color`
+Plot title color. Default: `colorant"black"`
+
+`title_size`
+Plot title size. Default: `4.0`
+
+`font_family`
+Font family for all text. Default: `"Helvetica"`
+
 `NODESIZE`
 Max size for the nodes. Default: `3.0/sqrt(N)`
 
@@ -97,9 +109,18 @@ Default: `π/5 (36 degrees)`
 `background_color`
 Color for the plot background. Default: `nothing`
 
+`plot_size`
+Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10cm)`
+
+`leftpad, rightpad, toppad, bottompad`
+Padding for the plot margins. Default: `0mm`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
+    title = "",
+    title_color = colorant"black",
+    title_size = 4.0,
+    font_family = "Helvetica",
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -124,7 +145,13 @@ function gplot(g::AbstractGraph{T},
     arrowangleoffset = π / 9,
     linetype = "straight",
     outangle = π / 5,
-    background_color = nothing) where {T <:Integer, R1 <: Real, R2 <: Real}
+    background_color = nothing,
+    plot_size = (sqrt(2)*10cm, 10cm),
+    leftpad = 0mm, 
+    rightpad = 0mm, 
+    toppad = 0mm, 
+    bottompad = 0mm
+    ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -210,34 +237,39 @@ function gplot(g::AbstractGraph{T},
     end
 
     # Create lines and arrow heads
-    lines, arrows = nothing, nothing
+    lines, larrows = nothing, nothing
+    curves, carrows = nothing, nothing
     if linetype == "curve"
-        if arrowlengthfrac > 0.0
-            curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-            arrows = line(arrows_cord)
-        else
-            curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-        end
+        curves, carrows = build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    elseif has_self_loops(g)
+        lines, larrows, curves, carrows = build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     else
-        if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-            lines = line(lines_cord)
-            arrows = line(arrows_cord)
-        else
-            lines_cord = graphline(g, locs_x, locs_y, nodesize)
-            lines = line(lines_cord)
-        end
+        lines, larrows = build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
+    # Set plot_size
+    if length(plot_size) != 2 || !isa(plot_size[1], Compose.AbsoluteLength) || !isa(plot_size[2], Compose.AbsoluteLength)
+        error("`plot_size` must be a Tuple of lengths")
+    end
+    Compose.set_default_graphic_size(plot_size...)
+    
+    # Fix title offset
+    title_offset = isempty(title) ? 0 : 0.1*title_size/4
+    
+    # Plot area size
+    plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
+    
+    # Build figure
+    compose(context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),
+            compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
+            compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
             compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
-            compose(context(), rectangle(-1.2, -1.2, +2.4, +2.4), fill(background_color)))
+            compose(context(), curves, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
+            compose(context(), rectangle(plot_area...), fill(background_color)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
