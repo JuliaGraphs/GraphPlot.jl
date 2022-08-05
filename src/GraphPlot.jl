@@ -2,6 +2,8 @@ module GraphPlot
 
 using Compose  # for plotting features
 using Graphs
+using LinearAlgebra
+using SparseArrays
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
