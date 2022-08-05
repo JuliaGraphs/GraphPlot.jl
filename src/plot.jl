@@ -106,6 +106,11 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
+`plot_size`
+Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10cm)`
+
+`leftpad, rightpad, toppad, bottompad`
+Padding for the plot margins. Default: `0mm`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
@@ -136,7 +141,13 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
     linetype = "straight",
-    outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
+    outangle = π / 5,
+    plot_size = (sqrt(2)*10cm, 10cm),
+    leftpad = 0mm, 
+    rightpad = 0mm, 
+    toppad = 0mm, 
+    bottompad = 0mm
+    ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
@@ -232,8 +243,17 @@ function gplot(g::AbstractGraph{T},
         lines, larrows = build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     end
 
+    # Set plot_size
+    if length(plot_size) != 2 || !isa(plot_size[1], Compose.AbsoluteLength) || !isa(plot_size[2], Compose.AbsoluteLength)
+        error("`plot_size` must be a Tuple of lengths")
+    end
+    Compose.set_default_graphic_size(plot_size...)
+    
+    # Fix title offset
     title_offset = isempty(title) ? 0 : 0.1*title_size/4
-    compose(context(units=UnitBox(-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)),
+    
+    # Build figure
+    compose(context(units=UnitBox(-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset; leftpad, rightpad, toppad, bottompad)),
             compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
             compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
