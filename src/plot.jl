@@ -54,10 +54,10 @@ Distances for the node labels from center of nodes. Default: `0.0`
 Angle offset for the node labels. Default: `π/4.0`
 
 `NODELABELSIZE`
-Largest fontsize for the vertice labels. Default: `4.0`
+Largest fontsize for the vertex labels. Default: `4.0`
 
 `nodelabelsize`
-Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
+Relative fontsize for the vertex labels, can be a Vector. Default: `1.0`
 
 `nodefillc`
 Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
@@ -106,6 +106,9 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
+`background_color`
+Color for the plot background. Default: `nothing`
+
 `plot_size`
 Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10cm)`
 
@@ -142,6 +145,7 @@ function gplot(g::AbstractGraph{T},
     arrowangleoffset = π / 9,
     linetype = "straight",
     outangle = π / 5,
+    background_color = nothing,
     plot_size = (sqrt(2)*10cm, 10cm),
     leftpad = 0mm, 
     rightpad = 0mm, 
@@ -196,19 +200,19 @@ function gplot(g::AbstractGraph{T},
     # Create nodes
     nodecircle = fill(0.4Compose.w, length(locs_x))
     if isa(nodesize, Real)
-        	    for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize
-        	    end
-    	else
-        		for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize[i]
-        	    end
-    	end
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize
+        end
+    else
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize[i]
+        end
+    end
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
     texts = nothing
-    if nodelabel != nothing
+    if !isnothing(nodelabel)
         text_locs_x = deepcopy(locs_x)
         text_locs_y = deepcopy(locs_y)
         texts = text(text_locs_x .+ nodesize .* (nodelabeldist * cos(nodelabelangleoffset)),
@@ -252,8 +256,11 @@ function gplot(g::AbstractGraph{T},
     # Fix title offset
     title_offset = isempty(title) ? 0 : 0.1*title_size/4
     
+    # Plot area size
+    plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
+    
     # Build figure
-    compose(context(units=UnitBox(-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset; leftpad, rightpad, toppad, bottompad)),
+    compose(context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),
             compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
             compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
@@ -261,7 +268,8 @@ function gplot(g::AbstractGraph{T},
             compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
-            compose(context(), curves, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+            compose(context(), curves, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
+            compose(context(), rectangle(plot_area...), fill(background_color)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
