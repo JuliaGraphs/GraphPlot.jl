@@ -264,12 +264,12 @@ function gplot(g::AbstractGraph{T},
             compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
             compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
             compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
+            compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
             compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
             compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
-            compose(context(), curves, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)),
-            compose(context(), rectangle(plot_area...), fill(background_color)))
+            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(), curves, stroke(edgestrokec), linewidth(edgelinewidth)),
+            compose(context(units=UnitBox(plot_area...)), rectangle(plot_area...), fill(background_color)))
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
