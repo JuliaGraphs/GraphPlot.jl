@@ -102,8 +102,8 @@ julia> locs_x, locs_y = spring_layout(g)
 ```
 """
 function spring_layout(g::AbstractGraph,
-                       locs_x::Vector{R1}=2*rand(nv(g)).-1.0,
-                       locs_y::Vector{R2}=2*rand(nv(g)).-1.0;
+                       locs_x_in::Vector{R1}=2*rand(nv(g)).-1.0,
+                       locs_y_in::Vector{R2}=2*rand(nv(g)).-1.0;
                        C=2.0,
                        MAXITER=100,
                        INITTEMP=2.0) where {R1 <: Real, R2 <: Real}
@@ -118,6 +118,10 @@ function spring_layout(g::AbstractGraph,
     # Store forces and apply at end of iteration all at once
     force_x = zeros(nvg)
     force_y = zeros(nvg)
+
+    # Convert locs to float
+    locs_x = float.(locs_x_in)
+    locs_y = float.(locs_y_in)
 
     # Iterate MAXITER times
     @inbounds for iter = 1:MAXITER
