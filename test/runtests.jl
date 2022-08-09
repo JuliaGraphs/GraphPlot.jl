@@ -112,3 +112,35 @@ end
     @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
 end
+
+@testset "Spring Layout" begin
+    g1 = path_digraph(3)
+    x1, y1 = spring_layout(g1, 0; C = 1) 
+    @test all(isapprox.(x1, [1.0, -0.014799825222963192, -1.0]))
+    @test all(isapprox.(y1, [-1.0, 0.014799825222963303, 1.0]))
+end
+
+@testset "Circular Layout" begin
+    #single node
+    g1 = SimpleGraph(1)
+    x1,y1 = circular_layout(g1)
+    @test iszero(x1)
+    @test iszero(y1)
+    #2 nodes
+    g2 = SimpleGraph(2)
+    x2,y2 = circular_layout(g2)
+    @test all(isapprox.(x2, [1.0, -1.0]))
+    @test all(isapprox.(y2, [0.0, 1.2246467991473532e-16]))
+end
+
+@testset "Shell Layout" begin
+    #continuous nlist
+    g = SimpleGraph(6)
+    x1,y1 = shell_layout(g,[[1,2,3],[4,5,6]])
+    @test all(isapprox.(x1, [1.0, -0.4999999999999998, -0.5000000000000004, 2.0, -0.9999999999999996, -1.0000000000000009]))
+    @test all(isapprox.(y1, [0.0, 0.8660254037844387, -0.8660254037844385, 0.0, 1.7320508075688774, -1.732050807568877]))
+    #skipping positions
+    x2,y2 = shell_layout(g,[[1,3,5],[2,4,6]])
+    @test all(isapprox.(x2, [1.0, 2.0, -0.4999999999999998, -0.9999999999999996, -0.5000000000000004, -1.0000000000000009]))
+    @test all(isapprox.(y2, [0.0, 0.0, 0.8660254037844387, 1.7320508075688774, -0.8660254037844385, -1.732050807568877]))
+end
