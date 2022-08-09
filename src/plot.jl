@@ -163,8 +163,8 @@ function gplot(g::AbstractGraph{T},
         error("Must have one label per edge (or none)")
     end
 
-    locs_x = Float64.(locs_x_in)
-    locs_y = Float64.(locs_y_in)
+    locs_x = float.(locs_x_in)
+    locs_y = float.(locs_y_in)
 
     # Scale to unit square
     min_x, max_x = extrema(locs_x)
