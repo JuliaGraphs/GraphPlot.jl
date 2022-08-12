@@ -120,8 +120,8 @@ function spring_layout(g::AbstractGraph,
     force_y = zeros(nvg)
 
     # Convert locs to float
-    locs_x = convert(Vector{Float64, locs_x_in})
-    locs_y = convert(Vector{Float64, locs_y_in})
+    locs_x = convert(Vector{Float64}, locs_x_in)
+    locs_y = convert(Vector{Float64}, locs_y_in)
 
     # Iterate MAXITER times
     @inbounds for iter = 1:MAXITER
