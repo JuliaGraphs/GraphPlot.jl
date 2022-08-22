@@ -114,6 +114,9 @@ Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10c
 
 `leftpad, rightpad, toppad, bottompad`
 Padding for the plot margins. Default: `0mm`
+
+`pad`
+Padding for plot margins (overrides individual padding if given). Default: `nothing`
 """
 function gplot(g::AbstractGraph{T},
     locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
@@ -150,13 +153,14 @@ function gplot(g::AbstractGraph{T},
     leftpad = 0mm, 
     rightpad = 0mm, 
     toppad = 0mm, 
-    bottompad = 0mm
+    bottompad = 0mm,
+    pad = nothing
     ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
     NE = ne(g)
-    if nodelabel != nothing && length(nodelabel) != N
+    if !isnothing(nodelabel) && length(nodelabel) != N
         error("Must have one label per node (or none)")
     end
     if !isempty(edgelabel) && length(edgelabel) != NE
@@ -240,11 +244,11 @@ function gplot(g::AbstractGraph{T},
     lines, larrows = nothing, nothing
     curves, carrows = nothing, nothing
     if linetype == "curve"
-        curves, carrows = build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+        curves, carrows = build_curved_edges(edges(g), locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     elseif has_self_loops(g)
         lines, larrows, curves, carrows = build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     else
-        lines, larrows = build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+        lines, larrows = build_straight_edges(edges(g), locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     end
 
     # Set plot_size
@@ -258,6 +262,11 @@ function gplot(g::AbstractGraph{T},
     
     # Plot area size
     plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
+
+    # Plot padding
+    if !isnothing(pad)
+        leftpad, rightpad, toppad, bottompad = pad, pad, pad, pad
+    end
     
     # Build figure
     compose(context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),

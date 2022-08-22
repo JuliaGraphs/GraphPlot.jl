@@ -190,7 +190,7 @@ gplot(h)
 + `background_color` Color for the plot background. Default: `nothing`
 + `plot_size` Tuple of measures for width x height of plot area. Default: `(sqrt(2)*10cm, 10cm)`
 + `leftpad, rightpad, toppad, bottompad` Padding for the plot margins. Default: `0mm`
-
++ `pad` Padding for plot margins (overrides individual padding if given). Default: `nothing`
 # Reporting Bugs
 
 Filing an issue to report a bug, counterintuitive behavior, or even to request a feature is extremely valuable in helping me prioritize what to work on, so don't hestitate.
