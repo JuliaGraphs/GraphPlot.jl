@@ -1,10 +1,11 @@
 """
 Return lines and arrow heads
 """
-function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
-    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
+    num_edges = length(edge_list)
+    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -21,10 +22,11 @@ function graphline(g, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoff
     lines, arrows
 end
 
-function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset) where {T<:Integer}
-    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphline(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset)
+    num_edges = length(edge_list)
+    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -41,9 +43,10 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real, arrowlen
     lines, arrows
 end
 
-function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}) where {T<:Integer}
-    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}) where {T<:Real}
+    num_edges = length(edge_list)
+    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -58,9 +61,10 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}
     lines
 end
 
-function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T<:Integer}
-    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphline(edge_list, locs_x, locs_y, nodesize::Real)
+    num_edges = length(edge_list)
+    lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -75,10 +79,11 @@ function graphline(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Real) where {T
     return lines
 end
 
-function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, arrowlength, angleoffset, outangle=pi/5) where {T<:Integer}
-    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
-    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphcurve(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset, outangle=pi/5) where {T<:Real}
+    num_edges = length(edge_list)
+    curves = Matrix{Tuple{Float64,Float64}}(undef, num_edges, 4)
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -103,10 +108,11 @@ function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real
     return curves, arrows
 end
 
-function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, outangle=pi/5)
-    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
-    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, ne(g))
-    for (e_idx, e) in enumerate(edges(g))
+function graphcurve(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset, outangle=pi/5)
+    num_edges = length(edge_list)
+    curves = Matrix{Tuple{Float64,Float64}}(undef, num_edges, 4)
+    arrows = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -131,9 +137,10 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, arrowlength, angleoffset,
     return curves, arrows
 end
 
-function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
-    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
-    for (e_idx, e) in enumerate(edges(g))
+function graphcurve(edge_list, locs_x, locs_y, nodesize::Real, outangle)
+    num_edges = length(edge_list)
+    curves = Matrix{Tuple{Float64,Float64}}(undef, num_edges, 4)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -155,9 +162,10 @@ function graphcurve(g, locs_x, locs_y, nodesize::Real, outangle)
     return curves
 end
 
-function graphcurve(g::AbstractGraph{T}, locs_x, locs_y, nodesize::Vector{<:Real}, outangle) where {T<:Integer}
-    curves = Matrix{Tuple{Float64,Float64}}(undef, ne(g), 4)
-    for (e_idx, e) in enumerate(edges(g))
+function graphcurve(edge_list, locs_x, locs_y, nodesize::Vector{T}, outangle) where {T<:Real}
+    num_edges = length(edge_list)
+    curves = Matrix{Tuple{Float64,Float64}}(undef, num_edges, 4)
+    for (e_idx, e) in enumerate(edge_list)
         i = src(e)
         j = dst(e)
         Δx = locs_x[j] - locs_x[i]
@@ -202,13 +210,13 @@ function curveedge(x1, y1, x2, y2, θ, outangle, d; k=0.5)
     return [(x1,y1) (xc1, yc1) (xc2, yc2) (x2, y2)]
 end
 
-function build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+function build_curved_edges(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     if arrowlengthfrac > 0.0
-        curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+        curves_cord, arrows_cord = graphcurve(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
         curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
         carrows = line(arrows_cord)
     else
-        curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
+        curves_cord = graphcurve(edge_list, locs_x, locs_y, nodesize, outangle)
         curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
         carrows = nothing
     end
@@ -216,13 +224,13 @@ function build_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowa
     return curves, carrows
 end
 
-function build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+function build_straight_edges(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
     if arrowlengthfrac > 0.0
-        lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+        lines_cord, arrows_cord = graphline(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
         lines = line(lines_cord)
         larrows = line(arrows_cord)
     else
-        lines_cord = graphline(g, locs_x, locs_y, nodesize)
+        lines_cord = graphline(edge_list, locs_x, locs_y, nodesize)
         lines = line(lines_cord)
         larrows = nothing
     end
@@ -231,19 +239,10 @@ function build_straight_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arro
 end
 
 function build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-    A = adjacency_matrix(g) #adjacency matrix
-    B = spdiagm(diag(A)) #diagonal matrix (self-loops)
-    A[diagind(A)] .= 0 #set diagonal elements to 0 (remove self-loops)
-    if is_directed(g)
-        g1 = SimpleDiGraph(A)
-        g2 = SimpleDiGraph(B)
-    else
-        g1 = SimpleGraph(A)
-        g2 = SimpleGraph(B)
-    end
-
-    lines, larrows = build_straight_edges(g1, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-    curves, carrows = build_curved_edges(g2, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    edge_list1 = filter(e -> src(e) != dst(e), collect(edges(g)))
+    edge_list2 = filter(e -> src(e) == dst(e), collect(edges(g)))
+    lines, larrows = build_straight_edges(edge_list1, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+    curves, carrows = build_curved_edges(edge_list2, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
 
     return lines, larrows, curves, carrows
 end
