@@ -15,8 +15,10 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, 
         starty = locs_y[i] + nodesize[i]*sin(θ)
         endx = locs_x[j] + nodesize[j]*cos(θ+π)
         endy = locs_y[j] + nodesize[j]*sin(θ+π)
-        lines[e_idx] = [(startx, starty), (endx, endy)]
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+        endx0 = (arr1[1] + arr2[1]) / 2
+        endy0 = (arr1[2] + arr2[2]) / 2
+        lines[e_idx] = [(startx, starty), (endx0, endy0)]
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     lines, arrows
@@ -36,8 +38,10 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angle
         starty = locs_y[i] + nodesize*sin(θ)
         endx = locs_x[j] + nodesize*cos(θ+π)
         endy = locs_y[j] + nodesize*sin(θ+π)
-        lines[e_idx] = [(startx, starty), (endx, endy)]
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
+        endx0 = (arr1[1] + arr2[1]) / 2
+        endy0 = (arr1[2] + arr2[2]) / 2
+        lines[e_idx] = [(startx, starty), (endx0, endy0)]
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     lines, arrows
@@ -100,9 +104,10 @@ function graphcurve(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength,
             d = 2 * π * nodesize[i]
         end
 
-        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
-
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
+        endx0 = (arr1[1] + arr2[1]) / 2
+        endy0 = (arr1[2] + arr2[2]) / 2
+        curves[e_idx, :] = curveedge(startx, starty, endx0, endy0, θ, outangle, d)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return curves, arrows
@@ -129,9 +134,10 @@ function graphcurve(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angl
             d = 2 * π * nodesize
         end
 
-        curves[e_idx, :] = curveedge(startx, starty, endx, endy, θ, outangle, d)
-
         arr1, arr2 = arrowcoords(θ-outangle, endx, endy, arrowlength, angleoffset)
+        endx0 = (arr1[1] + arr2[1]) / 2
+        endy0 = (arr1[2] + arr2[2]) / 2
+        curves[e_idx, :] = curveedge(startx, starty, endx0, endy0, θ, outangle, d)
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
     return curves, arrows
@@ -214,7 +220,7 @@ function build_curved_edges(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac
     if arrowlengthfrac > 0.0
         curves_cord, arrows_cord = graphcurve(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
         curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-        carrows = line(arrows_cord)
+        carrows = polygon(arrows_cord)
     else
         curves_cord = graphcurve(edge_list, locs_x, locs_y, nodesize, outangle)
         curves = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
@@ -228,7 +234,7 @@ function build_straight_edges(edge_list, locs_x, locs_y, nodesize, arrowlengthfr
     if arrowlengthfrac > 0.0
         lines_cord, arrows_cord = graphline(edge_list, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
         lines = line(lines_cord)
-        larrows = line(arrows_cord)
+        larrows = polygon(arrows_cord)
     else
         lines_cord = graphline(edge_list, locs_x, locs_y, nodesize)
         lines = line(lines_cord)
