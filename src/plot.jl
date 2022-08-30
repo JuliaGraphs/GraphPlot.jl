@@ -202,7 +202,7 @@ function gplot(g::AbstractGraph{T},
     end
 
     # Create nodes
-    nodecircle = fill(0.4Compose.w, length(locs_x))
+    nodecircle = fill(0.4*2.4, length(locs_x)) #40% of the width of the unit box
     if isa(nodesize, Real)
         for i = 1:length(locs_x)
             nodecircle[i] *= nodesize
@@ -257,28 +257,31 @@ function gplot(g::AbstractGraph{T},
     end
     Compose.set_default_graphic_size(plot_size...)
     
-    # Fix title offset
-    title_offset = isempty(title) ? 0 : 0.1*title_size/4
-    
-    # Plot area size
-    plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
+    # Plot title
+    title_offset = isempty(title) ? 0 : 0.1*title_size/4 #Fix title offset
+    title = text(0, -1.2 - title_offset/2, title, hcenter, vcenter)
 
     # Plot padding
     if !isnothing(pad)
         leftpad, rightpad, toppad, bottompad = pad, pad, pad, pad
     end
+
+    # Plot area size
+    plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
     
     # Build figure
-    compose(context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),
-            compose(context(), text(0, -1.2 - title_offset/2, title, hcenter, vcenter), fill(title_color), fontsize(title_size), font(font_family)),
-            compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
-            compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
-            compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), curves, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(units=UnitBox(plot_area...)), rectangle(plot_area...), fill(background_color)))
+    compose(
+        context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),
+        compose(context(), title, fill(title_color), fontsize(title_size), font(font_family)),
+        compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
+        compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+        compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
+        compose(context(), larrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(), carrows, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(), curves, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(units=UnitBox(plot_area...)), rectangle(plot_area...), fill(background_color))
+    )
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
