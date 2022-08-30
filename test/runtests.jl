@@ -67,7 +67,7 @@ end
     @test test_images(VisualTest(plot_and_save1, refimg1), popup=!istravis) |> save_comparison |> success
 
     # test directed graph
-    plot_and_save2(fname) = plot_and_save(fname, g, arrowlengthfrac=0.02, nodelabel=nodelabel)
+    plot_and_save2(fname) = plot_and_save(fname, g, arrowlengthfrac=0.05, nodelabel=nodelabel, font_family="Sans")
     refimg2 = joinpath(datadir, "karate_straight_directed.png")
     @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
