@@ -188,7 +188,7 @@ gplot(h)
 + `linetype` Type of line used for edges ("straight", "curve"). Default: "straight"
 + `outangle` Angular width in radians for the edges (only used if `linetype = "curve`). Default: `π/5 (36 degrees)`
 + `background_color` Color for the plot background. Default: `nothing`
-+ `plot_size` Tuple of measures for width x height of plot area. Default: `(sqrt(2)*10cm, 10cm)`
++ `plot_size` Tuple of measures for width x height of plot area. Default: `(10cm, 10cm)`
 + `leftpad, rightpad, toppad, bottompad` Padding for the plot margins. Default: `0mm`
 + `pad` Padding for plot margins (overrides individual padding if given). Default: `nothing`
 # Reporting Bugs

@@ -110,7 +110,7 @@ Default: `π/5 (36 degrees)`
 Color for the plot background. Default: `nothing`
 
 `plot_size`
-Tuple of measures for width x height for plot area. Default: `(sqrt(2)*10cm, 10cm)`
+Tuple of measures for width x height for plot area. Default: `(10cm, 10cm)`
 
 `leftpad, rightpad, toppad, bottompad`
 Padding for the plot margins. Default: `0mm`
@@ -119,7 +119,7 @@ Padding for the plot margins. Default: `0mm`
 Padding for plot margins (overrides individual padding if given). Default: `nothing`
 """
 function gplot(g::AbstractGraph{T},
-    locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
+    locs_x_in::AbstractVector{R1}, locs_y_in::AbstractVector{R2};
     title = "",
     title_color = colorant"black",
     title_size = 4.0,
@@ -149,7 +149,7 @@ function gplot(g::AbstractGraph{T},
     linetype = "straight",
     outangle = π / 5,
     background_color = nothing,
-    plot_size = (sqrt(2)*10cm, 10cm),
+    plot_size = (10cm, 10cm),
     leftpad = 0mm, 
     rightpad = 0mm, 
     toppad = 0mm, 
