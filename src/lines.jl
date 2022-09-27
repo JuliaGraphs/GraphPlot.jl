@@ -1,6 +1,12 @@
 """
 Return lines and arrow heads
 """
+function midpoint(pt1,pt2)
+    x = (pt1[1] + pt2[1]) / 2
+    y = (pt1[2] + pt2[2]) / 2
+    return x,y
+end
+
 function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
     num_edges = length(edge_list)
     lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
@@ -16,8 +22,12 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, 
         endx = locs_x[j] + nodesize[j]*cos(θ+π)
         endy = locs_y[j] + nodesize[j]*sin(θ+π)
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
-        endx0 = (arr1[1] + arr2[1]) / 2
-        endy0 = (arr1[2] + arr2[2]) / 2
+        endx0, endy0 = midpoint(arr1, arr2)
+        if Edge(j,i) in edge_list[1:e_idx-1] #check if a reverse arc exists
+            e_idx2 = findfirst(==(Edge(j,i)), edge_list) #get index of reverse arc
+            startx, starty = midpoint(arrows[e_idx2][[1,3]]...) #get midopint of reverse arc and use as new start point
+            lines[e_idx2][1] = (endx0, endy0) #update endpoint of reverse arc
+        end
         lines[e_idx] = [(startx, starty), (endx0, endy0)]
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
@@ -39,8 +49,12 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angle
         endx = locs_x[j] + nodesize*cos(θ+π)
         endy = locs_y[j] + nodesize*sin(θ+π)
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
-        endx0 = (arr1[1] + arr2[1]) / 2
-        endy0 = (arr1[2] + arr2[2]) / 2
+        endx0, endy0 = midpoint(arr1, arr2)
+        if Edge(j,i) in edge_list[1:e_idx-1] #check if a reverse arc exists
+            e_idx2 = findfirst(==(Edge(j,i)), edge_list) #get index of reverse arc
+            startx, starty = midpoint(arrows[e_idx2][[1,3]]...) #get midopint of reverse arc and use as new start point
+            lines[e_idx2][1] = (endx0, endy0) #update endpoint of reverse arc
+        end
         lines[e_idx] = [(startx, starty), (endx0, endy0)]
         arrows[e_idx] = [arr1, (endx, endy), arr2]
     end
