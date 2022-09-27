@@ -23,8 +23,8 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, 
         endy = locs_y[j] + nodesize[j]*sin(θ+π)
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
         endx0, endy0 = midpoint(arr1, arr2)
-        if Edge(j,i) in edge_list[1:e_idx-1] #check if a reverse arc exists
-            e_idx2 = findfirst(==(Edge(j,i)), edge_list) #get index of reverse arc
+        e_idx2 = findfirst(==(Edge(j,i)), collect(edge_list)) #get index of reverse arc
+        if !isnothing(e_idx2) && e_idx2 < e_idx #only make changes if lines/arrows have already been defined for that arc
             startx, starty = midpoint(arrows[e_idx2][[1,3]]...) #get midopint of reverse arc and use as new start point
             lines[e_idx2][1] = (endx0, endy0) #update endpoint of reverse arc
         end
@@ -50,8 +50,8 @@ function graphline(edge_list, locs_x, locs_y, nodesize::Real, arrowlength, angle
         endy = locs_y[j] + nodesize*sin(θ+π)
         arr1, arr2 = arrowcoords(θ, endx, endy, arrowlength, angleoffset)
         endx0, endy0 = midpoint(arr1, arr2)
-        if Edge(j,i) in edge_list[1:e_idx-1] #check if a reverse arc exists
-            e_idx2 = findfirst(==(Edge(j,i)), edge_list) #get index of reverse arc
+        e_idx2 = findfirst(==(Edge(j,i)), collect(edge_list)) #get index of reverse arc
+        if !isnothing(e_idx2) && e_idx2 < e_idx #only make changes if lines/arrows have already been defined for that arc
             startx, starty = midpoint(arrows[e_idx2][[1,3]]...) #get midopint of reverse arc and use as new start point
             lines[e_idx2][1] = (endx0, endy0) #update endpoint of reverse arc
         end
