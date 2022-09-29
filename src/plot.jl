@@ -226,8 +226,8 @@ function gplot(g::AbstractGraph{T},
     # Create edge labels if provided
     edgetexts = nothing
     if !isempty(edgelabel)
-        edge_locs_x = zeros(R, NE)
-        edge_locs_y = zeros(R, NE)
+        edge_locs_x = zeros(R1, NE)
+        edge_locs_y = zeros(R2, NE)
         for (e_idx, e) in enumerate(edges(g))
             i = src(e)
             j = dst(e)
