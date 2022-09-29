@@ -2,8 +2,6 @@ module GraphPlot
 
 using Compose  # for plotting features
 using Graphs
-using Reexport
-@reexport using Measures
 
 const gadflyjs = joinpath(dirname(Base.source_path()), "gadfly.js")
 
@@ -18,7 +16,8 @@ export
     spectral_layout,
     shell_layout,
     stressmajorize_layout,
-    saveplot
+    saveplot,
+    mm, cm, inch
 
 include("deprecations.jl")
 
