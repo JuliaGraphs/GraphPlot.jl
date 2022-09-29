@@ -333,3 +333,8 @@ function gplothtml(args...; keyargs...)
     close(output)
     open_file(filename)
 end
+
+function saveplot(gplot::Compose.Context, filename::String)
+    draw(SVG(filename), gplot)
+    return nothing    
+end

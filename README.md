@@ -146,6 +146,8 @@ draw(PDF("karate.pdf", 16cm, 16cm), gplot(g))
 draw(PNG("karate.png", 16cm, 16cm), gplot(g))
 # save to svg
 draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
+# alternate way of saving to svg without loading Compose
+saveplot(gplot(g, plot_size = (16cm, 16cm)), "karate.svg")
 ```
 # Graphs.jl integration
 ```julia
