@@ -233,8 +233,8 @@ function gplot(g::AbstractGraph{T},
             j = dst(e)
             mid_x = (locs_x[i]+locs_x[j]) / 2.0
             mid_y = (locs_y[i]+locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = (is_directed(g) ? mid_x + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = (is_directed(g) ? mid_y + edgelabeldisty * NODESIZE
+            edge_locs_x[e_idx] = mid_x + edgelabeldistx * NODESIZE
+            edge_locs_y[e_idx] = mid_y + edgelabeldisty * NODESIZE
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
