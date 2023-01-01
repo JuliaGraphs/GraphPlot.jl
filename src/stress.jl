@@ -28,7 +28,7 @@ and the additional output as requested:
     abstolx:   Absolute tolerance for convergence of layout.
                The iterations terminate if the Frobenius norm of two successive
                layouts is less than abstolx. Default: √(eps(eltype(X0))
-    C = 1.0:   The target distance between a pair of connected vertices.
+    C:   The target distance between a pair of connected vertices.
     verbose:   If true, prints convergence information at each iteration.
                Default: false
 
