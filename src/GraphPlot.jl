@@ -15,7 +15,9 @@ export
     spring_layout,
     spectral_layout,
     shell_layout,
-    stressmajorize_layout
+    stressmajorize_layout,
+    saveplot,
+    mm, cm, inch
 
 include("deprecations.jl")
 
