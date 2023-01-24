@@ -7,6 +7,22 @@ function midpoint(pt1,pt2)
     return x,y
 end
 
+function interpolate_bezier(x::Vector,t)
+    n = length(x)-1
+    x_loc = sum(binomial(n,i)*(1-t)^(n-i)*t^i*x[i+1][1] for i in 0:n)
+    y_loc = sum(binomial(n,i)*(1-t)^(n-i)*t^i*x[i+1][2] for i in 0:n)
+    return x_loc.value, y_loc.value
+end
+
+interpolate_bezier(x::Compose.CurvePrimitive,t) =
+    interpolate_bezier([x.anchor0, x.ctrl0, x.ctrl1, x.anchor1], t)
+
+function interpolate_line(locs_x,locs_y,i,j,t)
+    x_loc = locs_x[i] + (locs_x[j]-locs_x[i])*t
+    y_loc = locs_y[i] + (locs_y[j]-locs_y[i])*t
+    return x_loc, y_loc
+end
+
 function graphline(edge_list, locs_x, locs_y, nodesize::Vector{T}, arrowlength, angleoffset) where {T<:Real}
     num_edges = length(edge_list)
     lines = Array{Vector{Tuple{Float64,Float64}}}(undef, num_edges)
