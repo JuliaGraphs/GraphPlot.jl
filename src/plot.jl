@@ -223,21 +223,6 @@ function gplot(g::AbstractGraph{T},
                      text_locs_y .- nodesize .* (nodelabeldist * sin(nodelabelangleoffset)),
                      map(string, nodelabel), [hcenter], [vcenter])
     end
-    # Create edge labels if provided
-    edgetexts = nothing
-    if !isempty(edgelabel)
-        edge_locs_x = zeros(R1, NE)
-        edge_locs_y = zeros(R2, NE)
-        for (e_idx, e) in enumerate(edges(g))
-            i = src(e)
-            j = dst(e)
-            mid_x = (locs_x[i]+locs_x[j]) / 2.0
-            mid_y = (locs_y[i]+locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = mid_x + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = mid_y + edgelabeldisty * NODESIZE
-        end
-        edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
-    end
 
     # Create lines and arrow heads
     lines, larrows = nothing, nothing
@@ -248,6 +233,28 @@ function gplot(g::AbstractGraph{T},
         lines, larrows, curves, carrows = build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
     else
         lines, larrows = build_straight_edges(edges(g), locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+    end
+
+    # Create edge labels if provided
+    edgetexts = nothing
+    if !isempty(edgelabel)
+        edge_locs_x = zeros(R1, NE)
+        edge_locs_y = zeros(R2, NE)
+        self_loop_idx = 1
+        for (e_idx, e) in enumerate(edges(g))
+            i, j = src(e), dst(e)
+            if linetype == "curve"
+                mid_x, mid_y = interpolate_bezier(curves.primitives[e_idx], 0.5)
+            elseif src(e) == dst(e)
+                mid_x, mid_y = interpolate_bezier(curves.primitives[self_loop_idx], 0.5)
+                self_loop_idx += 1
+            else
+                mid_x, mid_y = interpolate_line(locs_x,locs_y,i,j,0.5)
+            end
+            edge_locs_x[e_idx] = mid_x + edgelabeldistx * NODESIZE
+            edge_locs_y[e_idx] = mid_y + edgelabeldisty * NODESIZE
+        end
+        edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
 
     # Set plot_size
