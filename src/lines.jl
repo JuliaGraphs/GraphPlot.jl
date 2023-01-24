@@ -7,7 +7,8 @@ function midpoint(pt1,pt2)
     return x,y
 end
 
-function interpolate_bezier(x::Vector,t)
+function interpolate_bezier(x::Vector,t) 
+    #TODO: since this is only being used for `curve` which has 4 points (n = 3), the calculation can be simplified for this case.
     n = length(x)-1
     x_loc = sum(binomial(n,i)*(1-t)^(n-i)*t^i*x[i+1][1] for i in 0:n)
     y_loc = sum(binomial(n,i)*(1-t)^(n-i)*t^i*x[i+1][2] for i in 0:n)
