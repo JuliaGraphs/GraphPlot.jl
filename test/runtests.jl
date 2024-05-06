@@ -107,3 +107,16 @@ end
     @test test_images(VisualTest(plot_and_save2, refimg2), popup=!istravis) |> save_comparison |> success
 
 end
+
+@testset "layouts" begin
+    g = smallgraph(:petersen)
+    for layout in [
+            random_layout,
+            circular_layout,
+            spring_layout,
+            spectral_layout,
+            shell_layout,
+            stressmajorize_layout]
+        @test layout(g) isa Tuple{<:Vector, <:Vector}
+    end
+end
