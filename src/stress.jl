@@ -2,7 +2,7 @@ using LinearAlgebra
 
 # This layout algorithm is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 @doc """
-Compute graph stressmajorize_layoutlayout using stress majorization
+Compute graph stressmajorize_layout using stress majorization
 
 Inputs:
 
