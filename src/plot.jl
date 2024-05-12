@@ -23,6 +23,18 @@ Layout algorithm. Currently can be one of [`random_layout`,
 `spectral_layout`].
 Default: `spring_layout`
 
+`title`
+Plot title. Default: `""`
+
+`title_color`
+Plot title color. Default: `colorant"black"`
+
+`title_size`
+Plot title size. Default: `4.0`
+
+`font_family`
+Font family for all text. Default: `"Helvetica"`
+
 `NODESIZE`
 Max size for the nodes. Default: `3.0/sqrt(N)`
 
@@ -42,10 +54,10 @@ Distances for the node labels from center of nodes. Default: `0.0`
 Angle offset for the node labels. Default: `π/4.0`
 
 `NODELABELSIZE`
-Largest fontsize for the vertice labels. Default: `4.0`
+Largest fontsize for the vertex labels. Default: `4.0`
 
 `nodelabelsize`
-Relative fontsize for the vertice labels, can be a Vector. Default: `1.0`
+Relative fontsize for the vertex labels, can be a Vector. Default: `1.0`
 
 `nodefillc`
 Color to fill the nodes with, can be a Vector. Default: `colorant"turquoise"`
@@ -94,9 +106,24 @@ Type of line used for edges ("straight", "curve"). Default: "straight"
 Angular width in radians for the edges (only used if `linetype = "curve`). 
 Default: `π/5 (36 degrees)`
 
+`background_color`
+Color for the plot background. Default: `nothing`
+
+`plot_size`
+Tuple of measures for width x height for plot area. Default: `(10cm, 10cm)`
+
+`leftpad, rightpad, toppad, bottompad`
+Padding for the plot margins. Default: `0mm`
+
+`pad`
+Padding for plot margins (overrides individual padding if given). Default: `nothing`
 """
 function gplot(g::AbstractGraph{T},
-    locs_x_in::Vector{R1}, locs_y_in::Vector{R2};
+    locs_x_in::AbstractVector{R1}, locs_y_in::AbstractVector{R2};
+    title = "",
+    title_color = colorant"black",
+    title_size = 4.0,
+    font_family = "Helvetica",
     nodelabel = nothing,
     nodelabelc = colorant"black",
     nodelabelsize = 1.0,
@@ -120,20 +147,28 @@ function gplot(g::AbstractGraph{T},
     arrowlengthfrac = is_directed(g) ? 0.1 : 0.0,
     arrowangleoffset = π / 9,
     linetype = "straight",
-    outangle = π / 5) where {T <:Integer, R1 <: Real, R2 <: Real}
+    outangle = π / 5,
+    background_color = nothing,
+    plot_size = (10cm, 10cm),
+    leftpad = 0mm, 
+    rightpad = 0mm, 
+    toppad = 0mm, 
+    bottompad = 0mm,
+    pad = nothing
+    ) where {T <:Integer, R1 <: Real, R2 <: Real}
 
     length(locs_x_in) != length(locs_y_in) && error("Vectors must be same length")
     N = nv(g)
     NE = ne(g)
-    if nodelabel != nothing && length(nodelabel) != N
+    if !isnothing(nodelabel) && length(nodelabel) != N
         error("Must have one label per node (or none)")
     end
     if !isempty(edgelabel) && length(edgelabel) != NE
         error("Must have one label per edge (or none)")
     end
 
-    locs_x = Float64.(locs_x_in)
-    locs_y = Float64.(locs_y_in)
+    locs_x = convert(Vector{Float64}, locs_x_in)
+    locs_y = convert(Vector{Float64}, locs_y_in)
 
     # Scale to unit square
     min_x, max_x = extrema(locs_x)
@@ -167,72 +202,92 @@ function gplot(g::AbstractGraph{T},
     end
 
     # Create nodes
-    nodecircle = fill(0.4Compose.w, length(locs_x))
+    nodecircle = fill(0.4*2.4, length(locs_x)) #40% of the width of the unit box
     if isa(nodesize, Real)
-        	    for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize
-        	    end
-    	else
-        		for i = 1:length(locs_x)
-            	    	nodecircle[i] *= nodesize[i]
-        	    end
-    	end
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize
+        end
+    else
+        for i = 1:length(locs_x)
+            nodecircle[i] *= nodesize[i]
+        end
+    end
     nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
     texts = nothing
-    if nodelabel != nothing
+    if !isnothing(nodelabel)
         text_locs_x = deepcopy(locs_x)
         text_locs_y = deepcopy(locs_y)
         texts = text(text_locs_x .+ nodesize .* (nodelabeldist * cos(nodelabelangleoffset)),
                      text_locs_y .- nodesize .* (nodelabeldist * sin(nodelabelangleoffset)),
                      map(string, nodelabel), [hcenter], [vcenter])
     end
+
+    # Create lines and arrow heads
+    lines, larrows = nothing, nothing
+    curves, carrows = nothing, nothing
+    if linetype == "curve"
+        curves, carrows = build_curved_edges(edges(g), locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    elseif has_self_loops(g)
+        lines, larrows, curves, carrows = build_straight_curved_edges(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
+    else
+        lines, larrows = build_straight_edges(edges(g), locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
+    end
+
     # Create edge labels if provided
     edgetexts = nothing
     if !isempty(edgelabel)
-        edge_locs_x = zeros(R, NE)
-        edge_locs_y = zeros(R, NE)
+        edge_locs_x = zeros(R1, NE)
+        edge_locs_y = zeros(R2, NE)
+        self_loop_idx = 1
         for (e_idx, e) in enumerate(edges(g))
-            i = src(e)
-            j = dst(e)
-            mid_x = (locs_x[i]+locs_x[j]) / 2.0
-            mid_y = (locs_y[i]+locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
-
+            i, j = src(e), dst(e)
+            if linetype == "curve"
+                mid_x, mid_y = interpolate_bezier(curves.primitives[e_idx], 0.5)
+            elseif src(e) == dst(e)
+                mid_x, mid_y = interpolate_bezier(curves.primitives[self_loop_idx], 0.5)
+                self_loop_idx += 1
+            else
+                mid_x, mid_y = interpolate_line(locs_x,locs_y,i,j,0.5)
+            end
+            edge_locs_x[e_idx] = mid_x + edgelabeldistx * NODESIZE
+            edge_locs_y[e_idx] = mid_y + edgelabeldisty * NODESIZE
         end
         edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
     end
 
-    # Create lines and arrow heads
-    lines, arrows = nothing, nothing
-    if linetype == "curve"
-        if arrowlengthfrac > 0.0
-            curves_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-            arrows = line(arrows_cord)
-        else
-            curves_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = curve(curves_cord[:,1], curves_cord[:,2], curves_cord[:,3], curves_cord[:,4])
-        end
-    else
-        if arrowlengthfrac > 0.0
-            lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-            lines = line(lines_cord)
-            arrows = line(arrows_cord)
-        else
-            lines_cord = graphline(g, locs_x, locs_y, nodesize)
-            lines = line(lines_cord)
-        end
+    # Set plot_size
+    if length(plot_size) != 2 || !isa(plot_size[1], Compose.AbsoluteLength) || !isa(plot_size[2], Compose.AbsoluteLength)
+        error("`plot_size` must be a Tuple of lengths")
+    end
+    Compose.set_default_graphic_size(plot_size...)
+    
+    # Plot title
+    title_offset = isempty(title) ? 0 : 0.1*title_size/4 #Fix title offset
+    title = text(0, -1.2 - title_offset/2, title, hcenter, vcenter)
+
+    # Plot padding
+    if !isnothing(pad)
+        leftpad, rightpad, toppad, bottompad = pad, pad, pad, pad
     end
 
-    compose(context(units=UnitBox(-1.2, -1.2, +2.4, +2.4)),
-            compose(context(), texts, fill(nodelabelc), stroke(nothing), fontsize(nodelabelsize)),
-            compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
-            compose(context(), edgetexts, fill(edgelabelc), stroke(nothing), fontsize(edgelabelsize)),
-            compose(context(), arrows, stroke(edgestrokec), linewidth(edgelinewidth)),
-            compose(context(), lines, stroke(edgestrokec), fill(nothing), linewidth(edgelinewidth)))
+    # Plot area size
+    plot_area = (-1.2, -1.2 - title_offset, +2.4, +2.4 + title_offset)
+    
+    # Build figure
+    compose(
+        context(units=UnitBox(plot_area...; leftpad, rightpad, toppad, bottompad)),
+        compose(context(), title, fill(title_color), fontsize(title_size), font(font_family)),
+        compose(context(), texts, fill(nodelabelc), fontsize(nodelabelsize), font(font_family)),
+        compose(context(), nodes, fill(nodefillc), stroke(nodestrokec), linewidth(nodestrokelw)),
+        compose(context(), edgetexts, fill(edgelabelc), fontsize(edgelabelsize)),
+        compose(context(), larrows, fill(edgestrokec)),
+        compose(context(), carrows, fill(edgestrokec)),
+        compose(context(), lines, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(), curves, stroke(edgestrokec), linewidth(edgelinewidth)),
+        compose(context(units=UnitBox(plot_area...)), rectangle(plot_area...), fill(background_color))
+    )
 end
 
 function gplot(g; layout::Function=spring_layout, keyargs...)
@@ -283,4 +338,9 @@ function gplothtml(args...; keyargs...)
         """)
     close(output)
     open_file(filename)
+end
+
+function saveplot(gplot::Compose.Context, filename::String)
+    draw(SVG(filename), gplot)
+    return nothing    
 end

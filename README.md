@@ -146,6 +146,8 @@ draw(PDF("karate.pdf", 16cm, 16cm), gplot(g))
 draw(PNG("karate.png", 16cm, 16cm), gplot(g))
 # save to svg
 draw(SVG("karate.svg", 16cm, 16cm), gplot(g))
+# alternate way of saving to svg without loading Compose
+saveplot(gplot(g, plot_size = (16cm, 16cm)), "karate.svg")
 ```
 # Graphs.jl integration
 ```julia
@@ -160,6 +162,10 @@ gplot(h)
 
 # Keyword Arguments
 + `layout` Layout algorithm: `random_layout`, `circular_layout`, `spring_layout`, `shell_layout`, `stressmajorize_layout`, `spectral_layout`. Default: `spring_layout`
++ `title` Plot title. Default: `""`
++ `title_color` Plot title color. Default: `colorant"black"`
++ `title_size` Plot title size. Default: `4.0`
++ `font_family` Font family for all text. Default: `"Helvetica"`
 + `NODESIZE` Max size for the nodes. Default: `3.0/sqrt(N)`
 + `nodesize` Relative size for the nodes, can be a Vector. Default: `1.0`
 + `nodelabel` Labels for the vertices, a Vector or nothing. Default: `nothing`
@@ -183,7 +189,10 @@ gplot(h)
 + `arrowangleoffset` Angular width in radians for the arrows. Default: `π/9 (20 degrees)`
 + `linetype` Type of line used for edges ("straight", "curve"). Default: "straight"
 + `outangle` Angular width in radians for the edges (only used if `linetype = "curve`). Default: `π/5 (36 degrees)`
-
++ `background_color` Color for the plot background. Default: `nothing`
++ `plot_size` Tuple of measures for width x height of plot area. Default: `(10cm, 10cm)`
++ `leftpad, rightpad, toppad, bottompad` Padding for the plot margins. Default: `0mm`
++ `pad` Padding for plot margins (overrides individual padding if given). Default: `nothing`
 # Reporting Bugs
 
 Filing an issue to report a bug, counterintuitive behavior, or even to request a feature is extremely valuable in helping me prioritize what to work on, so don't hestitate.
