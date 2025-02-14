@@ -126,8 +126,12 @@ end
 @testset "Spring Layout" begin
     g1 = path_digraph(3)
     x1, y1 = spring_layout(g1, 0; C = 1)
-    @test all(isapprox.(x1, [1.0, -0.014799825222963192, -1.0]))
-    @test all(isapprox.(y1, [-1.0, 0.014799825222963303, 1.0]))
+    # TODO spring_layout uses random values which have changed on higher Julia versions
+    #   we should therefore use StableRNGs.jl for these layouts
+    @static if VERSION < v"1.7"
+        @test all(isapprox.(x1, [1.0, -0.014799825222963192, -1.0]))
+        @test all(isapprox.(y1, [-1.0, 0.014799825222963303, 1.0]))
+    end
 end
 
 @testset "Circular Layout" begin
