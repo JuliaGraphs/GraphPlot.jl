@@ -8,6 +8,7 @@ using Cairo
 using GraphPlot.Colors
 using GraphPlot.Compose
 using Random
+using StableRNGs: StableRNG
 using Test
 using VisualRegressionTests
 using ImageMagick
@@ -125,13 +126,34 @@ end
 
 @testset "Spring Layout" begin
     g1 = path_digraph(3)
-    x1, y1 = spring_layout(g1, 0; C = 1)
-    # TODO spring_layout uses random values which have changed on higher Julia versions
-    #   we should therefore use StableRNGs.jl for these layouts
-    @static if VERSION < v"1.7"
-        @test all(isapprox.(x1, [1.0, -0.014799825222963192, -1.0]))
-        @test all(isapprox.(y1, [-1.0, 0.014799825222963303, 1.0]))
-    end
+    g2 = smallgraph(:house)
+
+    # Neither seed nor initial locations provided
+    x1, y1 = spring_layout(g1; MAXITER=10)
+    @test length(x1) == nv(g1)
+    @test length(y1) == nv(g1)
+
+    # Using a seed
+    x2, y2 = spring_layout(g1, 0; C = 1)
+    @test length(x2) == nv(g1)
+    @test length(y2) == nv(g1)
+
+    # Using a rng
+    rng = StableRNG(123)
+    x3, y3 = spring_layout(g2, rng; INITTEMP = 7.5)
+    @test x3 ≈ [0.6417685918857294, -1.0, 1.0, -0.5032029640625139, 0.585415479582793]
+    @test y3 ≈ [-1.0, -0.7760280912987298, 0.06519424728464562, 0.2702599482349506, 1.0]
+
+    # Using initial locations
+    locs_x_in = 1:5
+    locs_y_in = [-1.0, 2.0, 0.3, 0.4, -0.5]
+    x4, y4 = spring_layout(g2, locs_x_in, locs_y_in)
+    @test x4 ≈ [-1.0, -0.4030585026962391, -0.050263101475789274, 0.5149349966578818, 1.0]
+    @test y4 ≈ [-0.03307638042475203, 1.0, -0.8197758901868164, 0.15834883764718155, -1.0]
+
+    # Providing initial locations with the wrong lengths should throw an ArgumentError
+    @test_throws ArgumentError("The length of locs_x_in does not equal the number of vertices") spring_layout(g1, 1:5, [1,2,3])
+    @test_throws ArgumentError("The length of locs_y_in does not equal the number of vertices") spring_layout(g2, 1:5, [1,2,3])
 end
 
 @testset "Circular Layout" begin
