@@ -2,6 +2,7 @@ using SparseArrays: SparseMatrixCSC, sparse
 using ArnoldiMethod: SR
 using Base: OneTo
 using LinearAlgebra: eigen
+using Random: AbstractRNG, default_rng
 
 """
 Position nodes uniformly at random in the unit square.
@@ -83,6 +84,14 @@ where C is a parameter we can adjust
 *g*
 a graph
 
+*locs_x_in*
+x coordinates of the initial locations. If not provided they are sampled
+from [-1, 1]. Can be modified.
+
+*locs_y_in*
+y coordinates of the initial locations. If not provided they are sampled
+from [-1, 1]. Can be modified.
+
 *C*
 Constant to fiddle with density of resulting layout
 
@@ -93,7 +102,8 @@ Number of iterations we apply the forces
 Initial "temperature", controls movement per iteration
 
 *seed*
-Integer seed for pseudorandom generation of locations (default = 0).
+Either an `Integer` seed or an `Random.AbstractRNG` for generation of initial locations.
+If neither is provided `Random.default_rng()` is used.
 
 **Examples**
 ```
@@ -102,13 +112,20 @@ julia> locs_x, locs_y = spring_layout(g)
 ```
 """
 function spring_layout(g::AbstractGraph,
-                       locs_x_in::AbstractVector{R1}=2*rand(nv(g)).-1.0,
-                       locs_y_in::AbstractVector{R2}=2*rand(nv(g)).-1.0;
+                       locs_x_in::AbstractVector{R1},
+                       locs_y_in::AbstractVector{R2};
                        C=2.0,
                        MAXITER=100,
                        INITTEMP=2.0) where {R1 <: Real, R2 <: Real}
-
     nvg = nv(g)
+
+    if length(locs_x_in) != nvg
+        throw(ArgumentError("The length of locs_x_in does not equal the number of vertices"))
+    end
+    if length(locs_y_in) != nvg
+        throw(ArgumentError("The length of locs_y_in does not equal the number of vertices"))
+    end
+
     adj_matrix = adjacency_matrix(g)
 
     # The optimal distance bewteen vertices
@@ -180,7 +197,14 @@ using Random: MersenneTwister
 
 function spring_layout(g::AbstractGraph, seed::Integer; kws...)
     rng = MersenneTwister(seed)
-    spring_layout(g, 2 .* rand(rng, nv(g)) .- 1.0, 2 .* rand(rng,nv(g)) .- 1.0; kws...)
+    spring_layout(g, rng; kws...)
+end
+
+function spring_layout(g::AbstractGraph, rng::AbstractRNG=default_rng(); kws...)
+    nvg = nv(g)
+    locs_x_in = 2.0 * rand(rng, nvg) .- 1.0
+    locs_y_in = 2.0 * rand(rng, nvg) .- 1.0
+    spring_layout(g, locs_x_in, locs_y_in; kws...)
 end
 
 """
