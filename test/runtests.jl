@@ -158,3 +158,16 @@ end
     @test all(isapprox.(x2, [1.0, 2.0, -0.4999999999999998, -0.9999999999999996, -0.5000000000000004, -1.0000000000000009]))
     @test all(isapprox.(y2, [0.0, 0.0, 0.8660254037844387, 1.7320508075688774, -0.8660254037844385, -1.732050807568877]))
 end
+
+@testset "layouts" begin
+    g = smallgraph(:petersen)
+    for layout in [
+            random_layout,
+            circular_layout,
+            spring_layout,
+            spectral_layout,
+            shell_layout,
+            stressmajorize_layout]
+        @test layout(g) isa Tuple{<:Vector, <:Vector}
+    end
+end

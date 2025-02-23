@@ -2,11 +2,11 @@ using LinearAlgebra
 
 # This layout algorithm is copy from [IainNZ](https://github.com/IainNZ)'s [GraphLayout.jl](https://github.com/IainNZ/GraphLayout.jl)
 @doc """
-Compute graph layout using stress majorization
+Compute graph stressmajorize_layout using stress majorization
 
 Inputs:
 
-    δ: Matrix of pairwise distances
+    g: The input graph.
     p: Dimension of embedding (default: 2)
     w: Matrix of weights. If not specified, defaults to
            w[i,j] = δ[i,j]^-2 if δ[i,j] is nonzero, or 0 otherwise
@@ -28,10 +28,9 @@ and the additional output as requested:
     abstolx:   Absolute tolerance for convergence of layout.
                The iterations terminate if the Frobenius norm of two successive
                layouts is less than abstolx. Default: √(eps(eltype(X0))
+    C:   The target distance between a pair of connected vertices.
     verbose:   If true, prints convergence information at each iteration.
                Default: false
-    returnall: If true, returns all iterates and their associated stresses.
-               If false (default), returns the last iterate
 
 Output:
 
@@ -56,21 +55,23 @@ Reference:
     }
 """
 function stressmajorize_layout(g::AbstractGraph,
-                               p::Int=2,
+                               p=2,
                                w=nothing,
                                X0=randn(nv(g), p);
                                maxiter = 400size(X0, 1)^2,
                                abstols=√(eps(eltype(X0))),
                                reltols=√(eps(eltype(X0))),
                                abstolx=√(eps(eltype(X0))),
+                               C = 1.0,
                                verbose = false,
-                               returnall = false)
+                               )
 
     @assert size(X0, 2)==p
-    δ = fill(1.0, nv(g), nv(g))
+    # graph theoretical distance
+    δ = C .* hcat([gdistances(g, i) for i=1:nv(g)]...)
 
-    if w == nothing
-        w = δ.^-2
+    if w === nothing
+        w = δ .^ -2
         w[.!isfinite.(w)] .= 0
     end
 
@@ -78,28 +79,27 @@ function stressmajorize_layout(g::AbstractGraph,
     Lw = weightedlaplacian(w)
     pinvLw = pinv(Lw)
     newstress = stress(X0, δ, w)
-    Xs = Matrix[X0]
-    stresses = [newstress]
     iter = 0
+    L = zeros(nv(g), nv(g))
+    local X
     for outer iter = 1:maxiter
         #TODO the faster way is to drop the first row and col from the iteration
-        X = pinvLw * (LZ(X0, δ, w)*X0)
+        X = pinvLw * (LZ!(L, X0, δ, w)*X0)
         @assert all(isfinite.(X))
         newstress, oldstress = stress(X, δ, w), newstress
         verbose && @info("""Iteration $iter
         Change in coordinates: $(norm(X - X0))
         Stress: $newstress (change: $(newstress-oldstress))
         """)
-        push!(Xs, X)
-        push!(stresses, newstress)
-        abs(newstress - oldstress) < reltols * newstress && break
-        abs(newstress - oldstress) < abstols && break
-        norm(X - X0) < abstolx && break
+        if abs(newstress - oldstress) < reltols * newstress ||
+                abs(newstress - oldstress) < abstols ||
+                norm(X - X0) < abstolx
+            break
+        end
         X0 = X
     end
     iter == maxiter && @warn("Maximum number of iterations reached without convergence")
-    #returnall ? (Xs, stresses) : Xs[end]
-    Xs[end][:,1], Xs[end][:,2]
+    return X[:,1], X[:,2]
 end
 
 @doc """
@@ -112,16 +112,12 @@ Input:
 
 See (1) of Reference
 """
-function stress(X, d=fill(1.0, size(X, 1), size(X, 1)), w=nothing)
+function stress(X, d, w)
     s = 0.0
     n = size(X, 1)
-    if w==nothing
-        w = d.^-2
-        w[!isfinite.(w)] = 0
-    end
     @assert n==size(d, 1)==size(d, 2)==size(w, 1)==size(w, 2)
-    for j=1:n, i=1:j-1
-        s += w[i, j] * (norm(X[i,:] - X[j,:]) - d[i,j])^2
+    @inbounds for j=1:n, i=1:j-1
+        s += w[i, j] * (sqrt(sum(k->abs2(X[i,k] - X[j,k]), 1:size(X,2))) - d[i,j])^2
     end
     @assert isfinite(s)
     return s
@@ -151,25 +147,33 @@ end
 @doc """
 Computes L^Z defined in (5) of the Reference
 
-Input: Z: current layout (coordinates)
+Input: L: A matrix to store the result.
+       Z: current layout (coordinates)
        d: Ideal distances (default: all 1)
        w: weights (default: d.^-2)
 """
-function LZ(Z, d, w)
+function LZ!(L, Z, d, w)
+    fill!(L, zero(eltype(L)))
     n = size(Z, 1)
-    L = zeros(n, n)
-    for i=1:n
+    @inbounds for i=1:n-1
         D = 0.0
-        for j=1:n
-            i==j && continue
-            nrmz = norm(Z[i,:] - Z[j,:])
-            nrmz==0 && continue
+        for j=i+1:n
+            nrmz = sqrt(sum(k->abs2(Z[i,k] - Z[j,k]), 1:size(Z,2)))
             δ = w[i, j] * d[i, j]
-            L[i, j] = -δ/nrmz
-            D -= -δ/nrmz
+            lij = -δ/max(nrmz, 1e-8)
+            L[i, j] = lij
+            D -= lij
         end
-        L[i, i] = D
+        L[i, i] += D
     end
-    @assert all(isfinite.(L))
-    L
+    @inbounds for i=2:n
+        D = 0.0
+        for j=1:i-1
+            lij = L[j,i]
+            L[i,j] = lij
+            D -= lij
+        end
+        L[i,i] += D
+    end
+    return L
 end
