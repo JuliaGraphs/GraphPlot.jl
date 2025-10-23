@@ -9,6 +9,7 @@ using GraphPlot.Colors
 using GraphPlot.Compose
 using Random
 using Test
+import Gtk # import as Compose and Gtk both export a draw method
 using VisualRegressionTests
 using ImageMagick
 
